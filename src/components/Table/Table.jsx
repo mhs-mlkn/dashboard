@@ -11,7 +11,6 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TableActions from "./TableActions";
-import { get } from "lodash";
 
 const styles = theme => ({
   root: {
@@ -66,8 +65,8 @@ class CustomTable extends Component {
 
     const { width } = this.props.size;
 
-    const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, count - page * rowsPerPage);
+    const emptyRows = 0;
+    // rowsPerPage - Math.min(rowsPerPage, count - page * rowsPerPage);
 
     const tableStyle = {
       height: width / aspect
@@ -84,7 +83,7 @@ class CustomTable extends Component {
           <TableHead>
             <TableRow>
               {cols.map((col, key) => (
-                <CustomTableCell key={key}>{col.title}</CustomTableCell>
+                <CustomTableCell key={key}>{col.key}</CustomTableCell>
               ))}
               {rows.length > 0 && ActionsComponent && <CustomTableCell />}
             </TableRow>
@@ -100,15 +99,15 @@ class CustomTable extends Component {
               (rows.length > rowsPerPage
                 ? rows.slice(0, rowsPerPage)
                 : rows
-              ).map((row, key) => (
+              ).map(({ cols: cells }, key) => (
                 <TableRow hover key={key}>
-                  {cols.map((col, key) => (
-                    <TableCell key={key}>{get(row, col.path)}</TableCell>
+                  {cells.map((cell, i) => (
+                    <TableCell key={i}>{cell}</TableCell>
                   ))}
                   {ActionsComponent && (
                     <TableCell align="right" className={classes.nowrap}>
                       <ActionsComponent
-                        onAction={action => this.handleAction(action, row)}
+                        onAction={action => this.handleAction(action, cells)}
                       />
                     </TableCell>
                   )}

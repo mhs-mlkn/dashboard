@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Chart from "../../../components/Chart/Chart";
+import Table from "../../../components/Table/Table";
 import Scalar from "../../../components/Scalar/Scalar";
 import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
@@ -19,8 +20,8 @@ const processData = (reportType, data) => {
   }
 };
 
-const processForTable = ({ cols, rows }) => {
-  return [];
+const processForTable = data => {
+  return data;
 };
 
 const processForScalar = ({ cols, rows }) => {
@@ -70,7 +71,13 @@ class ReportWrapper extends Component {
   getReport = reportType => {
     switch (reportType) {
       case "Table":
-        return <div>table</div>;
+        return (
+          <Table
+            cols={this.data.cols}
+            rows={this.data.rows}
+            count={this.data.totalCount}
+          />
+        );
 
       case "Scalar":
         return <Scalar data={this.data} />;

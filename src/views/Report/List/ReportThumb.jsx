@@ -13,7 +13,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddIcon from "@material-ui/icons/Add";
 import Chart from "../../../components/Chart/Chart";
 import Table from "../../../components/Table/Table";
-import ScalarText from "../../../components/Scalar/Text";
+import Scalar from "../../../components/Scalar/Scalar";
 import ReportContainer from "../../../containers/Report.container";
 import data, { table } from "../../../mockdata";
 
@@ -93,7 +93,9 @@ class ReportThumbCard extends Component {
         );
 
       case "Scalar":
-        return <ScalarText aspect={1.777777777777778} />;
+        return (
+          <Scalar aspect={1.777777777777778} data={["مجموع کاربران", 849]} />
+        );
 
       case "Timeline":
         return "Timeline";

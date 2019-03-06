@@ -6,12 +6,13 @@ import DeleteForever from "@material-ui/icons/DeleteForever";
 import ReportContainer from "../../../containers/Report.container";
 
 const styles = () => ({
-  root: {
+  wrapper: {
     position: "absolute",
     minWidth: "100px",
     left: "10px",
     zIndex: "10000"
-  }
+  },
+  root: { padding: "6px" }
 });
 
 const Toolbar = props => {
@@ -26,16 +27,22 @@ const Toolbar = props => {
     return null;
   }
   return (
-    <div className={classes.root}>
-      <IconButton size="small" title="حذف" onClick={deleteReport}>
-        <DeleteForever color="error" />
+    <div className={classes.wrapper}>
+      <IconButton
+        size="small"
+        title="حذف"
+        onClick={deleteReport}
+        className={classes.root}
+      >
+        <DeleteForever color="error" fontSize="small" />
       </IconButton>
       <IconButton
         size="small"
         title="تنظیم"
         onClick={() => alert("NOT IMPLEMENTED YET")}
+        className={classes.root}
       >
-        <Settings color="primary" />
+        <Settings color="primary" fontSize="small" />
       </IconButton>
     </div>
   );
