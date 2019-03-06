@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import PerfectScrollbar from "perfect-scrollbar";
 import { withStyles } from "@material-ui/core/styles";
+import { withSize } from "react-sizeme";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,11 +16,11 @@ import { get } from "lodash";
 const styles = theme => ({
   root: {
     width: "100%",
-    marginTop: theme.spacing.unit * 3
+    overflow: "auto"
+    // marginTop: theme.spacing.unit * 3
+    // minWidth: 400,
   },
-  table: {
-    minWidth: 500
-  },
+  table: {},
   nowrap: {
     whiteSpace: "nowrap"
   }
@@ -32,6 +34,10 @@ const CustomTableCell = withStyles(theme => ({
 }))(TableCell);
 
 class CustomTable extends Component {
+  componentDidMount = () => {
+    this.ps = new PerfectScrollbar(this.refs.tableWrapper);
+  };
+
   handleChangePage = (_, page) => {
     this.props.handleChangePage && this.props.onChangePage(page);
   };
@@ -54,83 +60,102 @@ class CustomTable extends Component {
       page = 0,
       loading,
       ActionsComponent,
+      aspect = 0,
       classes
     } = this.props;
+
+    const { width } = this.props.size;
 
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, count - page * rowsPerPage);
 
+    const tableStyle = {
+      height: width / aspect
+    };
+
     return (
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            {cols.map((col, key) => (
-              <CustomTableCell key={key}>{col.title}</CustomTableCell>
-            ))}
-            {rows.length > 0 && ActionsComponent && <CustomTableCell />}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {loading ? (
+      <div
+        id="table-wrapper"
+        className={classes.root}
+        style={tableStyle}
+        ref="tableWrapper"
+      >
+        <Table className={classes.table}>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={cols.length} align="center">
-                <CircularProgress />
-              </TableCell>
+              {cols.map((col, key) => (
+                <CustomTableCell key={key}>{col.title}</CustomTableCell>
+              ))}
+              {rows.length > 0 && ActionsComponent && <CustomTableCell />}
             </TableRow>
-          ) : rows.length ? (
-            rows.map((row, key) => (
-              <TableRow hover key={key}>
-                {cols.map((col, key) => (
-                  <TableCell key={key}>{get(row, col.path)}</TableCell>
-                ))}
-                {ActionsComponent && (
-                  <TableCell align="right" className={classes.nowrap}>
-                    <ActionsComponent
-                      onAction={action => this.handleAction(action, row)}
-                    />
-                  </TableCell>
-                )}
+          </TableHead>
+          <TableBody>
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={cols.length} align="center">
+                  <CircularProgress />
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={cols.length}>
-                داده ای برای نمایش وجود ندارد
-              </TableCell>
-            </TableRow>
+            ) : rows.length ? (
+              (rows.length > rowsPerPage
+                ? rows.slice(0, rowsPerPage)
+                : rows
+              ).map((row, key) => (
+                <TableRow hover key={key}>
+                  {cols.map((col, key) => (
+                    <TableCell key={key}>{get(row, col.path)}</TableCell>
+                  ))}
+                  {ActionsComponent && (
+                    <TableCell align="right" className={classes.nowrap}>
+                      <ActionsComponent
+                        onAction={action => this.handleAction(action, row)}
+                      />
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={cols.length}>
+                  داده ای برای نمایش وجود ندارد
+                </TableCell>
+              </TableRow>
+            )}
+            {rows.length > 0 && emptyRows > 0 && (
+              <TableRow style={{ height: 48 * emptyRows }}>
+                <TableCell colSpan={cols.length} />
+              </TableRow>
+            )}
+          </TableBody>
+          {rows.length > 0 && (
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50]}
+                  colSpan={ActionsComponent ? cols.length + 1 : cols.length}
+                  count={count}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    native: true
+                  }}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  labelRowsPerPage="تعداد در صفحه"
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}-${to} از ${count}`
+                  }
+                  ActionsComponent={TableActions}
+                />
+              </TableRow>
+            </TableFooter>
           )}
-          {rows.length > 0 && emptyRows > 0 && (
-            <TableRow style={{ height: 48 * emptyRows }}>
-              <TableCell colSpan={cols.length} />
-            </TableRow>
-          )}
-        </TableBody>
-        {rows.length > 0 && (
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 50]}
-                colSpan={ActionsComponent ? cols.length + 1 : cols.length}
-                count={count}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  native: true
-                }}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                labelRowsPerPage="تعداد در صفحه"
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} از ${count}`
-                }
-                ActionsComponent={TableActions}
-              />
-            </TableRow>
-          </TableFooter>
-        )}
-      </Table>
+        </Table>
+      </div>
     );
   }
 }
 
-export default withStyles(styles)(CustomTable);
+const WithSize = withSize()(CustomTable);
+
+export default withStyles(styles)(WithSize);

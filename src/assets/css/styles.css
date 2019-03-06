@@ -21,3 +21,25 @@ select:-webkit-autofill:focus {
   -webkit-box-shadow: inherit;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.recharts-text {
+  text-anchor: start;
+}
+
+.recharts-legend-item-text {
+  padding-right: 4px;
+}
+.recharts-polar-radius-axis-tick-value > tspan {
+  font-size: 12px;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-right: 2px solid #e4e4e4;
+  border-bottom: 2px solid #e4e4e4;
+}
+
+.load-more {
+  display: block !important;
+  bottom: -25px !important;
+  margin: 0 auto !important;
+}

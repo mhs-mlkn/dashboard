@@ -1,6 +1,6 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
+// import Paper from "@material-ui/core/Paper";
 import Loading from "../Loading/Loading";
 
 const styles = theme => ({
@@ -14,9 +14,9 @@ const styles = theme => ({
 const page = props => {
   const { loading, classes, children } = props;
   return (
-    <Paper className={classes.root} elevation={1}>
+    <div className={classes.root} elevation={1}>
       {loading ? <Loading /> : children}
-    </Paper>
+    </div>
   );
 };
 

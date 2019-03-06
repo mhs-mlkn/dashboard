@@ -36,7 +36,7 @@ const styles = theme => ({
     fontSize: "24px",
     lineHeight: "30px",
     float: "left",
-    marginRight: "15px",
+    marginRight: "0px",
     textAlign: "center",
     verticalAlign: "middle",
     color: "#a1a1a1!important"

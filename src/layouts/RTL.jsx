@@ -31,7 +31,7 @@ import red from "@material-ui/core/colors/red";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
-import Error from "../components/Error/Error";
+import Main from "../components/Main";
 
 const theme = createMuiTheme({
   palette: {
@@ -62,19 +62,14 @@ const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 const generateClassName = createGenerateClassName();
 
 const getRoutes = () => {
-  return (
-    <Switch>
-      <Route path={loginRoute.path} component={loginRoute.component} />
-      {routes.map((route, key) => (
-        <PrivateRoute
-          path={route.path}
-          exact
-          component={route.component}
-          key={key}
-        />
-      ))}
-    </Switch>
-  );
+  return routes.map((route, key) => (
+    <PrivateRoute
+      path={route.path}
+      exact
+      component={route.component}
+      key={key}
+    />
+  ));
 };
 
 class RTL extends Component {
@@ -83,7 +78,7 @@ class RTL extends Component {
     title: ""
   };
 
-  componentDidMount = e => {
+  componentDidMount = () => {
     this.resizeListener();
     this.setTitle(this.props.history.location.pathname);
     this.configAxios();
@@ -134,9 +129,9 @@ class RTL extends Component {
   resizeListener = () => {
     const sm = this.props.theme.breakpoints.width("md");
     if (window.innerWidth >= sm) {
-      this.setState({ open: true });
+      !this.state.open && this.setState({ open: true });
     } else {
-      this.setState({ open: false });
+      this.state.open && this.setState({ open: false });
     }
   };
 
@@ -188,7 +183,13 @@ class RTL extends Component {
               })}
               ref="mainPanel"
             >
-              <Error>{getRoutes()}</Error>
+              <Switch>
+                <Route
+                  path={loginRoute.path}
+                  component={loginRoute.component}
+                />
+                <Main>{getRoutes()}</Main>
+              </Switch>
             </main>
           </div>
         </JssProvider>

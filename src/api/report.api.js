@@ -1,6 +1,6 @@
 import axios from "axios";
 import Auth from "../containers/Auth.container";
-import { groupBy } from "lodash";
+// import { reports } from "../mockdata";
 
 const baseUrl = `${process.env.REACT_APP_BASE_URL}`;
 const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
@@ -9,47 +9,54 @@ export default class ReportApi {
   static getAll = async (page = 0, size = 10) => {
     await Auth.refreshToken();
     const params = { page, size };
-    return axios.get(`${reportUrl}`, { params }).then(res => res.data.result);
+    return axios
+      .get(`${reportUrl}/CollaboratorReports`, { params })
+      .then(res => res.data.result);
+    // TODO: remove next lines
+    // .then(res => reports)
+    // .catch(err => reports)
   };
 
   static get = async id => {
     await Auth.refreshToken();
-    return axios.get(`${reportUrl}/${id}`).then(res => res.data.result);
+    return axios
+      .get(`${reportUrl}/CollaboratorReport/${id}`)
+      .then(res => res.data.result);
   };
 
   static getUserReport = async id => {
     await Auth.refreshToken();
     return axios
-      .get(`${reportUrl}/userReport/${id}`)
+      .get(`${baseUrl}/userreport/${id}`)
       .then(res => res.data.result);
   };
 
-  static getDBSources = async () => {
+  static setParams = async (id, params) => {
     await Auth.refreshToken();
     return axios
-      .get(`${baseUrl}/user/getConnList`)
-      .then(res => res.data.result)
-      .then(data => ({
-        "": [],
-        ...groupBy(data, "dbType")
-      }));
-  };
-
-  static update = async report => {
-    await Auth.refreshToken();
-    return axios
-      .put(`${reportUrl}/${report.id}`, report)
+      .post(`${reportUrl}/${id}/param`, params)
       .then(res => res.data.result);
   };
 
-  static create = async report => {
+  static loadLayout = async () => {
     await Auth.refreshToken();
-    return axios.post(`${reportUrl}`, report).then(res => res.data.result);
+    return axios
+      .get(`${baseUrl}/user/UserConfig`)
+      .then(res => res.data.result.config || "{layout: [], reportMap: {}}");
   };
 
-  static delete = async id => {
+  static saveLayout = async layout => {
     await Auth.refreshToken();
-    return axios.delete(`${reportUrl}/${id}`).then(res => res.data.result);
+    return axios
+      .put(`${baseUrl}/user/userConfig`, layout)
+      .then(res => res.data.result.data);
+  };
+
+  static removeReport = async reportId => {
+    await Auth.refreshToken();
+    return axios
+      .delete(`${baseUrl}/userreport/${reportId}`)
+      .then(res => res.data.result);
   };
 
   static reportData = async (
@@ -62,7 +69,11 @@ export default class ReportApi {
     await Auth.refreshToken();
     const params = { page, size };
     return axios
-      .post(`${reportUrl}/${id}/exec`, { filterVOS, parentParams }, { params })
+      .post(
+        `${baseUrl}/userreport/${id}/exec`,
+        { filterVOS, parentParams },
+        { params }
+      )
       .then(res => res.data.result);
   };
 }

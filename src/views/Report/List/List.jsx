@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { Subscribe } from "unstated";
 import Grid from "@material-ui/core/Grid";
 import ReportContainer from "../../../containers/Report.container";
-import ReportThumbCard from "./ReportThumbCard";
+import ReportThumb from "./ReportThumb";
+import LoadMore from "./LoadMore";
+
+const PageSize = 8;
 
 class ReportList extends Component {
   state = {
-    rowsPerPage: 5,
+    reports: [],
+    totalCount: 0,
     page: 0,
     loading: false
   };
@@ -17,62 +20,53 @@ class ReportList extends Component {
   };
 
   componentDidUpdate = (_, preState) => {
-    const { page: prePage, rowsPerPage: prePageSize } = preState;
-    const { page, rowsPerPage } = this.state;
-    if (prePage !== page || prePageSize !== rowsPerPage) {
+    const { page: prePage } = preState;
+    const { page } = this.state;
+    if (prePage !== page) {
       this.loadData();
     }
   };
 
-  onChangePage = page => {
-    this.setState({ loading: true, page });
-  };
-
-  onChangeRowsPerPage = rowsPerPage => {
-    this.setState({ loading: true, page: 0, rowsPerPage });
-  };
-
-  onAction = async (action, item) => {
-    switch (action) {
-      case "DELETE":
-        await ReportContainer.delete(item.id);
-        break;
-      case "EDIT":
-        await this.props.history.push(`/user/reports/${item.id}/edit`);
-        break;
-      case "RUN":
-        await this.props.history.push(`/user/reports/${item.id}/view`);
-        break;
-
-      default:
-        break;
-    }
+  onChangePage = () => {
+    this.setState(state => ({ loading: true, page: state.page + 1 }));
   };
 
   loadData = async () => {
     try {
-      const { page, rowsPerPage } = this.state;
-      await ReportContainer.getAll(page, rowsPerPage);
-      this.setState({ loading: false });
+      const { page } = this.state;
+      const data = await ReportContainer.getAll(page, PageSize);
+      this.setState(state => ({
+        reports: state.reports.concat(data.data),
+        totalCount: data.totalSize,
+        loading: false
+      }));
     } catch (error) {
       this.setState({ loading: false, error: error.message });
     }
   };
 
+  navigate = path => {
+    this.props.history.push(path);
+  };
+
   render = () => {
-    // const { rowsPerPage, page, loading } = this.state;
+    const { loading, reports, totalCount } = this.state;
     return (
-      <Subscribe to={[ReportContainer]}>
-        {Reports => (
-          <Grid container spacing={16}>
-            {Reports.state.reports.map(report => (
-              <Grid item key={report.id} xs={12} sm={12} md={3}>
-                <ReportThumbCard report={report} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Subscribe>
+      <>
+        <Grid container spacing={16}>
+          {reports.map(report => (
+            <Grid item key={report.id} xs={12} sm={6} lg={4} xl={3}>
+              <ReportThumb report={report} navigate={this.navigate} />
+            </Grid>
+          ))}
+        </Grid>
+        <LoadMore
+          loading={loading}
+          count={reports.length}
+          totalCount={totalCount}
+          onLoadMore={this.onChangePage}
+        />
+      </>
     );
   };
 }

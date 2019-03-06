@@ -1,36 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
+import Grid from "@material-ui/core/Grid";
+import ErrorOutline from "@material-ui/icons/ErrorOutline";
 import Typography from "@material-ui/core/Typography";
-import Page from "../Page/Page";
 
-class Error extends Component {
-  state = {
-    error: ""
-  };
-
-  // static getDerivedStateFromError(error) {
-  //   return { error };
-  // }
-
-  componentDidCatch(error, info) {
-    this.setState({ error });
-  }
-
-  render = () => {
-    const { error } = this.state;
-    if (error) {
-      return (
-        <Page>
-          <Typography color="error" variant="h3" gutterBottom>
-            خطا
-          </Typography>
-          <Typography color="error" variant="h5" gutterBottom>
-            {error.message || error || "خطا"}
-          </Typography>
-        </Page>
-      );
-    }
-    return this.props.children;
-  };
-}
+const Error = props => {
+  const { message } = props;
+  return (
+    <Grid
+      container
+      spacing={16}
+      justify="center"
+      alignItems="center"
+      direction="column"
+      style={{ height: "100%" }}
+    >
+      <Grid item>
+        <Typography color="error" variant="h5">
+          <ErrorOutline fontSize="large" />
+        </Typography>
+      </Grid>
+      <Grid item>
+        <Typography color="error" variant="h5" gutterBottom>
+          {message}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
 
 export default Error;

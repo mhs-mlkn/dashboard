@@ -1,17 +1,21 @@
 import { Container } from "unstated";
 import Api from "../api/report.api";
+import { pick } from "lodash";
 
 export class ReportContainer extends Container {
   state = {
     totalCount: 0,
     reports: [],
-    dbTypes: [],
-    dbSources: { "": [] }
+    layout: [],
+    reportMap: {}
   };
 
   getAll = async (page, size) => {
     const data = await Api.getAll(page, size);
-    await this.setState({ reports: data.data, totalCount: data.totalSize });
+    await this.setState({
+      reports: data.data,
+      totalCount: data.totalSize
+    });
     return data;
   };
 
@@ -23,61 +27,81 @@ export class ReportContainer extends Container {
     return item;
   };
 
-  getDBSources = async () => {
-    const dbSources = await Api.getDBSources();
-    const dbTypes = Object.keys(dbSources);
-    return this.setState({ dbTypes, dbSources });
+  setParams = async (id, params) => {
+    return Api.setParams(id, params);
   };
 
-  save = async values => {
-    const {
-      id,
-      name,
-      type,
-      chartType,
-      source,
-      dataSource,
-      drillDownId,
-      query,
-      params: queryParams,
-      filters: queryFilters,
-      description
-    } = values;
-
-    const report = {
-      id,
-      name,
-      type,
-      chartType,
-      source,
-      drillDownId: drillDownId || -1,
-      description,
-      query: { query, dataSource, queryParams, queryFilters }
-    };
-
-    if (id > 0) {
-      await Api.update(report);
-      const reports = this.state.reports.map(r => {
-        if (report.id === r.id) {
-          return {
-            ...r,
-            ...report
-          };
-        }
-        return r;
-      });
-      return this.setState({ reports });
+  loadLayout = async () => {
+    let config = await Api.loadLayout();
+    let layout = [];
+    let reportMap = {};
+    try {
+      config = JSON.parse(config);
+      layout = config.layout;
+      reportMap = config.reportMap;
+      if (!Array.isArray(layout)) {
+        throw new Error("user layout config must be an array");
+      }
+    } catch (error) {
+      layout = [];
+      reportMap = {};
     }
-    const newReportId = await Api.create(report);
-    const newReport = await this.get(newReportId);
-    const reports = [newReport, ...this.state.reports];
-    return this.setState({ reports });
+    layout = layout.map(l => ({ ...l, static: true }));
+    return this.setState({ layout, reportMap });
   };
 
-  delete = async id => {
-    await Api.delete(id);
-    const reports = this.state.reports.filter(r => r.id !== id);
-    return this.setState({ reports, totalCount: this.state.totalCount - 1 });
+  addLayout = async (instanceId, reportId) => {
+    const exists = this.state.layout.some(l => +l.i === +instanceId);
+    if (!exists) {
+      const newItem = {
+        i: `${instanceId}`,
+        x: 0,
+        y: 0,
+        w: 12,
+        h: 12,
+        static: true
+      };
+      const layout = [...this.state.layout, newItem];
+      const reportMap = { ...this.state.reportMap, [instanceId]: reportId };
+      await this.setState({ layout, reportMap });
+      await this.saveLayout(layout);
+    }
+    return Promise.resolve(instanceId);
+  };
+
+  removeFromLayout = async reportId => {
+    const layout = this.state.layout.filter(l => +l.i !== +reportId);
+    const reportMap = pick(
+      this.state.reportMap,
+      Object.keys(this.state.reportMap).filter(key => +key !== +reportId)
+    );
+    return this.setState({ layout, reportMap });
+  };
+
+  removeReport = async reportId => {
+    return Api.removeReport(reportId);
+  };
+
+  setLayout = async layout => {
+    return this.setState({ layout });
+  };
+
+  saveLayout = async layout => {
+    const { reportMap } = this.state;
+    this.setState({ layout });
+    return Api.saveLayout(JSON.stringify({ layout, reportMap }));
+  };
+
+  toggleEditing = async editEnabled => {
+    const layout = this.state.layout.map(l => ({
+      ...l,
+      static: !editEnabled
+    }));
+    return this.setState({ layout });
+  };
+
+  reportData = async (reportId, filters, params, page = 0, size = 0) => {
+    return Api.reportData(reportId, filters, params, page, size);
   };
 }
 
