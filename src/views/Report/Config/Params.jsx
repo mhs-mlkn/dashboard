@@ -12,26 +12,26 @@ class ReportParams extends Component {
   state = {
     report: undefined,
     params: [],
-    loading: false,
-    error: ""
+    loading: false
   };
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    this.setState({ loading: true });
     const id = +this.props.match.params.id;
-    const report = ReportContainer.state.reports.find(r => r.id === id);
+    const report = await ReportContainer.get(id);
     const params = report ? report.query.queryParams : [];
-    this.setState({ report, params });
-  }
+    this.setState({ loading: false, report, params });
+  };
 
   submit = async values => {
-    this.setState({ loading: true, error: "" });
-    // send data back to server
-    ReportContainer.setParams(this.state.report.id, values.params)
-      .then(async instanceId => {
-        await ReportContainer.addLayout(instanceId, this.state.report.id);
-        this.props.history.push("/reports/config/layout");
-      })
-      .catch(error => this.setState({ loading: false, error: error.message }));
+    this.setState({ loading: true });
+    const instanceId = await ReportContainer.setParams(
+      this.state.report.id,
+      values.params
+    );
+    await ReportContainer.addLayout(instanceId, this.state.report.id);
+    this.props.history.push("/user/dashboard");
+    this.setState({ loading: false });
   };
 
   validate = values => {
@@ -59,32 +59,40 @@ class ReportParams extends Component {
     return {};
   };
 
-  onCloseError = () => {
-    this.setState({ error: "" });
-  };
-
   renderForm = props => {
     const { values } = props;
     return (
       <Form>
-        <Grid xs={12} sm={12} md={3}>
+        <Grid container>
           <FieldArray
             name="params"
             render={() => {
               return values.params.map((p, i) => (
-                <div key={p.key}>
-                  <Input name={`params.${i}.value`} label={p.key} {...props} />
+                <Grid item xs={12} sm={12} md={3} key={p.key}>
+                  <Input
+                    name={`params.${i}.value`}
+                    label={p.key}
+                    value={values.params[i].value}
+                    {...props}
+                  />
                   <FormHelperText>
                     {p.hint} ({p.type})
                   </FormHelperText>
                   <ErrorMessage name={`params.${i}.value`} />
-                </div>
+                </Grid>
               ));
             }}
           />
-          <Button type="submit" color="primary" style={{ marginTop: "20px" }}>
-            ادامه
-          </Button>
+          <Grid item xs={12} sm={12} md={12}>
+            <Button
+              type="submit"
+              color="primary"
+              variant="outlined"
+              style={{ marginTop: "40px" }}
+            >
+              ادامه
+            </Button>
+          </Grid>
         </Grid>
       </Form>
     );

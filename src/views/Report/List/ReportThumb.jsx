@@ -64,7 +64,7 @@ class ReportThumbCard extends Component {
 
   addToDashboard = async () => {
     const { report } = this.props;
-    const hasParams = report.query.queryParams.some(p => p.byUser);
+    const hasParams = report.query.queryParams.some(p => p.fill === "BY_BUSINESS");
     if (hasParams) {
       return this.props.navigate(`/user/reports/${report.id}/params`);
     }
