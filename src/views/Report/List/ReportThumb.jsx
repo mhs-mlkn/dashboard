@@ -74,7 +74,7 @@ class ReportThumbCard extends Component {
       const instanceId = await ReportContainer.setParams(report.id, []);
       await ReportContainer.addLayout(instanceId, report.id);
       this.setState({ loading: false });
-      this.props.navigate("/user/dashboard");
+      // this.props.navigate("/user/dashboard");
     } catch (error) {
       this.setState({ loading: false, error: error.message });
     }
@@ -85,6 +85,7 @@ class ReportThumbCard extends Component {
       case "Table":
         return (
           <Table
+            report={report}
             cols={table.cols}
             rows={table.rows}
             count={table.rows.length}

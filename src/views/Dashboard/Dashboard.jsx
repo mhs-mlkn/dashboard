@@ -54,18 +54,20 @@ class Dashboard extends Component {
               onLayoutChange={this.onLayoutChange}
               style={{ direction: "ltr" }}
             >
-              {Report.state.layout.map(layout => (
-                <div
-                  key={layout.i}
-                  data-grid={layout}
-                  style={{ direction: "rtl" }}
-                >
-                  <ReportWrapper
-                    reportId={layout.i}
-                    editEnabled={editEnabled}
-                  />
-                </div>
-              ))}
+              {Report.state.layout.map(layout => {
+                return (
+                  <div
+                    key={layout.i}
+                    data-grid={layout}
+                    style={{ direction: "rtl" }}
+                  >
+                    <ReportWrapper
+                      reportId={layout.i}
+                      editEnabled={editEnabled}
+                    />
+                  </div>
+                );
+              })}
             </ReactGridLayout>
           );
         }}

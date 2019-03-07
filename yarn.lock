@@ -6865,6 +6865,15 @@ mkdirp@0.5.1, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@
   dependencies:
     minimist "0.0.8"
 
+moment-jalaali@^0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/moment-jalaali/-/moment-jalaali-0.7.4.tgz#6878971d77c41d49270e61c18c7cb1e5d84528ee"
+  integrity sha512-wt05eHaG9QsXiq8dRyH4JP1LEcK0XwPrs1PSKN09EWx1gepn7juE/iP0cNyM9Di7uS4CkGxHWPCG5MgTscei9w==
+  dependencies:
+    jalaali-js "^1.1.0"
+    moment "^2.22.1"
+    rimraf "^2.6.2"
+
 moment-jalaali@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/moment-jalaali/-/moment-jalaali-0.8.3.tgz#93d5de9c274be0221fabd3c3f2b7efc3c51e9016"
@@ -6882,7 +6891,7 @@ moment-timezone@^0.5.21:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.22.2, moment@^2.24.0:
+"moment@>= 2.9.0", moment@^2.22.1, moment@^2.22.2, moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -8603,6 +8612,14 @@ react-ace@^6.4.0:
     lodash.get "^4.4.2"
     lodash.isequal "^4.5.0"
     prop-types "^15.6.2"
+
+react-advance-jalaali-datepicker@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-advance-jalaali-datepicker/-/react-advance-jalaali-datepicker-1.0.0.tgz#8f302b08dd936239212cb40034283f7df9b7d695"
+  integrity sha512-uJPAhR+BMk8sIJ93uGTLGobM7bXHyb5jqf6oaXncTMo9ADUz8lroJABEQv5KmBKCOb5iLkGv+Yml9AzsQ6YStQ==
+  dependencies:
+    babel-runtime "^6.26.0"
+    moment-jalaali "^0.7.4"
 
 react-app-polyfill@^0.2.1:
   version "0.2.1"

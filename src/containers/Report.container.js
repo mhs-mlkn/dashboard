@@ -56,7 +56,7 @@ export class ReportContainer extends Container {
       const newItem = {
         i: `${instanceId}`,
         x: 0,
-        y: 0,
+        y: Math.max(...this.state.layout.map(o => o.y), 0) + 1,
         w: 12,
         h: 12,
         static: true
@@ -100,7 +100,7 @@ export class ReportContainer extends Container {
     return this.setState({ layout });
   };
 
-  reportData = async (reportId, filters, params, page = 0, size = 0) => {
+  reportData = async (reportId, filters, params, page = 0, size = 10) => {
     return Api.reportData(reportId, filters, params, page, size);
   };
 }

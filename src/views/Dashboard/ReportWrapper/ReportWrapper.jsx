@@ -61,7 +61,7 @@ class ReportWrapper extends Component {
       this.report = await ReportContainer.get(id);
       const data = await ReportContainer.reportData(reportId);
       this.data = processData(this.report.type, data);
-      console.log(this.data);
+      // console.log(this.data);
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ loading: false, error: "خطا در دریافت اطلاعات" });
@@ -73,6 +73,7 @@ class ReportWrapper extends Component {
       case "Table":
         return (
           <Table
+            report={this.report}
             cols={this.data.cols}
             rows={this.data.rows}
             count={this.data.totalCount}

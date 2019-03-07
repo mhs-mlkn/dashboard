@@ -63,8 +63,8 @@ export default class ReportApi {
     id,
     filterVOS = [],
     parentParams = [],
-    page = 0,
-    size = 0
+    page,
+    size
   ) => {
     await Auth.refreshToken();
     const params = { page, size };
