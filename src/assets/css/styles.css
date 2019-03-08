@@ -43,3 +43,9 @@ select:-webkit-autofill:focus {
   bottom: -25px !important;
   margin: 0 auto !important;
 }
+
+.fab {
+  position: fixed !important;
+  bottom: 25px;
+  left: 35px;
+}

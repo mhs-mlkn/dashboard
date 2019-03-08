@@ -10,14 +10,7 @@ import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Collapse from "@material-ui/core/Collapse";
-import FilterList from "@material-ui/icons/FilterList";
-import Share from "@material-ui/icons/Share";
-// import { unstable_Box as Box } from "@material-ui/core/Box";
 import TableActions from "./TableActions";
-import Filters from "./Filters";
 
 const styles = theme => {
   return {
@@ -33,10 +26,6 @@ const styles = theme => {
     },
     nowrap: {
       whiteSpace: "nowrap"
-    },
-    filters: {
-      width: "100%",
-      padding: theme.spacing.unit * 2
     }
   };
 };
@@ -49,21 +38,8 @@ const CustomTableCell = withStyles(theme => ({
 }))(TableCell);
 
 class CustomTable extends Component {
-  state = {
-    expanded: false,
-    filters: ""
-  };
-
   componentDidMount = () => {
     this.ps = new PerfectScrollbar(this.refs.tableWrapper);
-  };
-
-  handleExpandClick = () => {
-    this.setState(({ expanded }) => ({ expanded: !expanded }));
-  };
-
-  changeFilters = filters => {
-    this.setState({ filters });
   };
 
   handleChangePage = (_, page) => {
@@ -75,13 +51,8 @@ class CustomTable extends Component {
       this.props.onChangeRowsPerPage(+event.target.value);
   };
 
-  handleAction = (action, item) => {
-    this.props.onAction && this.props.onAction(action, item);
-  };
-
   render() {
     const {
-      report,
       cols,
       rows,
       count,
@@ -89,21 +60,17 @@ class CustomTable extends Component {
       page = 0,
       loading,
       aspect = 0,
+      height = 0,
       classes
     } = this.props;
 
-    const { expanded, filters } = this.state;
-
     const { width } = this.props.size;
-
-    const { queryFilters } = report.query;
-    const showFilters = queryFilters.length > 0;
 
     const emptyRows = 0;
     // rowsPerPage - Math.min(rowsPerPage, count - page * rowsPerPage);
 
     const tableStyle = {
-      height: aspect ? width / aspect : "100%"
+      height: aspect ? width / aspect : height || "100%"
     };
 
     const colSpan = cols.length;
@@ -117,43 +84,6 @@ class CustomTable extends Component {
       >
         <Table className={classes.table}>
           <TableHead>
-            <TableRow>
-              <TableCell
-                colSpan={colSpan - 1}
-                align="left"
-                className={classes.header}
-              >
-                <Typography component="div" variant="body1">
-                  {report.name}
-                </Typography>
-              </TableCell>
-              <TableCell align="right" className={classes.header}>
-                <IconButton>
-                  <Share color="secondary" />
-                </IconButton>
-                {showFilters && (
-                  <IconButton onClick={this.handleExpandClick}>
-                    <FilterList color="primary" />
-                  </IconButton>
-                )}
-              </TableCell>
-            </TableRow>
-            {showFilters && (
-              <Collapse
-                in={expanded}
-                timeout="auto"
-                unmountOnExit
-                className={classes.filters}
-              >
-                <div className={classes.filters}>
-                  <Filters
-                    report={report}
-                    values={filters}
-                    onSubmit={this.changeFilters}
-                  />
-                </div>
-              </Collapse>
-            )}
             <TableRow>
               {cols.map((col, key) => (
                 <CustomTableCell key={key}>{col.key}</CustomTableCell>

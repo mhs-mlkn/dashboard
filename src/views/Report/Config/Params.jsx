@@ -30,7 +30,7 @@ class ReportParams extends Component {
       values.params
     );
     await ReportContainer.addLayout(instanceId, this.state.report.id);
-    this.props.history.push("/user/dashboard");
+    this.props.history.push("/user/dashboard/layout");
     this.setState({ loading: false });
   };
 

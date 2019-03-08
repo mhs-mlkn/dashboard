@@ -3,43 +3,19 @@ import { Subscribe } from "unstated";
 import { withSize } from "react-sizeme";
 import ReactGridLayout from "react-grid-layout";
 import ReportContainer from "../../containers/Report.container";
-import ReportWrapper from "./ReportWrapper/ReportWrapper";
+import ReportCard from "./ReportCard/ReportCard";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 class Dashboard extends Component {
   layout = [];
-  state = {
-    editEnabled: false
-  };
-
-  componentDidMount = async () => {
-    document.addEventListener(
-      "EDIT_LAYOUT_EVENT",
-      this.toggleEditLayout,
-      false
-    );
-  };
-
-  componentWillUnmount = () => {
-    document.removeEventListener("EDIT_LAYOUT_EVENT", this.toggleEditLayout);
-  };
-
-  toggleEditLayout = async e => {
-    if (!e.detail) {
-      await ReportContainer.saveLayout(this.layout);
-    }
-    await ReportContainer.toggleEditing(e.detail);
-    this.setState({ editEnabled: e.detail });
-  };
 
   onLayoutChange = async layout => {
     this.layout = layout;
   };
 
   render = () => {
-    const { editEnabled } = this.state;
     const { width } = this.props.size;
     return (
       <Subscribe to={[ReportContainer]}>
@@ -61,10 +37,7 @@ class Dashboard extends Component {
                     data-grid={layout}
                     style={{ direction: "rtl" }}
                   >
-                    <ReportWrapper
-                      reportId={layout.i}
-                      editEnabled={editEnabled}
-                    />
+                    <ReportCard layout={layout} editEnabled={false} />
                   </div>
                 );
               })}

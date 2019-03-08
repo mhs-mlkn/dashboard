@@ -64,7 +64,7 @@ export class ReportContainer extends Container {
       const layout = [...this.state.layout, newItem];
       const reportMap = { ...this.state.reportMap, [instanceId]: reportId };
       await this.setState({ layout, reportMap });
-      await this.saveLayout(layout);
+      await this.saveLayout();
     }
     return Promise.resolve(instanceId);
   };
@@ -86,13 +86,12 @@ export class ReportContainer extends Container {
     return this.setState({ layout });
   };
 
-  saveLayout = async layout => {
-    const { reportMap } = this.state;
-    this.setState({ layout });
+  saveLayout = async () => {
+    const { layout, reportMap } = this.state;
     return Api.saveLayout(JSON.stringify({ layout, reportMap }));
   };
 
-  toggleEditing = async editEnabled => {
+  setEditLayout = async editEnabled => {
     const layout = this.state.layout.map(l => ({
       ...l,
       static: !editEnabled

@@ -15,7 +15,7 @@ import Chart from "../../../components/Chart/Chart";
 import Table from "../../../components/Table/Table";
 import Scalar from "../../../components/Scalar/Scalar";
 import ReportContainer from "../../../containers/Report.container";
-import data, { table } from "../../../mockdata";
+import * as mockData from "../../../mockdata";
 
 const styles = theme => ({
   card: {
@@ -55,6 +55,8 @@ const styles = theme => ({
   }
 });
 
+const ASPECT_RATIO = 1.777777777777778;
+
 class ReportThumbCard extends Component {
   state = { expanded: false };
 
@@ -64,9 +66,11 @@ class ReportThumbCard extends Component {
 
   addToDashboard = async () => {
     const { report } = this.props;
-    const hasParams = report.query.queryParams.some(p => p.fill === "BY_BUSINESS");
+    const hasParams = report.query.queryParams.some(
+      p => p.fill === "BY_BUSINESS"
+    );
     if (hasParams) {
-      return this.props.navigate(`/user/reports/${report.id}/params`);
+      return this.props.navigate(`/user/reports/${report.id}/config/params`);
     }
 
     try {
@@ -74,45 +78,41 @@ class ReportThumbCard extends Component {
       const instanceId = await ReportContainer.setParams(report.id, []);
       await ReportContainer.addLayout(instanceId, report.id);
       this.setState({ loading: false });
-      // this.props.navigate("/user/dashboard");
+      this.props.navigate("/user/dashboard/layout");
     } catch (error) {
       this.setState({ loading: false, error: error.message });
     }
   };
 
-  getReport = (report, data) => {
-    switch (report.type) {
+  getReport = (reportType, data) => {
+    switch (reportType) {
       case "Table":
         return (
           <Table
-            report={report}
-            cols={table.cols}
-            rows={table.rows}
-            count={table.rows.length}
-            aspect={1.777777777777778}
+            cols={data.cols}
+            rows={data.rows}
+            count={data.rows.length}
+            aspect={ASPECT_RATIO}
           />
         );
 
       case "Scalar":
-        return (
-          <Scalar aspect={1.777777777777778} data={["مجموع کاربران", 849]} />
-        );
-
-      case "Timeline":
-        return "Timeline";
+        return <Scalar aspect={ASPECT_RATIO} data={data} />;
 
       default:
-        return (
-          <Chart aspect={1.777777777777778} data={data} type={report.type} />
-        );
+        return <Chart aspect={ASPECT_RATIO} data={data} type={reportType} />;
     }
   };
 
   render = () => {
     const { classes, report } = this.props;
     const { expanded } = this.state;
-    const { name, created, description = "" } = report;
+    const { name, type, created, description = "" } = report;
     const date = created.slice(0, created.length - 6);
+    const data =
+      ["Table", "Scalar"].indexOf(type) > -1
+        ? mockData[type]
+        : mockData["Charts"];
     return (
       <Card className={classes.card}>
         <CardHeader
@@ -130,7 +130,7 @@ class ReportThumbCard extends Component {
           classes={{ title: classes.title, subheader: classes.subheader }}
         />
         <CardContent className={classes.Content}>
-          {this.getReport(report, data)}
+          {this.getReport(type, data)}
         </CardContent>
         <CardActions className={classes.actions} disableActionSpacing>
           <Typography component="p" className={classes.description}>
