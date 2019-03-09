@@ -99,7 +99,7 @@ export class ReportContainer extends Container {
     return this.setState({ layout });
   };
 
-  reportData = async (reportId, filters, params, page = 0, size = 10) => {
+  reportData = async (reportId, filters, params, page, size) => {
     return Api.reportData(reportId, filters, params, page, size);
   };
 }

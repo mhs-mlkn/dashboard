@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { SnackbarProvider } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Page from "./Page/Page";
 import Loading from "./Loading/Loading";
+import AuthContainer from "../containers/Auth.container";
 import ReportContainer from "../containers/Report.container";
 
 class Main extends Component {
@@ -17,6 +19,7 @@ class Main extends Component {
   loadInitilData = async () => {
     try {
       this.setState({ loading: true });
+      await AuthContainer.getUserData();
       await ReportContainer.loadLayout();
       this.setState({ loading: false });
     } catch (error) {
@@ -49,7 +52,18 @@ class Main extends Component {
     if (loading) {
       return <Loading />;
     }
-    return this.props.children;
+    return (
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left"
+        }}
+        autoHideDuration={2000}
+      >
+        {this.props.children}
+      </SnackbarProvider>
+    );
   };
 }
 

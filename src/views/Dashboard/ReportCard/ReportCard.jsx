@@ -4,14 +4,14 @@ import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 import Collapse from "@material-ui/core/Collapse";
-import Chart from "../../../components/Chart/Chart";
-import Table from "../../../components/Table/Table";
-import Scalar from "../../../components/Scalar/Scalar";
+import TableWrapper from "./TableWrapper";
+import ScalarWrapper from "./ScalarWrapper";
+import ChartWrapper from "./ChartWrapper";
 import Loading from "../../../components/Loading/Loading";
+import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
 import ReportCardActions from "./ReportCardActions";
 import Filters from "./Filters";
-import * as mockData from "../../../mockdata";
 
 const styles = () => ({
   card: {
@@ -30,70 +30,13 @@ const styles = () => ({
   }
 });
 
-const getReport = (report, layout, data) => {
-  switch (report.type) {
-    case "Table":
-      return (
-        <Table
-          report={report}
-          cols={data.cols}
-          rows={data.rows}
-          count={data.rows.length}
-          height={layout.h * 19.5 - 72}
-        />
-      );
-
-    case "Scalar":
-      return <Scalar data={data} />;
-
-    default:
-      return <Chart data={data} type={report.type} />;
-  }
-};
-
-const processData = (reportType, data) => {
-  switch (reportType) {
-    case "Table":
-      return processForTable(data);
-
-    case "Scalar":
-      return processForScalar(data);
-
-    default:
-      return processForChart(data);
-  }
-};
-
-const processForTable = data => {
-  return data;
-};
-
-const processForScalar = ({ cols, rows }) => {
-  return [cols[0].key, rows[0].cols[0]];
-};
-
-const processForChart = ({ cols, rows }) => {
-  let data = [];
-  for (const r of rows) {
-    const row = r.cols;
-    const o = {
-      name: row[0]
-    };
-    for (let index = 1; index < cols.length; index++) {
-      const col = cols[index];
-      o[col.key] = row[index];
-    }
-    data.push(o);
-  }
-  return data;
-};
-
 class ReportCard extends Component {
   state = {
     expanded: false,
     filters: "",
     report: undefined,
-    loading: false
+    loading: false,
+    error: ""
   };
 
   componentDidMount = async () => {
@@ -101,20 +44,7 @@ class ReportCard extends Component {
     const { i: instanceId } = this.props.layout;
     const reportId = ReportContainer.state.reportMap[instanceId];
     const report = await ReportContainer.get(reportId);
-    if (this.props.editEnabled) {
-      this.data = this.getMockData(report.type);
-    } else {
-      const data = await ReportContainer.reportData(instanceId);
-      this.data = processData(report.type, data);
-    }
     this.setState({ loading: false, report });
-  };
-
-  getMockData = reportType => {
-    if (["Table", "Scalar"].indexOf(reportType) > -1) {
-      return mockData[reportType];
-    }
-    return mockData["Charts"];
   };
 
   actionHandler = action => {
@@ -135,11 +65,47 @@ class ReportCard extends Component {
   };
 
   changeFilters = filters => {
-    this.setState({ filters });
+    this.setState({ expanded: false, filters });
+  };
+
+  getReport = (reportType, layout) => {
+    const height = layout.h * 19.5 - 72;
+    switch (reportType) {
+      case "Table":
+        return (
+          <TableWrapper
+            instanceId={layout.i}
+            filters={this.state.filters}
+            editEnabled={this.props.editEnabled}
+            height={height}
+          />
+        );
+
+      case "Scalar":
+        return (
+          <ScalarWrapper
+            instanceId={layout.i}
+            filters={this.state.filters}
+            editEnabled={this.props.editEnabled}
+            height={height}
+          />
+        );
+
+      default:
+        return (
+          <ChartWrapper
+            instanceId={layout.i}
+            type={reportType}
+            filters={this.state.filters}
+            editEnabled={this.props.editEnabled}
+            height={height}
+          />
+        );
+    }
   };
 
   render = () => {
-    const { expanded, filters, report, loading } = this.state;
+    const { expanded, filters, report, loading, error } = this.state;
 
     if (!report) {
       return null;
@@ -149,6 +115,10 @@ class ReportCard extends Component {
 
     if (loading) {
       return <Loading />;
+    }
+
+    if (error) {
+      return <Error message={error} />;
     }
 
     return (
@@ -174,7 +144,7 @@ class ReportCard extends Component {
           </CardContent>
         </Collapse>
         <CardContent className={classes.content}>
-          {getReport(report, layout, this.data)}
+          {this.getReport(report.type, layout)}
         </CardContent>
       </Card>
     );

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withSnackbar } from "notistack";
 import { Subscribe } from "unstated";
 import { withSize } from "react-sizeme";
 import ReactGridLayout from "react-grid-layout";
@@ -24,7 +25,12 @@ class DashboardLayout extends Component {
   };
 
   saveLayout = async () => {
-    await ReportContainer.saveLayout();
+    try {
+      await ReportContainer.saveLayout();
+      this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
+    } catch (error) {
+      this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
+    }
   };
 
   render = () => {
@@ -72,4 +78,6 @@ class DashboardLayout extends Component {
   };
 }
 
-export default withSize()(DashboardLayout);
+const WIthSnackbar = withSnackbar(DashboardLayout);
+
+export default withSize()(WIthSnackbar);

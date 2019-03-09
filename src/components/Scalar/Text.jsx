@@ -49,12 +49,12 @@ const styles = theme => ({
 });
 
 const ScalarText = props => {
-  const { data, aspect = 0, size, classes } = props;
+  const { data, height, aspect = 0, size, classes } = props;
   const [title, value] = data;
   return (
     <div
       className={classes.box}
-      style={{ height: aspect ? size.width / aspect : "100%" }}
+      style={{ height: aspect ? size.width / aspect : height || "100%" }}
     >
       <div className={classes.boxTop}>
         <span>{value}</span>

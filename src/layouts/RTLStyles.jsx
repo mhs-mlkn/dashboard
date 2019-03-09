@@ -39,7 +39,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginRight: -drawerWidth,
+    marginRight: process.env.NODE_ENV === "production" ? 0 : -drawerWidth,
     marginTop: theme.mixins.toolbar.minHeight,
     height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px )`,
     overflow: "auto",
@@ -52,7 +52,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginRight: 0
+    marginRight: process.env.NODE_ENV === "production" ? drawerWidth : 0
   }
 });
 

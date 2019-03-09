@@ -27,8 +27,8 @@ class Login extends Component {
     const qs = parseQueryString(this.props.location.search.slice("1"));
     if (qs && qs.token && qs.refresh && qs.expires) {
       Auth.login(qs);
-      await Auth.getUserData(qs);
       this.props.history.push("/");
+      window.location.reload();
     }
   };
 

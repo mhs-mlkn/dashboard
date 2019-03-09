@@ -43,12 +43,12 @@ class CustomTable extends Component {
   };
 
   handleChangePage = (_, page) => {
-    this.props.handleChangePage && this.props.onChangePage(page);
+    this.props.onChangePage && this.props.onChangePage(page);
   };
 
   handleChangeRowsPerPage = event => {
-    this.props.onChangeRowsPerPage &&
-      this.props.onChangeRowsPerPage(+event.target.value);
+    this.props.onChangePageSize &&
+      this.props.onChangePageSize(+event.target.value);
   };
 
   render() {
