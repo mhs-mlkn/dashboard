@@ -111,7 +111,7 @@ class RTL extends Component {
       response => response,
       error => {
         if ([401, 403].indexOf(error.response.status) > -1) {
-          this.props.history.push("/user/login");
+          this.props.history.push(loginRoute.path);
         }
         return Promise.reject(error);
       }

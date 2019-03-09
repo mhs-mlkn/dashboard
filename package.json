@@ -2,7 +2,7 @@
   "name": "user",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://192.168.6.3:8080",
+  "proxy": "http://192.168.6.2:8080",
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
