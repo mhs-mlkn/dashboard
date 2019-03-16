@@ -8,7 +8,6 @@ import RadarChart from "./RadarChart";
 
 const Chart = props => {
   const { type, aspect = 0, ...rest } = props;
-
   const getChart = type => {
     switch (type) {
       case "Line":
@@ -32,7 +31,9 @@ const Chart = props => {
   };
 
   return (
-    <ResponsiveContainer aspect={aspect}>{getChart(type)}</ResponsiveContainer>
+    <ResponsiveContainer aspect={aspect} height={props.height}>
+      {getChart(type)}
+    </ResponsiveContainer>
   );
 };
 

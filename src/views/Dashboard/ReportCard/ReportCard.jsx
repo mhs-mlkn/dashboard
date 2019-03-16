@@ -128,6 +128,7 @@ class ReportCard extends Component {
             <ReportCardActions
               instanceId={layout.i}
               editEnabled={editEnabled}
+              hasFilters={report.query.queryFilters.length > 0}
               actionHandler={this.actionHandler}
             />
           }

@@ -7,7 +7,7 @@ import Settings from "@material-ui/icons/Settings";
 import ReportContainer from "../../../containers/Report.container";
 
 const ReportCardActions = props => {
-  const { instanceId, editEnabled, actionHandler } = props;
+  const { instanceId, editEnabled, hasFilters, actionHandler } = props;
 
   const shareActionHandler = () => {
     actionHandler("SHARE");
@@ -39,14 +39,14 @@ const ReportCardActions = props => {
         </div>
       )}
       {!editEnabled && (
-        <div>
-          <IconButton onClick={shareActionHandler}>
-            <Share color="secondary" />
-          </IconButton>
-          <IconButton onClick={filteActionHandler}>
-            <FilterList color="primary" />
-          </IconButton>
-        </div>
+        <IconButton onClick={shareActionHandler}>
+          <Share color="secondary" />
+        </IconButton>
+      )}
+      {!editEnabled && hasFilters && (
+        <IconButton onClick={filteActionHandler}>
+          <FilterList color="primary" />
+        </IconButton>
       )}
     </>
   );

@@ -54,8 +54,8 @@ const Chart = props => {
           type="monotone"
           dataKey={key}
           key={key}
-          stroke={colors[i]["500"]}
-          fill={colors[i]["500"]}
+          stroke={colors[i % 9]["500"]}
+          fill={colors[i % 9]["500"]}
           opacity={opacity[key]}
         />
       ))}

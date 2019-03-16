@@ -58,7 +58,7 @@ class Chart extends PureComponent {
             // outerRadius={100}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index]["500"]} />
+              <Cell key={`cell-${index}`} fill={COLORS[index % 9]["500"]} />
             ))}
           </Pie>
         )}
