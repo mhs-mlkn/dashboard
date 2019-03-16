@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import moment from "moment-jalaali";
-import { withStyles } from "@material-ui/core/styles";
+import { withTheme } from "@material-ui/core/styles";
 import PerfectScrollbar from "perfect-scrollbar";
 import {
   MuiThemeProvider,
@@ -14,7 +14,6 @@ import rtl from "jss-rtl";
 import JssProvider from "react-jss/lib/JssProvider";
 import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "../hoc/PrivateRoute";
-import styles from "./RTLStyles";
 import routes, { loginRoute } from "../routes";
 
 import classNames from "classnames";
@@ -32,6 +31,7 @@ import red from "@material-ui/core/colors/red";
 import Sidebar from "../components/Sidebar/Sidebar";
 import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
 import Main from "../components/Main";
+import "./RTLStyles.css";
 
 const theme = createMuiTheme({
   palette: {
@@ -129,41 +129,43 @@ class RTL extends Component {
   resizeListener = () => {
     const sm = this.props.theme.breakpoints.width("md");
     if (window.innerWidth >= sm) {
+      this.isSmallScreen = false;
       !this.state.open && this.setState({ open: true });
     } else {
+      this.isSmallScreen = true;
       this.state.open && this.setState({ open: false });
     }
   };
 
   render = () => {
-    const { location, classes } = this.props;
+    const { location } = this.props;
     const { open, title } = this.state;
 
     return (
       <MuiThemeProvider theme={theme}>
         <JssProvider jss={jss} generateClassName={generateClassName}>
-          <div className={classes.root}>
+          <div className={"root"}>
             <CssBaseline />
             <AppBar
               position="fixed"
-              className={classNames(classes.appBar, {
-                [classes.appBarShift]: open
-              })}
+              className={
+                open && !this.isSmallScreen ? "appBar appBarShift" : "appBar"
+              }
             >
-              <Toolbar disableGutters={!open}>
+              <Toolbar disableGutters={true}>
                 <IconButton
-                  color="inherit"
-                  aria-label="Open drawer"
                   onClick={this.handleDrawerToggle}
-                  className={classNames(classes.menuButton, {
-                    [classes.menuButtonOpen]: open
-                  })}
+                  className={
+                    open && !this.isSmallScreen
+                      ? "menuButton menuButtonOpen"
+                      : "menuButton"
+                  }
                 >
                   <MenuIcon />
                 </IconButton>
                 <Typography
                   variant="h6"
-                  color="inherit"
+                  color="textSecondary"
                   noWrap
                   style={{ flexGrow: 1 }}
                 >
@@ -178,9 +180,9 @@ class RTL extends Component {
               handleDrawerToggle={this.handleDrawerToggle}
             />
             <main
-              className={classNames(classes.content, {
-                [classes.contentShift]: open
-              })}
+              className={
+                open && !this.isSmallScreen ? "content contentShift" : "content"
+              }
               ref="mainPanel"
             >
               <Switch>
@@ -198,4 +200,4 @@ class RTL extends Component {
   };
 }
 
-export default withStyles(styles, { withTheme: true })(RTL);
+export default withTheme()(RTL);

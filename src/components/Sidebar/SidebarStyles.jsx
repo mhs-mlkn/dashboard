@@ -1,12 +1,10 @@
-import { drawerWidth } from "../../layouts/RTLStyles";
-
 const styles = theme => ({
   drawer: {
-    width: drawerWidth,
+    width: 240,
     flexShrink: 0
   },
   drawerPaper: {
-    width: drawerWidth,
+    width: 240,
     backgroundColor: "#343a40"
   },
   drawerHeader: {

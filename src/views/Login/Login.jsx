@@ -36,7 +36,7 @@ class Login extends Component {
     const { loading } = this.state;
     return (
       <Page loading={loading}>
-        <Typography component="p" variant="h6">
+        <Typography component="p" variant="h6" color="textSecondary">
           برای ادامه باید{"  "}
           <Link href={LOGIN_URL} color="secondary">
             وارد

@@ -5,7 +5,7 @@ import Loading from "../Loading/Loading";
 
 const styles = theme => ({
   root: {
-    ...theme.mixins.gutters(),
+    // ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2
   }

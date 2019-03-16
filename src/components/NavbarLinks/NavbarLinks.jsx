@@ -29,7 +29,7 @@ const NavbarLinks = props => {
       {Auth =>
         Auth.user && (
           <div>
-            <IconButton onClick={handleMenu} color="inherit">
+            <IconButton onClick={handleMenu} color="primary">
               <AccountCircle />
             </IconButton>
             <Menu

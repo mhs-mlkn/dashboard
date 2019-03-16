@@ -1,0 +1,45 @@
+.root {
+  display: "flex";
+}
+
+.appBar {
+  background-color: #424951 !important;
+  transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.appBarShift {
+  width: calc(100% - 240px) !important;
+  margin-right: 240px;
+  transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.menuButton {
+  color: #a1a1a1 !important;
+  margin-right: 12;
+  margin-left: 20;
+}
+
+.menuButtonOpen {
+  margin-right: -12;
+}
+
+.hide {
+  display: none;
+}
+
+.content {
+  position: relative;
+  background-color: #3a4047;
+  flex-grow: 1;
+  padding: 12px;
+  transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  margin-right: 0;
+  margin-top: 64px;
+  height: calc(100vh - 64px);
+  overflow: auto;
+}
+
+.contentShift {
+  transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  margin-right: 240px;
+}
