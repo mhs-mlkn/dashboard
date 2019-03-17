@@ -41,14 +41,16 @@ export default class ReportApi {
   static loadLayout = async () => {
     await Auth.refreshToken();
     return axios
-      .get(`${baseUrl}/user/UserConfig`)
-      .then(res => res.data.result.config || "{layout: [], reportMap: {}}");
+      .get(`${baseUrl}/dashboard`)
+      .then(
+        res => res.data.result.data[0].config || "{layout: [], reportMap: {}}"
+      );
   };
 
   static saveLayout = async layout => {
     await Auth.refreshToken();
     return axios
-      .put(`${baseUrl}/user/userConfig`, layout)
+      .put(`${baseUrl}/dashboard/2`, { config: layout })
       .then(res => res.data.result.data);
   };
 

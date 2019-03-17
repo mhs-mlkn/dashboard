@@ -1,11 +1,27 @@
 import { Container } from "unstated";
-import axios from "axios";
+import { createHash, randomBytes } from "crypto";
+import Axios from "axios";
 import AuthApi from "../api/auth.api";
 
-const TOKEN = "TOKEN";
-const REFRESH = "REFRESH";
-const EXPIRES = "EXPIRES";
-const USER = "USER";
+const TOKEN = "DASH_USER_TOKEN";
+const VERIFIER = "DASH_ADMIN_VERIFIER";
+const REFRESH = "DASH_USER_REFRESH";
+const EXPIRES = "DASH_USER_EXPIRES";
+const USER = "DASH_USER_USER";
+
+function base64URLEncode(str) {
+  return str
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
+}
+
+function sha256(buffer) {
+  return createHash("sha256")
+    .update(buffer)
+    .digest();
+}
 
 export class AuthContainer extends Container {
   constructor(props) {
@@ -16,55 +32,84 @@ export class AuthContainer extends Container {
 
   initialize = () => {
     this.token = localStorage.getItem(TOKEN) || "";
+    this.verifier = localStorage.getItem(VERIFIER) || "";
     this.refresh = localStorage.getItem(REFRESH) || "";
     this.expires = localStorage.getItem(EXPIRES) || undefined;
     this.user = localStorage.getItem(USER) || "";
     this.hasTokenIssued = false;
-    this.token && (axios.defaults.headers.common["token"] = this.token);
+    this.token && (Axios.defaults.headers.common["token"] = this.token);
   };
 
-  login = ({ token, refresh, expires }) => {
-    axios.defaults.headers.common["token"] = token;
-    this.token = token;
-    this.refresh = refresh;
-    this.expires = expires * 1000 + Date.now() - 300;
+  generateVerifier = () => {
+    this.verifier = base64URLEncode(randomBytes(32));
+    this.saveToLS();
+    return this.verifier;
+  };
+
+  getChallenegeCode = () => {
+    return base64URLEncode(sha256(this.verifier));
+  };
+
+  checkToken = async code => {
+    return AuthApi.getToken(code, this.verifier).then(result => {
+      if (result.access_token) {
+        return this.login(result);
+      } else {
+        return Promise.reject("NO ACESS_TOKEN");
+      }
+    });
+  };
+
+  login = ({ access_token, refresh_token, expires_in }) => {
+    Axios.defaults.headers.common["token"] = access_token;
+    this.token = access_token;
+    this.refresh = refresh_token;
+    this.expires = expires_in * 1000 + Date.now() - 10;
     this.saveToLS();
   };
 
   refreshToken = async () => {
     if (Date.now() > this.expires && !this.hasTokenIssued) {
       this.hasTokenIssued = true;
-      const refreshToken = await AuthApi.refreshToken(this.token, this.refresh);
+      const refreshToken = await AuthApi.refreshToken(
+        this.refresh,
+        this.verifier
+      );
       this.hasTokenIssued = false;
-      const { token, refreshToken: refresh, timeout: expires } = refreshToken;
-      this.login({ token, refresh, expires });
+      this.login(refreshToken);
     }
     return Promise.resolve(this.token);
   };
 
   isLoggedIn = () => {
-    this.initialize();
+    this.token = localStorage.getItem(TOKEN) || "";
     return !!this.token;
   };
 
   logout = async () => {
-    this.token = this.refresh = this.expires = this.user = "";
+    this.token = this.verifier = this.refresh = this.expires = this.user = "";
     this.saveToLS();
     localStorage.setItem(USER, "");
-    await AuthApi.logout();
-    axios.defaults.headers.common["token"] = "";
+    Axios.defaults.headers.common["token"] = "";
+    // await AuthApi.logout();
     return Promise.resolve();
   };
 
-  getUserData = async () => {
-    const user = await AuthApi.getUser();
-    this.user = user.username;
+  fetchUser = async () => {
+    const user = await AuthApi.getUser(this.token);
+    this.user = user.preferred_username;
     localStorage.setItem(USER, this.user);
     return this.user;
   };
 
+  getUsername = () => {
+    this.user = localStorage.getItem(USER);
+    return this.user;
+  }
+
   saveToLS = () => {
     localStorage.setItem(TOKEN, this.token);
+    localStorage.setItem(VERIFIER, this.verifier);
     localStorage.setItem(REFRESH, this.refresh);
     localStorage.setItem(EXPIRES, this.expires);
   };

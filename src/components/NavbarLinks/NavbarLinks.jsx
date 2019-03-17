@@ -27,7 +27,7 @@ const NavbarLinks = props => {
   return (
     <Subscribe to={[AuthContainer]}>
       {Auth =>
-        Auth.user && (
+        Auth.isLoggedIn() ? (
           <div>
             <IconButton onClick={handleMenu} color="primary">
               <AccountCircle />
@@ -46,13 +46,13 @@ const NavbarLinks = props => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>{Auth.user}</MenuItem>
+              <MenuItem onClick={handleClose}>{Auth.getUsername()}</MenuItem>
               <MenuItem id="logout" onClick={handleClose}>
                 خروج
               </MenuItem>
             </Menu>
           </div>
-        )
+        ) : null
       }
     </Subscribe>
   );

@@ -4,7 +4,10 @@ import Link from "@material-ui/core/Link";
 import Page from "../../components/Page/Page";
 import Auth from "../../containers/Auth.container";
 
-const LOGIN_URL = `${process.env.REACT_APP_LOGIN_URL}`;
+const SSO = process.env.REACT_APP_POD_SSO_CODE;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
+
 const parseQueryString = (queryParams = "") => {
   return queryParams
     ? queryParams
@@ -25,11 +28,25 @@ class Login extends Component {
 
   componentDidMount = async () => {
     const qs = parseQueryString(this.props.location.search.slice("1"));
-    if (qs && qs.token && qs.refresh && qs.expires) {
-      Auth.login(qs);
-      this.props.history.push("/");
-      window.location.reload();
+    if (qs && qs.code) {
+      try {
+        await Auth.checkToken(qs.code);
+        // await Auth.fetchUser();
+      } catch (error) {
+        console.log(">>> ", error);
+        this.setState({ error });
+      } finally {
+        this.props.history.push("/");
+      }
     }
+  };
+
+  login = e => {
+    e.preventDefault();
+    Auth.generateVerifier();
+    const CHALLENGE_CODE = Auth.getChallenegeCode();
+    const LOGIN_URL = `${SSO}&client_id=${CLIENT_ID}&code_challenge=${CHALLENGE_CODE}&redirect_uri=${REDIRECT_URI}`;
+    window.location.href = LOGIN_URL;
   };
 
   render = () => {
@@ -38,7 +55,7 @@ class Login extends Component {
       <Page loading={loading}>
         <Typography component="p" variant="h6" color="textSecondary">
           برای ادامه باید{"  "}
-          <Link href={LOGIN_URL} color="secondary">
+          <Link href={""} color="secondary" onClick={this.login}>
             وارد
           </Link>
           {"  "}

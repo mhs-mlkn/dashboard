@@ -16,7 +16,6 @@ import { Route, Switch } from "react-router-dom";
 import PrivateRoute from "../hoc/PrivateRoute";
 import routes, { loginRoute } from "../routes";
 
-import classNames from "classnames";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
