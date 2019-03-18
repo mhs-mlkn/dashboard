@@ -33,7 +33,7 @@ const ReportCardActions = props => {
     domtoimage
       .toBlob(document.getElementById(`report-${instanceId}`))
       .then(function(blob) {
-        window.saveAs(blob, `report-${instanceId}`);
+        saveAs(blob, `report-${instanceId}`);
       });
   };
 
