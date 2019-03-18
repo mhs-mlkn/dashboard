@@ -113,12 +113,17 @@ class TableWrapper extends Component {
     });
   };
 
+  handleRetry = async () => {
+    this.setState({ loading: true });
+    await this.loadData();
+  };
+
   render = () => {
     const { page, pageSize, loading, error } = this.state;
     const { height } = this.props;
 
     if (error) {
-      return <Error message={error} />;
+      return <Error message={error} onRetry={this.handleRetry} />;
     }
 
     return (

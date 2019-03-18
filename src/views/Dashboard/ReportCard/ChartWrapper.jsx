@@ -84,6 +84,11 @@ class ChartWrapper extends Component {
     }
   };
 
+  handleRetry = async () => {
+    this.setState({ loading: true });
+    await this.loadData();
+  };
+
   render = () => {
     const { loading, error } = this.state;
     const { type, height } = this.props;
@@ -93,7 +98,7 @@ class ChartWrapper extends Component {
     }
 
     if (error) {
-      return <Error message={error} />;
+      return <Error message={error} onRetry={this.handleRetry} />;
     }
 
     return <Chart data={this.data} type={type} height={height} />;

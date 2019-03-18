@@ -72,6 +72,11 @@ class ScalarWrapper extends Component {
     }
   };
 
+  handleRetry = async () => {
+    this.setState({ loading: true });
+    await this.loadData();
+  };
+
   render = () => {
     const { loading, error } = this.state;
     const { height } = this.props;
@@ -81,7 +86,7 @@ class ScalarWrapper extends Component {
     }
 
     if (error) {
-      return <Error message={error} />;
+      return <Error message={error} onRetry={this.handleRetry} />;
     }
 
     return <Scalar data={this.data} height={height} />;
