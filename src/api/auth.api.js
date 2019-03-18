@@ -28,7 +28,7 @@ export default class AuthApi {
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded"
       })
-    }).then(res => res.data);
+    }).then(res => res.json());
   };
 
   static getUser = async access_token => {

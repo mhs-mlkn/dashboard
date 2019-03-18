@@ -55,7 +55,7 @@ export class AuthContainer extends Container {
       if (result.access_token) {
         return this.login(result);
       } else {
-        return Promise.reject("NO ACESS_TOKEN");
+        return Promise.reject("NO ACCESS_TOKEN");
       }
     });
   };
@@ -105,7 +105,7 @@ export class AuthContainer extends Container {
   getUsername = () => {
     this.user = localStorage.getItem(USER);
     return this.user;
-  }
+  };
 
   saveToLS = () => {
     localStorage.setItem(TOKEN, this.token);

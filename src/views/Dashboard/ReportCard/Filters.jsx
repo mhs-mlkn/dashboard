@@ -32,12 +32,14 @@ class Filters extends Component {
   };
 
   convertFilters = values => {
+    const { queryFilters } = this.props.report.query;
     const filters = [];
     if (Object.keys(values).length === 0) {
       return filters;
     }
     for (const p in values) {
-      filters.push({ key: p, value: values[p] });
+      const filter = queryFilters.find(f => f.key === p);
+      filters.push({ id: filter.id, key: p, value: values[p] });
     }
     return filters;
   };
@@ -57,15 +59,15 @@ class Filters extends Component {
     return initials;
   };
 
-  getInputElement = ({ key, title, type }, props) => {
+  getInputElement = ({ id, key, title, type }, props) => {
     switch (type) {
-      case "date":
+      case "DATE":
         return (
           <DatePicker
             inputComponent={props => {
               return (
                 <TextInput
-                  id={`id-${key}`}
+                  id={`${id}-${key}`}
                   name={key}
                   label={title}
                   inputProps={{ ...props }}
@@ -85,12 +87,12 @@ class Filters extends Component {
             }
           />
         );
-      case "boolean":
+      case "BOOLEAN":
         return (
           <FormControlLabel
             control={
               <Switch
-                id={key}
+                id={`${id}-${key}`}
                 checked={props.values[key]}
                 onChange={props.handleChange}
                 value={props.values[key]}
@@ -105,7 +107,7 @@ class Filters extends Component {
       default:
         return (
           <TextInput
-            id={`id-${key}`}
+            id={`${id}-${key}`}
             name={key}
             label={title}
             value={props.values[key]}
@@ -118,30 +120,35 @@ class Filters extends Component {
   renderForm = props => {
     const { queryFilters: filters } = this.props.report.query;
     return (
-      <Grid container>
-        <Grid item xs={12} sm={12} md={12}>
-          <Form style={{ width: "100%" }}>
-            {filters.map(f => {
-              return (
-                <Grid item xs={12} sm={12} md={3} key={f.key}>
-                  {this.getInputElement(f, props)}
-                </Grid>
-              );
-            })}
-            <Grid container justify="flex-end">
-              <Button type="submit" color="primary">
-                تایید
-              </Button>
-              <Button
-                type="button"
-                onClick={() => props.resetForm(this.getInitials())}
+      <Form style={{ width: "100%" }}>
+        <Grid container>
+          {filters.map(f => {
+            return (
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={3}
+                key={f.id}
+                style={{ marginTop: "20px" }}
               >
-                پاک کردن
-              </Button>
-            </Grid>
-          </Form>
+                {this.getInputElement(f, props)}
+              </Grid>
+            );
+          })}
+          <Grid container justify="flex-end">
+            <Button type="submit" color="primary">
+              تایید
+            </Button>
+            <Button
+              type="button"
+              onClick={() => props.resetForm(this.getInitials())}
+            >
+              پاک کردن
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      </Form>
     );
   };
 

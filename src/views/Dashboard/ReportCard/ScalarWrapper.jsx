@@ -10,7 +10,7 @@ const processData = ({ cols, rows }) => {
 };
 
 class ScalarWrapper extends Component {
-  data = ["0", 0];
+  data = ["", 0];
 
   state = {
     loading: false,

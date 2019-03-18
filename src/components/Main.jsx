@@ -19,6 +19,7 @@ class Main extends Component {
     try {
       console.log("Main.loadInitialData...");
       this.setState({ loading: true });
+      await AuthContainer.refreshToken();
       await AuthContainer.fetchUser();
       await ReportContainer.loadLayout();
       this.setState({ loading: false });

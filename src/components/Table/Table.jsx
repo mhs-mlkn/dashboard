@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import moment from "moment-jalaali";
 import PerfectScrollbar from "perfect-scrollbar";
 import { withStyles } from "@material-ui/core/styles";
 import { withSize } from "react-sizeme";
@@ -49,6 +50,13 @@ class CustomTable extends Component {
   handleChangeRowsPerPage = event => {
     this.props.onChangePageSize &&
       this.props.onChangePageSize(+event.target.value);
+  };
+
+  getData = (cell, i) => {
+    if (this.props.cols[i].type === "DATE") {
+      return moment(cell.slice(0, -5)).format("jYYYY/jMM/jDD");
+    }
+    return cell;
   };
 
   render() {
@@ -104,7 +112,7 @@ class CustomTable extends Component {
               ).map(({ cols: cells }, key) => (
                 <TableRow hover key={key}>
                   {cells.map((cell, i) => (
-                    <TableCell key={i}>{cell}</TableCell>
+                    <TableCell key={i}>{this.getData(cell, i)}</TableCell>
                   ))}
                 </TableRow>
               ))

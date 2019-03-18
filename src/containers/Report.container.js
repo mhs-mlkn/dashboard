@@ -32,7 +32,8 @@ export class ReportContainer extends Container {
   };
 
   loadLayout = async () => {
-    let config = await Api.loadLayout();
+    this.dashboards = await Api.loadLayout();
+    let config = this.dashboards[0].config || "{layout: [], reportMap: {}}";
     let layout = [];
     let reportMap = {};
     try {
@@ -88,7 +89,10 @@ export class ReportContainer extends Container {
 
   saveLayout = async () => {
     const { layout, reportMap } = this.state;
-    return Api.saveLayout(JSON.stringify({ layout, reportMap }));
+    return Api.saveLayout(
+      this.dashboards[0].id,
+      JSON.stringify({ layout, reportMap })
+    );
   };
 
   setEditLayout = async editEnabled => {
