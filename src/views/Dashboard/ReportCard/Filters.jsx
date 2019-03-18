@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { pickBy, identity } from "lodash";
 import { Formik, Form } from "formik";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -32,34 +33,39 @@ class Filters extends Component {
   };
 
   convertFilters = values => {
-    const { queryFilters } = this.props.report.query;
+    // const { queryFilters } = this.props.report.query;
+    values = pickBy(values, identity);
     const filters = [];
     if (Object.keys(values).length === 0) {
       return filters;
     }
     for (const p in values) {
-      const filter = queryFilters.find(f => f.key === p);
-      filters.push({ id: filter.id, key: p, value: values[p] });
+      // const filter = queryFilters.find(f => f.id === p);
+      filters.push({ id: p, value: values[p] });
     }
     return filters;
   };
 
-  getInitials = values => {
+  getInitials = (values, formikProps) => {
     const initials = {};
-    if (values && values.length > 0) {
+    if (values && Object.keys(values).length > 0) {
       for (const val of values) {
-        initials[val.key] = val.value;
+        initials[val.id] = val.value;
       }
       return initials;
     }
     const { queryFilters: filters } = this.props.report.query;
     for (const filter of filters) {
-      initials[filter.key] = "";
+      if (formikProps && formikProps.setFieldValue) {
+        formikProps.setFieldValue(filter.id + "", "");
+      }
+      initials[filter.id] = "";
     }
     return initials;
   };
 
   getInputElement = ({ id, key, title, type }, props) => {
+    const name = id + "";
     switch (type) {
       case "DATE":
         return (
@@ -68,7 +74,7 @@ class Filters extends Component {
               return (
                 <TextInput
                   id={`${id}-${key}`}
-                  name={key}
+                  name={name}
                   label={title}
                   inputProps={{ ...props }}
                 />
@@ -76,12 +82,12 @@ class Filters extends Component {
             }}
             format="jYYYY/jMM/jDD"
             preSelected={
-              props.values[key] &&
-              moment(props.values[key]).format("jYYYY/jMM/jDD")
+              props.values[name] &&
+              moment(props.values[name]).format("jYYYY/jMM/jDD")
             }
             onChange={(_, date) =>
               props.setFieldValue(
-                key,
+                name,
                 moment(date, "jYYYY/jMM/jDD").format("YYYY-MM-DD")
               )
             }
@@ -93,9 +99,9 @@ class Filters extends Component {
             control={
               <Switch
                 id={`${id}-${key}`}
-                checked={props.values[key]}
+                checked={props.values[name]}
                 onChange={props.handleChange}
-                value={props.values[key]}
+                value={props.values[name]}
                 color="primary"
               />
             }
@@ -108,9 +114,9 @@ class Filters extends Component {
         return (
           <TextInput
             id={`${id}-${key}`}
-            name={key}
+            name={name}
             label={title}
-            value={props.values[key]}
+            value={props.values[name]}
             onChange={props.handleChange}
           />
         );
@@ -137,14 +143,15 @@ class Filters extends Component {
             );
           })}
           <Grid container justify="flex-end">
-            <Button type="submit" color="primary">
-              تایید
-            </Button>
             <Button
               type="button"
-              onClick={() => props.resetForm(this.getInitials())}
+              color="secondary"
+              onClick={() => props.resetForm(this.getInitials(null, props))}
             >
               پاک کردن
+            </Button>
+            <Button type="submit" color="primary">
+              تایید
             </Button>
           </Grid>
         </Grid>

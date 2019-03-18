@@ -104,6 +104,9 @@ export class AuthContainer extends Container {
 
   getUsername = () => {
     this.user = localStorage.getItem(USER);
+    if (!this.user || this.user === "undefined") {
+      this.fetchUser();
+    }
     return this.user;
   };
 
