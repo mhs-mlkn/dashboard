@@ -10,11 +10,10 @@ import moment from "moment-jalaali";
 
 class Filters extends Component {
   submit = values => {
-    console.log(values);
     const hasFiltersChanged = this.hasFiltersChanged(values);
     if (hasFiltersChanged) {
       this.prevValues = { ...values };
-      // this.props.onSubmit(this.convertFilters(values));
+      this.props.onSubmit(this.convertFilters(values));
     }
   };
 
