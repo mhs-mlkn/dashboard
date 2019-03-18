@@ -144,7 +144,7 @@ class ReportCard extends Component {
             />
           </CardContent>
         </Collapse>
-        <CardContent className={classes.content}>
+        <CardContent className={classes.content} id={`report-${layout.i}`}>
           {this.getReport(report.type, layout)}
         </CardContent>
       </Card>
