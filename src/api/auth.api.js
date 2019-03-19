@@ -10,7 +10,14 @@ export default class AuthApi {
       code_verifier,
       redirect_uri: process.env.REACT_APP_REDIRECT_URI
     };
-    return Axios.post(`${BASE_URL}`, null, { params }).then(res => res.data);
+    const url = new URL(BASE_URL);
+    url.search = new URLSearchParams(params);
+    return fetch(url, {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded"
+      })
+    }).then(res => res.json());
   };
 
   static refreshToken = async (refresh_token, code_verifier) => {

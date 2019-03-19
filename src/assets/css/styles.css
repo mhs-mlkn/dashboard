@@ -20,6 +20,7 @@ select:-webkit-autofill:focus {
   box-shadow: inherit;
   -webkit-box-shadow: inherit;
   transition: background-color 5000s ease-in-out 0s;
+  caret-color: #fff;
 }
 
 .recharts-text {
