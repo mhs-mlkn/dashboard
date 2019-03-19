@@ -1,4 +1,5 @@
 import React from "react";
+import { withSnackbar } from "notistack";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import IconButton from "@material-ui/core/IconButton";
@@ -21,8 +22,14 @@ const ReportCardActions = props => {
   };
 
   const deleteReport = async () => {
-    await ReportContainer.removeReport(instanceId);
-    await ReportContainer.removeFromLayout(instanceId);
+    try {
+      await ReportContainer.removeReport(instanceId);
+      await ReportContainer.removeFromLayout(instanceId);
+    } catch (error) {
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
   };
 
   const configReport = () => {
@@ -68,4 +75,4 @@ const ReportCardActions = props => {
   );
 };
 
-export default ReportCardActions;
+export default withSnackbar(ReportCardActions);
