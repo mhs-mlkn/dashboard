@@ -87,11 +87,14 @@ export class AuthContainer extends Container {
   };
 
   logout = async () => {
+    const URL = process.env.REACT_APP_POD_SSO_LOGOUT;
+    const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+    const CONTINUE = process.env.REACT_APP_REDIRECT_URI;
     this.token = this.verifier = this.refresh = this.expires = this.user = "";
     this.saveToLS();
     localStorage.setItem(USER, "");
     Axios.defaults.headers.common["token"] = "";
-    // await AuthApi.logout();
+    window.location.href = `${URL}?client_id=${CLIENT_ID}&continue=${CONTINUE}`;
     return Promise.resolve();
   };
 

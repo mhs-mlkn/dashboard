@@ -1,5 +1,3 @@
-import Axios from "axios";
-
 export default class AuthApi {
   static getToken = async (code, code_verifier) => {
     const BASE_URL = process.env.REACT_APP_POD_SSO_TOKEN;
@@ -44,15 +42,5 @@ export default class AuthApi {
     return fetch(url, {
       headers: new Headers({ Authorization: `Bearer ${access_token}` })
     }).then(res => res.json());
-  };
-
-  static logout = async () => {
-    const URL = process.env.REACT_APP_POD_SSO_LOGOUT;
-    const params = {
-      client_id: process.env.REACT_APP_CLIENT_ID,
-      continue: process.env.REACT_APP_REDIRECT_URI,
-      prompt: "none"
-    };
-    return Axios.get(`${URL}`, { params });
   };
 }
