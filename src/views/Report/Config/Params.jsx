@@ -19,7 +19,11 @@ class ReportParams extends Component {
     this.setState({ loading: true });
     const id = +this.props.match.params.id;
     const report = await ReportContainer.get(id);
-    const params = report ? report.query.queryParams : [];
+    const params = report
+      ? report.query.queryParams.filter(
+          p => ["BY_BUSINESS", "BY_BUSINESS_OR_PARENT"].indexOf(p.fill) > -1
+        )
+      : [];
     this.setState({ loading: false, report, params });
   };
 
