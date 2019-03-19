@@ -91,8 +91,7 @@ export class AuthContainer extends Container {
     const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
     const CONTINUE = process.env.REACT_APP_REDIRECT_URI;
     this.token = this.verifier = this.refresh = this.expires = this.user = "";
-    this.saveToLS();
-    localStorage.setItem(USER, "");
+    localStorage.clear();
     Axios.defaults.headers.common["token"] = "";
     window.location.href = `${URL}?client_id=${CLIENT_ID}&continue=${CONTINUE}`;
     return Promise.resolve();

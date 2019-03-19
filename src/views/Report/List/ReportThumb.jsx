@@ -133,9 +133,11 @@ class ReportThumbCard extends Component {
           {this.getReport(type, data)}
         </CardContent>
         <CardActions className={classes.actions} disableActionSpacing>
-          <Typography component="p" className={classes.description}>
-            {description.slice(0, 50)} {description.length > 50 && "..."}
-          </Typography>
+          {!expanded && (
+            <Typography component="p" className={classes.description}>
+              {description.slice(0, 50)} {description.length > 50 && "..."}
+            </Typography>
+          )}
           <IconButton
             className={classnames(classes.expand, {
               [classes.expandOpen]: expanded,
