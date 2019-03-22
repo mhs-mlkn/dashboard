@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { SnackbarProvider } from "notistack";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import Page from "./Page/Page";
 import AuthContainer from "../containers/Auth.container";
 import ReportContainer from "../containers/Report.container";
@@ -36,6 +37,10 @@ class Main extends Component {
     this.setState({ error });
   }
 
+  reset = () => {
+    this.setState({ error: "" });
+  };
+
   render = () => {
     const { error } = this.state;
     if (error) {
@@ -47,6 +52,9 @@ class Main extends Component {
           <Typography color="error" variant="h5" gutterBottom>
             {error.message || error || "خطا"}
           </Typography>
+          <Button color="primary" variant="outlined" onClick={this.reset}>
+            تلاش مجدد
+          </Button>
         </Page>
       );
     }
