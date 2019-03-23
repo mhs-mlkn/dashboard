@@ -6,8 +6,7 @@ export class ReportContainer extends Container {
   state = {
     totalCount: 0,
     reports: [],
-    layout: [],
-    reportMap: {}
+    dashboards: []
   };
 
   getAll = async (page, size) => {
@@ -31,24 +30,13 @@ export class ReportContainer extends Container {
     return Api.setParams(id, params);
   };
 
-  loadLayout = async () => {
-    this.dashboards = await Api.loadLayout();
-    let config = this.dashboards[0].config || "{layout: [], reportMap: {}}";
-    let layout = [];
-    let reportMap = {};
-    try {
-      config = JSON.parse(config);
-      layout = config.layout;
-      reportMap = config.reportMap;
-      if (!Array.isArray(layout)) {
-        throw new Error("user layout config must be an array");
-      }
-    } catch (error) {
-      layout = [];
-      reportMap = {};
-    }
-    layout = layout.map(l => ({ ...l, static: true }));
-    return this.setState({ layout, reportMap });
+  fetchDashboards = async () => {
+    const dashboards = await Api.fetchDashboards();
+    return this.setState({ dashboards });
+  };
+
+  getDashboard = index => {
+    return this.state.dashboards[index];
   };
 
   addLayout = async (instanceId, reportId) => {

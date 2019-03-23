@@ -29,6 +29,7 @@ import red from "@material-ui/core/colors/red";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
+import DashboardLinks from "../components/DashboardLinks/DashboardLinks";
 import Main from "../components/Main";
 import "./RTLStyles.css";
 
@@ -162,14 +163,10 @@ class RTL extends Component {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography
-                  variant="h6"
-                  color="textSecondary"
-                  noWrap
-                  style={{ flexGrow: 1 }}
-                >
+                <Typography variant="h6" color="textSecondary" noWrap>
                   {title}
                 </Typography>
+                <DashboardLinks location={location} />
                 <NavbarLinks />
               </Toolbar>
             </AppBar>

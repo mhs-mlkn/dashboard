@@ -38,9 +38,16 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static loadLayout = async () => {
+  static fetchDashboards = async () => {
     await Auth.refreshToken();
-    return axios.get(`${baseUrl}/dashboard`).then(res => res.data.result.data);
+    return axios
+      .get(`${baseUrl}/dashboard`)
+      .then(res => res.data.result.data)
+      .catch(() => [
+        { id: 1, config: '{"layout": []}' },
+        { id: 2, config: '{"layout": []}' },
+        { id: 3, config: '{"layout": []}' }
+      ]);
   };
 
   static saveLayout = async (dashboardId, layout) => {

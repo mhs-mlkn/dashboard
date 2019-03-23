@@ -24,6 +24,13 @@ export default [
     icon: DashboardIcon
   },
   {
+    title: "داشبورد",
+    path: "/user/dashboard/:index(\\d+)",
+    component: Dashboard,
+    icon: DashboardIcon,
+    invisible: true
+  },
+  {
     title: "لیست گزارشات",
     path: "/user/reports",
     component: ReportList,

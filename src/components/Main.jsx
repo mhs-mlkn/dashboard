@@ -3,6 +3,7 @@ import { SnackbarProvider } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Page from "./Page/Page";
+import Loading from "./Loading/Loading";
 import AuthContainer from "../containers/Auth.container";
 import ReportContainer from "../containers/Report.container";
 
@@ -22,7 +23,7 @@ class Main extends Component {
       this.setState({ loading: true });
       await AuthContainer.refreshToken();
       await AuthContainer.fetchUser();
-      await ReportContainer.loadLayout();
+      await ReportContainer.fetchDashboards();
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ loading: false, error });
@@ -42,7 +43,11 @@ class Main extends Component {
   };
 
   render = () => {
-    const { error } = this.state;
+    const { loading, error } = this.state;
+    if (loading) {
+      return <Loading />;
+    }
+
     if (error) {
       return (
         <Page>
@@ -58,6 +63,7 @@ class Main extends Component {
         </Page>
       );
     }
+
     return (
       <SnackbarProvider
         maxSnack={3}
