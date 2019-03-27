@@ -4,7 +4,7 @@ import ReportContainer from "../../../containers/Report.container";
 import ReportThumb from "./ReportThumb";
 import LoadMore from "./LoadMore";
 
-const PageSize = 8;
+const PageSize = 12;
 
 class ReportList extends Component {
   state = {
@@ -15,8 +15,8 @@ class ReportList extends Component {
   };
 
   componentDidMount = async () => {
-    this.setState({ loading: true });
-    this.loadData();
+    const { reports, totalCount } = ReportContainer.state;
+    this.setState({ reports, totalCount });
   };
 
   componentDidUpdate = (_, preState) => {

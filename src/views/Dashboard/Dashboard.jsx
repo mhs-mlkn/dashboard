@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { Subscribe } from "unstated";
 import { withSize } from "react-sizeme";
 import ReactGridLayout from "react-grid-layout";
-import ReportContainer from "../../containers/Report.container";
+import Error from "../../components/Error/Error";
+import LayoutContainer from "../../containers/Layout.container";
 import ReportCard from "./ReportCard/ReportCard";
 
 import "react-grid-layout/css/styles.css";
@@ -9,55 +11,65 @@ import "react-resizable/css/styles.css";
 
 class Dashboard extends Component {
   state = {
-    layout: [],
+    index: 0,
     error: ""
   };
 
   componentDidMount = () => {
     const { index } = this.props.match.params;
-    const dashboardsCount = ReportContainer.state.dashboards.length;
+    this.setIndex(index);
+  };
+
+  componentDidUpdate = async prevProps => {
+    const { index: prevIndex } = prevProps.match.params;
+    const { index } = this.props.match.params;
+    if (prevIndex !== index) {
+      this.setIndex(index);
+    }
+  };
+
+  setIndex = index => {
+    const dashboardsCount = LayoutContainer.state.dashboards.length;
     if (index === undefined || index >= dashboardsCount) {
       return this.props.history.replace(`/user/dashboard/0`);
     }
-    this.getConfig(index);
-  };
-
-  getConfig = index => {
-    const dashboard = ReportContainer.getDashboard(index);
-    try {
-      const config = JSON.parse(dashboard.config);
-      const layout = config.layout;
-      this.setState({ layout });
-    } catch (error) {
-      this.setState({ error: "تنظیمات کاربر نامعتبر است" });
-    }
+    this.setState({ index });
   };
 
   render = () => {
     const { width } = this.props.size;
-    const { layout, error } = this.state;
+    const { index, error } = this.state;
 
     if (error) {
-      return <div>{error}</div>;
+      return <Error message={error} />;
     }
 
     return (
-      <ReactGridLayout
-        width={width}
-        className="layout"
-        cols={24}
-        rowHeight={10}
-        layout={layout}
-        style={{ direction: "ltr" }}
-      >
-        {layout.map(layout => {
+      <Subscribe to={[LayoutContainer]}>
+        {Layout => {
+          const dashboard = Layout.getDashboard(index);
+          const { layout = [] } = dashboard.config;
           return (
-            <div key={layout.i} data-grid={layout} style={{ direction: "rtl" }}>
-              <ReportCard layout={layout} editEnabled={false} />
-            </div>
+            <ReactGridLayout
+              width={width}
+              className="layout"
+              cols={24}
+              rowHeight={10}
+              layout={layout}
+              style={{ direction: "ltr" }}
+            >
+              {layout.map(l => {
+                l.static = true;
+                return (
+                  <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
+                    <ReportCard layout={l} editEnabled={false} />
+                  </div>
+                );
+              })}
+            </ReactGridLayout>
           );
-        })}
-      </ReactGridLayout>
+        }}
+      </Subscribe>
     );
   };
 }

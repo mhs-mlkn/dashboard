@@ -29,12 +29,13 @@ class ReportParams extends Component {
 
   submit = async values => {
     this.setState({ loading: true });
-    const instanceId = await ReportContainer.setParams(
+    const { index = 0 } = +this.props.match.params;
+    const instanceId = await ReportContainer.getReportInstance(
       this.state.report.id,
       values.params
     );
-    await ReportContainer.addLayout(instanceId, this.state.report.id);
-    this.props.history.push("/user/dashboard/layout");
+    await ReportContainer.addToLayout(index, instanceId);
+    this.props.history.push(`/user/dashboard/layout/${index}`);
     this.setState({ loading: false });
   };
 

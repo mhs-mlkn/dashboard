@@ -2,6 +2,7 @@ import React from "react";
 import { withSnackbar } from "notistack";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
+import { withRouter } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import Share from "@material-ui/icons/Share";
 import FilterList from "@material-ui/icons/FilterList";
@@ -9,6 +10,7 @@ import Save from "@material-ui/icons/Save";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
 import ReportContainer from "../../../containers/Report.container";
+import LayoutContainer from "../../../containers/Layout.container";
 
 const ReportCardActions = props => {
   const { instanceId, editEnabled, hasFilters, actionHandler } = props;
@@ -17,16 +19,17 @@ const ReportCardActions = props => {
     actionHandler("SHARE");
   };
 
-  const filteActionHandler = () => {
+  const filterActionHandler = () => {
     actionHandler("FILTER");
   };
 
   const deleteReport = async () => {
+    const { index } = props.match.params;
     try {
-      await ReportContainer.removeReport(instanceId);
-      await ReportContainer.removeFromLayout(instanceId);
+      await ReportContainer.removeInstance(instanceId);
+      await LayoutContainer.removeFromLayout(index, instanceId);
     } catch (error) {
-      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+      props.enqueueSnackbar("درخواست با خطا مواجه شد", {
         variant: "error"
       });
     }
@@ -49,30 +52,32 @@ const ReportCardActions = props => {
       {editEnabled && (
         <div>
           <IconButton title="حذف" onClick={deleteReport}>
-            <DeleteForever color="error" />
+            <DeleteForever color="error" fontSize="small" />
           </IconButton>
           <IconButton title="تنظیم" onClick={configReport}>
-            <Settings color="primary" />
+            <Settings color="primary" fontSize="small" />
           </IconButton>
         </div>
       )}
       {!editEnabled && (
         <IconButton onClick={shareActionHandler}>
-          <Share color="secondary" />
+          <Share color="secondary" fontSize="small" />
         </IconButton>
       )}
       {!editEnabled && (
         <IconButton onClick={exportActionHandler}>
-          <Save color="primary" />
+          <Save color="primary" fontSize="small" />
         </IconButton>
       )}
       {!editEnabled && hasFilters && (
-        <IconButton onClick={filteActionHandler}>
-          <FilterList color="primary" />
+        <IconButton onClick={filterActionHandler}>
+          <FilterList color="primary" fontSize="small" />
         </IconButton>
       )}
     </>
   );
 };
 
-export default withSnackbar(ReportCardActions);
+const WithSnackbar = withSnackbar(ReportCardActions);
+
+export default withRouter(WithSnackbar);

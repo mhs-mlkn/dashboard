@@ -9,8 +9,8 @@ import ScalarWrapper from "./ScalarWrapper";
 import ChartWrapper from "./ChartWrapper";
 import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
-import ReportContainer from "../../../containers/Report.container";
 import ReportCardActions from "./ReportCardActions";
+import ReportContainer from "../../../containers/Report.container";
 import Filters from "./Filters";
 
 const styles = () => ({
@@ -25,8 +25,12 @@ const styles = () => ({
       padding: "0"
     }
   },
+  headerRoot: {
+    paddingTop: "8px",
+    paddingBottom: "8px"
+  },
   title: {
-    fontSize: "1.1rem"
+    fontSize: "0.9rem"
   }
 });
 
@@ -42,8 +46,7 @@ class ReportCard extends Component {
   componentDidMount = async () => {
     this.setState({ loading: true });
     const { i: instanceId } = this.props.layout;
-    const reportId = ReportContainer.state.reportMap[instanceId];
-    const report = await ReportContainer.get(reportId);
+    const report = await ReportContainer.get(+instanceId);
     this.setState({ loading: false, report });
   };
 
@@ -87,7 +90,7 @@ class ReportCard extends Component {
             instanceId={layout.i}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
-            height={height}
+            height={height * 10}
           />
         );
 
@@ -133,7 +136,7 @@ class ReportCard extends Component {
             />
           }
           title={report.name}
-          classes={{ title: classes.title }}
+          classes={{ root: classes.headerRoot, title: classes.title }}
         />
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>

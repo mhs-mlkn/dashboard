@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Page from "./Page/Page";
 import Loading from "./Loading/Loading";
 import AuthContainer from "../containers/Auth.container";
+import LayoutContainer from "../containers/Layout.container";
 import ReportContainer from "../containers/Report.container";
 
 class Main extends Component {
@@ -23,7 +24,8 @@ class Main extends Component {
       this.setState({ loading: true });
       await AuthContainer.refreshToken();
       await AuthContainer.fetchUser();
-      await ReportContainer.fetchDashboards();
+      await LayoutContainer.fetchDashboards();
+      await ReportContainer.getAll(0, 12);
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ loading: false, error });

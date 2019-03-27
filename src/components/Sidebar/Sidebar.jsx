@@ -19,10 +19,15 @@ const sidebar = props => {
   const { open, classes } = props;
   const activeRoute = path => {
     // return props.location.pathname.indexOf(path) > -1 ? true : false;
-    return props.location.pathname === path;
+    // return props.location.pathname === path;
+    const currPath = props.location.pathname;
+    const route = routes.find(r => r.path === path);
+    return route.matchTest ? route.matchTest(currPath) : currPath === path;
   };
   const getLinks = () =>
     routes.map((route, index) => {
+      if (route.invisible) return null;
+
       const isActive = activeRoute(route.path);
       const listItemClasses = classNames({
         [classes.activeItem]: isActive
@@ -31,8 +36,6 @@ const sidebar = props => {
         [classes.itemIcon]: true,
         [classes.activeItemIcon]: isActive
       });
-
-      if (route.invisible) return null;
 
       return (
         <NavLink

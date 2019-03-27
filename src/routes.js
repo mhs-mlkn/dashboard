@@ -20,12 +20,14 @@ export default [
   {
     title: "داشبورد",
     path: "/user/dashboard",
+    matchTest: path => RegExp("/user/dashboard/\\d+", "g").test(path),
     component: Dashboard,
     icon: DashboardIcon
   },
   {
     title: "داشبورد",
     path: "/user/dashboard/:index(\\d+)",
+    matchTest: path => RegExp("/user/dashboard/\\d+", "g").test(path),
     component: Dashboard,
     icon: DashboardIcon,
     invisible: true
@@ -33,12 +35,14 @@ export default [
   {
     title: "لیست گزارشات",
     path: "/user/reports",
+    matchTest: path => path.startsWith("/user/reports"),
     component: ReportList,
     icon: ListIcon
   },
   {
     title: "مقداردهی پارامترها",
-    path: "/user/reports/:id/config/params",
+    path: "/user/reports/:id/config/params/:index(\\d+)",
+    matchTest: path => path.startsWith("/user/reports"),
     component: ReportParams,
     icon: SettingsIcon,
     invisible: true
@@ -46,7 +50,16 @@ export default [
   {
     title: "تنظیم داشبورد",
     path: "/user/dashboard/layout",
+    matchTest: path => path.startsWith("/user/dashboard/layout"),
     component: DashboardLayout,
     icon: AspectRatioIcon
+  },
+  {
+    title: "تنظیم داشبورد",
+    path: "/user/dashboard/layout/:index(\\d+)",
+    matchTest: path => RegExp("/user/dashboard/layout/\\d+", "g").test(path),
+    component: DashboardLayout,
+    icon: AspectRatioIcon,
+    invisible: true
   }
 ];

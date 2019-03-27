@@ -15,7 +15,8 @@ export const reports = {
       },
       source: "SQL",
       type: "Table",
-      updated: "2019-02-26T16:14:18Z[UTC]"
+      updated: "2019-02-26T16:14:18Z[UTC]",
+      description: "توضیحات گزارش درباره تعداد فروش سالیانه"
     },
     {
       chartType: "Pie",

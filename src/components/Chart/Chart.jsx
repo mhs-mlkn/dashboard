@@ -7,7 +7,7 @@ import PieChart from "./PieChart";
 import RadarChart from "./RadarChart";
 
 const Chart = props => {
-  const { type, aspect = 0, ...rest } = props;
+  const { type, aspect = 0, height, ...rest } = props;
   const getChart = type => {
     switch (type) {
       case "Line":
@@ -31,7 +31,7 @@ const Chart = props => {
   };
 
   return (
-    <ResponsiveContainer aspect={aspect} height={props.height}>
+    <ResponsiveContainer aspect={aspect} height={height}>
       {getChart(type)}
     </ResponsiveContainer>
   );

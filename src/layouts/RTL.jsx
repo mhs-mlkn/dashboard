@@ -31,6 +31,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
 import DashboardLinks from "../components/DashboardLinks/DashboardLinks";
 import Main from "../components/Main";
+import { find } from "lodash";
 import "./RTLStyles.css";
 
 const theme = createMuiTheme({
@@ -102,7 +103,9 @@ class RTL extends Component {
   }
 
   setTitle = path => {
-    const route = routes.find(r => r.path === path);
+    const route = find(routes, r =>
+      r.matchTest ? r.matchTest(path) : r.path === path
+    );
     this.setState({ title: route ? route.title : "" });
   };
 
@@ -166,7 +169,7 @@ class RTL extends Component {
                 <Typography variant="h6" color="textSecondary" noWrap>
                   {title}
                 </Typography>
-                <DashboardLinks location={location} />
+                <DashboardLinks />
                 <NavbarLinks />
               </Toolbar>
             </AppBar>
