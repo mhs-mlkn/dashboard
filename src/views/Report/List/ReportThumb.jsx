@@ -100,7 +100,9 @@ class ReportThumbCard extends Component {
       p => ["BY_BUSINESS", "BY_BUSINESS_OR_PARENT"].indexOf(p.fill) > -1
     );
     if (hasParams) {
-      return this.props.navigate(`/user/reports/${report.id}/config/params`);
+      return this.props.navigate(
+        `/user/reports/${report.id}/config/params/${index}`
+      );
     }
 
     try {
