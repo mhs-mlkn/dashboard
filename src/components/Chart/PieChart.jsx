@@ -41,6 +41,10 @@ const renderCustomizedLabel = ({
 };
 
 class Chart extends PureComponent {
+  onClickHandler = data => () => {
+    this.props.onClick && this.props.onClick(data);
+  };
+
   render() {
     const { data, width, height } = this.props;
     const keys = getDataKeys(data[0] || {});
@@ -58,7 +62,11 @@ class Chart extends PureComponent {
             // outerRadius={100}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % 9]["500"]} />
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % 9]["500"]}
+                onClick={this.onClickHandler(entry)}
+              />
             ))}
           </Pie>
         )}

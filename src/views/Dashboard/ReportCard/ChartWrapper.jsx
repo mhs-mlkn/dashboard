@@ -89,6 +89,10 @@ class ChartWrapper extends Component {
     await this.loadData();
   };
 
+  chartClickHandler = data => {
+    this.props.onClick && this.props.onClick(data);
+  };
+
   render = () => {
     const { loading, error } = this.state;
     const { type, height } = this.props;
@@ -101,7 +105,14 @@ class ChartWrapper extends Component {
       return <Error message={error} onRetry={this.handleRetry} />;
     }
 
-    return <Chart data={this.data} type={type} height={height} />;
+    return (
+      <Chart
+        data={this.data}
+        type={type}
+        height={height}
+        onClick={this.chartClickHandler}
+      />
+    );
   };
 }
 

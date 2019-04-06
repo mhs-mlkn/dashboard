@@ -24,7 +24,7 @@ const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
 const Chart = props => {
   const [opacity, setOpacity] = useState({});
-  const { data, width, height } = props;
+  const { data, width, height, onClick } = props;
   const keys = getDataKeys(data[0] || {});
 
   const handleMouseEnter = o => {
@@ -43,6 +43,10 @@ const Chart = props => {
     });
   };
 
+  const onClickHandler = data => {
+    onClick && onClick(data);
+  };
+
   return (
     <BarChart
       data={data}
@@ -58,6 +62,7 @@ const Chart = props => {
           stroke={colors[i % 9]["500"]}
           fill={colors[i % 9]["500"]}
           opacity={opacity[key]}
+          onClick={onClickHandler}
         />
       ))}
       <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />

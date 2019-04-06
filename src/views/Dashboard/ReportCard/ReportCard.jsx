@@ -71,6 +71,10 @@ class ReportCard extends Component {
     this.setState({ expanded: false, filters });
   };
 
+  chartClickHandler = data => {
+    console.log(data);
+  };
+
   getReport = (reportType, layout) => {
     const height = layout.h * 19.5 - 72;
     switch (reportType) {
@@ -102,6 +106,7 @@ class ReportCard extends Component {
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height}
+            onClick={this.chartClickHandler}
           />
         );
     }
