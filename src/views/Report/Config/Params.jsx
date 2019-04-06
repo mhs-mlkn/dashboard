@@ -7,6 +7,7 @@ import Input, { ErrorMessage } from "../../../components/FormikInputs";
 import Page from "../../../components/Page/Page";
 
 import ReportContainer from "../../../containers/Report.container";
+import LayoutContainer from "../../../containers/Layout.container";
 
 class ReportParams extends Component {
   state = {
@@ -29,12 +30,12 @@ class ReportParams extends Component {
 
   submit = async values => {
     this.setState({ loading: true });
-    const { index = 0 } = +this.props.match.params;
+    const { index = 0 } = this.props.match.params;
     const instanceId = await ReportContainer.getReportInstance(
       this.state.report.id,
       values.params
     );
-    await ReportContainer.addToLayout(index, instanceId);
+    await LayoutContainer.addToLayout(index, instanceId);
     this.props.history.push(`/user/dashboard/layout/${index}`);
     this.setState({ loading: false });
   };

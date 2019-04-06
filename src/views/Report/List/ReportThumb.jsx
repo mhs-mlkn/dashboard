@@ -88,7 +88,9 @@ class ReportThumbCard extends Component {
       this.setState({ loading: true });
       await LayoutContainer.addDashboard();
     } catch (error) {
-      this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
     } finally {
       this.setState({ loading: false });
     }
@@ -113,6 +115,7 @@ class ReportThumbCard extends Component {
       this.props.navigate(`/user/dashboard/layout/${index}`);
     } catch (error) {
       this.setState({ loading: false, error: error.message });
+      this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
     }
   };
 

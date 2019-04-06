@@ -46,7 +46,11 @@ export class ReportContainer extends Container {
   };
 
   removeInstance = async instanceId => {
-    return Api.removeInstance(instanceId);
+    await Api.removeInstance(instanceId);
+    const userReports = this.state.userReports.filter(
+      item => item.id !== +instanceId
+    );
+    return this.setState({ userReports });
   };
 
   reportData = async (reportId, filters, params, page, size) => {
