@@ -46,7 +46,7 @@ class ReportCard extends Component {
   componentDidMount = async () => {
     this.setState({ loading: true });
     const { i: instanceId } = this.props.layout;
-    const report = await ReportContainer.get(+instanceId);
+    const report = await ReportContainer.getUserReport(instanceId);
     this.setState({ loading: false, report });
   };
 

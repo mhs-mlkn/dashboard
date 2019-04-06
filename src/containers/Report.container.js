@@ -4,6 +4,7 @@ import Api from "../api/report.api";
 export class ReportContainer extends Container {
   state = {
     reports: [],
+    userReports: [],
     totalCount: 0
   };
 
@@ -16,11 +17,26 @@ export class ReportContainer extends Container {
     return data;
   };
 
-  get = async instanceId => {
-    //TODO: refactor this method to write report by instanceId
-    let item = this.state.reports.find(r => r.id === instanceId);
+  getUserReports = async () => {
+    const userReports = await Api.getUserReports();
+    await this.setState({ userReports });
+    return userReports;
+  };
+
+  getUserReport = async instanceId => {
+    let item = this.state.userReports.find(r => r.id === +instanceId);
     if (!item) {
-      item = await Api.get(instanceId);
+      item = await Api.getUserReport(instanceId);
+      const userReports = [...this.state.userReports, item];
+      await this.setState({ userReports });
+    }
+    return item.report;
+  };
+
+  get = async reportId => {
+    let item = this.state.reports.find(r => r.id === +reportId);
+    if (!item) {
+      item = await Api.get(reportId);
     }
     return item;
   };

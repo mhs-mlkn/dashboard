@@ -16,7 +16,8 @@ export class LayoutContainer extends Container {
   };
 
   addDashboard = async () => {
-    const id = await Api.addDashboard();
+    const order = this.state.dashboards.length;
+    const id = await Api.addDashboard(order);
     console.log(">>> ", id);
     const dashboards = [
       ...this.state.dashboards,

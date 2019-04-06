@@ -1,6 +1,6 @@
 import axios from "axios";
 import Auth from "../containers/Auth.container";
-import { reports } from "../mockdata";
+// import { reports } from "../mockdata";
 
 const baseUrl = `${process.env.REACT_APP_BASE_URL}`;
 const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
@@ -8,18 +8,28 @@ const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
 export default class ReportApi {
   static getAll = async (page = 0, size = 12) => {
     await Auth.refreshToken();
-    // const params = { page, size };
-    // return axios
-    //   .get(`${reportUrl}/CollaboratorReports`, { params })
-    //   .then(res => res.data.result);
-    //TODO: remove next line and uncomment above
-    return reports;
+    const params = { page, size };
+    return axios
+      .get(`${reportUrl}/CollaboratorReports`, { params })
+      .then(res => res.data.result);
   };
 
   static get = async id => {
     await Auth.refreshToken();
     return axios
       .get(`${reportUrl}/CollaboratorReport/${id}`)
+      .then(res => res.data.result);
+  };
+
+  static getUserReports = async () => {
+    await Auth.refreshToken();
+    return axios.get(`${baseUrl}/userreport`).then(res => res.data.result.data);
+  };
+
+  static getUserReport = async instanceId => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${baseUrl}/userreport/${instanceId}`)
       .then(res => res.data.result);
   };
 
@@ -32,46 +42,35 @@ export default class ReportApi {
 
   static getReportInstance = async (reportId, params) => {
     await Auth.refreshToken();
-    // return axios
-    //   .post(`${reportUrl}/${reportId}/param`, params)
-    //   .then(res => res.data.result);
-    return reportId;
+    return axios
+      .post(`${reportUrl}/${reportId}/param`, params)
+      .then(res => res.data.result);
   };
 
   static fetchDashboards = async () => {
     await Auth.refreshToken();
-    // return axios
-    //   .get(`${baseUrl}/dashboard`)
-    //   .then(res => res.data.result.data);
-    return [
-      { id: 1, config: '{"layout": []}' },
-      { id: 2, config: '{"layout": []}' },
-      { id: 3, config: '{"layout": []}' }
-    ];
+    return axios.get(`${baseUrl}/dashboard`).then(res => res.data.result.data);
   };
 
-  static addDashboard = async () => {
+  static addDashboard = async order => {
     await Auth.refreshToken();
-    // return axios
-    //   .get(`${baseUrl}/dashboard`)
-    //   .then(res => res.data.result.data);
-    return new Promise(resolve => setTimeout(() => resolve(4), 2000));
+    return axios
+      .post(`${baseUrl}/dashboard`, { config: "[]", order })
+      .then(res => res.data.result.data);
   };
 
   static saveLayout = async (dashboardId, layout) => {
     await Auth.refreshToken();
-    // return axios
-    //   .put(`${baseUrl}/dashboard/${dashboardId}`, { config: layout })
-    //   .then(res => res.data.result.data);
-    return {};
+    return axios
+      .put(`${baseUrl}/dashboard/${dashboardId}`, { config: layout })
+      .then(res => res.data.result.data);
   };
 
   static removeInstance = async instanceId => {
     await Auth.refreshToken();
-    // return axios
-    //   .delete(`${baseUrl}/userreport/${instanceId}`)
-    //   .then(res => res.data.result);
-    return instanceId;
+    return axios
+      .delete(`${baseUrl}/userreport/${instanceId}`)
+      .then(res => res.data.result);
   };
 
   static reportData = async (

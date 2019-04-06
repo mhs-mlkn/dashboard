@@ -26,6 +26,7 @@ class Main extends Component {
       await AuthContainer.fetchUser();
       await LayoutContainer.fetchDashboards();
       await ReportContainer.getAll(0, 12);
+      await ReportContainer.getUserReports();
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ loading: false, error });

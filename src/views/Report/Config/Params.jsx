@@ -17,8 +17,8 @@ class ReportParams extends Component {
 
   componentDidMount = async () => {
     this.setState({ loading: true });
-    const id = +this.props.match.params.id;
-    const report = await ReportContainer.get(id);
+    const { id: reportId } = this.props.match.params;
+    const report = await ReportContainer.get(reportId);
     const params = report
       ? report.query.queryParams.filter(
           p => ["BY_BUSINESS", "BY_BUSINESS_OR_PARENT"].indexOf(p.fill) > -1
