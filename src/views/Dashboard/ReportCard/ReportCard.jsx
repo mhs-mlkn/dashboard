@@ -12,6 +12,7 @@ import Error from "../../../components/Error/Error";
 import ReportCardActions from "./ReportCardActions";
 import ReportContainer from "../../../containers/Report.container";
 import Filters from "./Filters";
+import MyCustomEvent from "../../../util/customEvent";
 
 const styles = () => ({
   card: {
@@ -51,16 +52,25 @@ class ReportCard extends Component {
   };
 
   actionHandler = action => {
-    if (action === "FILTER") {
-      return this.toggleFilters();
-    }
-    if (action === "SHARE") {
-      return this.shareReport();
+    switch (action) {
+      case "FILTER":
+        return this.toggleFilters();
+      case "REFRESH":
+        return this.refreshReport();
+      case "SHARE":
+        return this.shareReport();
+      default:
+        break;
     }
   };
 
   toggleFilters = () => {
     this.setState(({ expanded }) => ({ expanded: !expanded }));
+  };
+
+  refreshReport = () => {
+    const { i: instanceId } = this.props.layout;
+    MyCustomEvent.emit("REFRESH_REPORT", instanceId);
   };
 
   shareReport = () => {

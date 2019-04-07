@@ -53,8 +53,8 @@ export class ReportContainer extends Container {
     return this.setState({ userReports });
   };
 
-  reportData = async (reportId, filters, params, page, size) => {
-    return Api.reportData(reportId, filters, params, page, size);
+  reportData = async (reportId, filters, params, useCache, page, size) => {
+    return Api.reportData(reportId, filters, params, useCache, page, size);
   };
 }
 

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { withSnackbar } from "notistack";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import { withRouter } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
-import Share from "@material-ui/icons/Share";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Refresh from "@material-ui/icons/Refresh";
 import FilterList from "@material-ui/icons/FilterList";
 import Save from "@material-ui/icons/Save";
 import DeleteForever from "@material-ui/icons/DeleteForever";
@@ -15,8 +17,22 @@ import LayoutContainer from "../../../containers/Layout.container";
 const ReportCardActions = props => {
   const { instanceId, editEnabled, hasFilters, actionHandler } = props;
 
-  const shareActionHandler = () => {
-    actionHandler("SHARE");
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // const shareActionHandler = () => {
+  //   actionHandler("SHARE");
+  // };
+
+  const refreshActionHandler = () => {
+    actionHandler("REFRESH");
   };
 
   const filterActionHandler = () => {
@@ -40,6 +56,7 @@ const ReportCardActions = props => {
   };
 
   const exportActionHandler = () => {
+    handleMenuClose();
     domtoimage
       .toBlob(document.getElementById(`report-${instanceId}`))
       .then(function(blob) {
@@ -60,14 +77,31 @@ const ReportCardActions = props => {
         </div>
       )}
       {!editEnabled && (
-        <IconButton onClick={shareActionHandler}>
-          <Share color="secondary" fontSize="small" />
+        <IconButton
+          color="primary"
+          onClick={refreshActionHandler}
+          title="بارگذاری مجدد بدون cache"
+        >
+          <Refresh fontSize="small" />
         </IconButton>
       )}
       {!editEnabled && (
-        <IconButton onClick={exportActionHandler}>
-          <Save color="primary" fontSize="small" />
-        </IconButton>
+        <>
+          <IconButton title="ذخیره" color="primary" onClick={handleMenuClick}>
+            <Save fontSize="small" />
+          </IconButton>
+          <Menu
+            id="export-report-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={exportActionHandler}>PNG</MenuItem>
+          </Menu>
+        </>
+        // <IconButton onClick={exportActionHandler}>
+        //   <Save color="primary" fontSize="small" />
+        // </IconButton>
       )}
       {!editEnabled && hasFilters && (
         <IconButton onClick={filterActionHandler}>
