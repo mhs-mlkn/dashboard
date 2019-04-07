@@ -4,6 +4,7 @@ import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
 import * as mockData from "../../../mockdata";
+import MyCustomEvent from "../../../util/customEvent";
 
 const processData = ({ cols, rows }) => {
   return [cols[0].key, rows[0].cols[0]];
@@ -15,6 +16,14 @@ class ScalarWrapper extends Component {
   state = {
     loading: false,
     error: ""
+  };
+
+  componentWillMount = () => {
+    MyCustomEvent.on("REFRESH_REPORT", this.reload);
+  };
+
+  componentWillUnmount = () => {
+    MyCustomEvent.removeEventListener("REFRESH_REPORT", this.reload);
   };
 
   componentDidMount = async () => {
@@ -49,7 +58,7 @@ class ScalarWrapper extends Component {
     return false;
   };
 
-  loadData = async () => {
+  loadData = async (useCache = false) => {
     const { editEnabled, instanceId, filters } = this.props;
 
     if (editEnabled) {
@@ -63,7 +72,8 @@ class ScalarWrapper extends Component {
       this.data = await ReportContainer.reportData(
         instanceId,
         filters || [],
-        []
+        [],
+        useCache
       );
       this.data = processData(this.data);
       this.setState({ loading: false, error: "" });
@@ -75,6 +85,14 @@ class ScalarWrapper extends Component {
   handleRetry = async () => {
     this.setState({ loading: true });
     await this.loadData();
+  };
+
+  reload = async clickedId => {
+    const { instanceId } = this.props;
+    if (instanceId === clickedId) {
+      this.setState({ loading: true });
+      await this.loadData(true);
+    }
   };
 
   render = () => {

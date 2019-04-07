@@ -3,6 +3,7 @@ import Table from "../../../components/Table/Table";
 import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
 import * as mockData from "../../../mockdata";
+import MyCustomEvent from "../../../util/customEvent";
 
 class TableWrapper extends Component {
   data = {
@@ -17,6 +18,14 @@ class TableWrapper extends Component {
     pageSize: 10,
     loading: false,
     error: ""
+  };
+
+  componentWillMount = () => {
+    MyCustomEvent.on("REFRESH_REPORT", this.reload);
+  };
+
+  componentWillUnmount = () => {
+    MyCustomEvent.removeEventListener("REFRESH_REPORT", this.reload);
   };
 
   componentDidMount = async () => {
@@ -57,7 +66,7 @@ class TableWrapper extends Component {
     return false;
   };
 
-  loadData = async () => {
+  loadData = async (useCache = false) => {
     const { pageSize, page } = this.state;
     const { editEnabled, instanceId, filters } = this.props;
 
@@ -74,6 +83,7 @@ class TableWrapper extends Component {
         instanceId,
         filters || [],
         [],
+        useCache,
         page,
         pageSize
       );
@@ -116,6 +126,14 @@ class TableWrapper extends Component {
   handleRetry = async () => {
     this.setState({ loading: true });
     await this.loadData();
+  };
+
+  reload = async clickedId => {
+    const { instanceId } = this.props;
+    if (instanceId === clickedId) {
+      this.setState({ loading: true });
+      await this.loadData(true);
+    }
   };
 
   render = () => {
