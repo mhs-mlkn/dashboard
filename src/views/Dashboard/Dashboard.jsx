@@ -5,6 +5,7 @@ import ReactGridLayout from "react-grid-layout";
 import Error from "../../components/Error/Error";
 import LayoutContainer from "../../containers/Layout.container";
 import ReportCard from "./ReportCard/ReportCard";
+import MyCustomEvent from "../../util/customEvent";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -13,6 +14,14 @@ class Dashboard extends Component {
   state = {
     index: 0,
     error: ""
+  };
+
+  componentWillMount = () => {
+    MyCustomEvent.on("SHARE_DASHBOARD", this.share);
+  };
+
+  componentWillUnmount = () => {
+    MyCustomEvent.removeEventListener("SHARE_DASHBOARD", this.share);
   };
 
   componentDidMount = () => {
@@ -34,6 +43,12 @@ class Dashboard extends Component {
       return this.props.history.replace(`/user/dashboard/0`);
     }
     this.setState({ index });
+  };
+
+  share = () => {
+    const { index } = this.props.match.params;
+    const dashboard = LayoutContainer.getDashboard(index);
+    alert(`SHARE ${index} ${dashboard.id}`);
   };
 
   render = () => {
