@@ -17,6 +17,16 @@ export class ReportContainer extends Container {
     return data;
   };
 
+  get = async reportId => {
+    let item = this.state.reports.find(r => r.id === +reportId);
+    if (!item) {
+      item = await Api.get(reportId);
+      const reports = [...this.state.reports, item];
+      await this.setState({ reports });
+    }
+    return item;
+  };
+
   getUserReports = async () => {
     const userReports = await Api.getUserReports();
     await this.setState({ userReports });
@@ -30,19 +40,15 @@ export class ReportContainer extends Container {
       const userReports = [...this.state.userReports, item];
       await this.setState({ userReports });
     }
-    return item.report;
-  };
-
-  get = async reportId => {
-    let item = this.state.reports.find(r => r.id === +reportId);
-    if (!item) {
-      item = await Api.get(reportId);
-    }
     return item;
   };
 
-  getReportInstance = async (reportId, params) => {
-    return Api.getReportInstance(reportId, params);
+  getReportInstance = async (reportId, params, dashboardId) => {
+    return Api.getReportInstance(reportId, params, dashboardId);
+  };
+
+  getDrilldownInstance = async (reportId, instanceId, params) => {
+    return Api.getDrilldownInstance(reportId, instanceId, params);
   };
 
   removeInstance = async instanceId => {
@@ -56,6 +62,9 @@ export class ReportContainer extends Container {
   reportData = async (reportId, filters, params, useCache, page, size) => {
     return Api.reportData(reportId, filters, params, useCache, page, size);
   };
+
+  isDrillDown = instanceId =>
+    this.state.userReports.some(ur => ur.drillDownId === +instanceId);
 }
 
 const container = new ReportContainer();

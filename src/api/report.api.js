@@ -40,10 +40,17 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static getReportInstance = async (reportId, params) => {
+  static getReportInstance = async (reportId, params, dashboardId) => {
     await Auth.refreshToken();
     return axios
-      .post(`${reportUrl}/${reportId}/param`, params)
+      .post(`${reportUrl}/${reportId}/param?dashboardId=${dashboardId}`, params)
+      .then(res => res.data.result);
+  };
+
+  static getDrilldownInstance = async (reportId, instanceId, params) => {
+    await Auth.refreshToken();
+    return axios
+      .post(`${reportUrl}/${reportId}/userreport/${instanceId}/param`, params)
       .then(res => res.data.result);
   };
 

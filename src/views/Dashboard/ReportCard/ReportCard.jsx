@@ -39,16 +39,20 @@ class ReportCard extends Component {
   state = {
     expanded: false,
     filters: "",
-    report: undefined,
+    userReport: undefined,
     loading: false,
     error: ""
   };
 
   componentDidMount = async () => {
-    this.setState({ loading: true });
     const { i: instanceId } = this.props.layout;
-    const report = await ReportContainer.getUserReport(instanceId);
-    this.setState({ loading: false, report });
+    await this.initial(instanceId);
+  };
+
+  initial = async instanceId => {
+    this.setState({ loading: true });
+    const userReport = await ReportContainer.getUserReport(instanceId);
+    this.setState({ loading: false, userReport });
   };
 
   actionHandler = action => {
@@ -57,6 +61,8 @@ class ReportCard extends Component {
         return this.toggleFilters();
       case "REFRESH":
         return this.refreshReport();
+      case "BACK":
+        return this.initial(+this.props.layout.i);
       case "SHARE":
         return this.shareReport();
       default:
@@ -69,7 +75,7 @@ class ReportCard extends Component {
   };
 
   refreshReport = () => {
-    const { i: instanceId } = this.props.layout;
+    const { id: instanceId } = this.state.userReport;
     MyCustomEvent.emit("REFRESH_REPORT", instanceId);
   };
 
@@ -81,17 +87,22 @@ class ReportCard extends Component {
     this.setState({ expanded: false, filters });
   };
 
-  chartClickHandler = data => {
-    console.log(data);
+  chartClickHandler = async data => {
+    this.drillDownParamValue = data.name;
+    const { userReport } = this.state;
+    if (userReport.report.drillDownId > -1) {
+      await this.initial(userReport.drillDownId);
+    }
   };
 
   getReport = (reportType, layout) => {
     const height = layout.h * 19.5 - 72;
+    const { id: instanceId } = this.state.userReport;
     switch (reportType) {
       case "Table":
         return (
           <TableWrapper
-            instanceId={layout.i}
+            instanceId={instanceId}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height}
@@ -101,7 +112,7 @@ class ReportCard extends Component {
       case "Scalar":
         return (
           <ScalarWrapper
-            instanceId={layout.i}
+            instanceId={instanceId}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height * 10}
@@ -111,11 +122,12 @@ class ReportCard extends Component {
       default:
         return (
           <ChartWrapper
-            instanceId={layout.i}
+            instanceId={instanceId}
             type={reportType}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height}
+            drillDownParamValue={this.drillDownParamValue}
             onClick={this.chartClickHandler}
           />
         );
@@ -123,9 +135,9 @@ class ReportCard extends Component {
   };
 
   render = () => {
-    const { expanded, filters, report, loading, error } = this.state;
+    const { expanded, filters, userReport, loading, error } = this.state;
 
-    if (!report) {
+    if (!userReport) {
       return null;
     }
 
@@ -144,26 +156,26 @@ class ReportCard extends Component {
         <CardHeader
           action={
             <ReportCardActions
-              instanceId={layout.i}
+              instanceId={userReport.id}
               editEnabled={editEnabled}
-              hasFilters={report.query.queryFilters.length > 0}
+              hasFilters={userReport.report.query.queryFilters.length > 0}
               actionHandler={this.actionHandler}
             />
           }
-          title={report.name}
+          title={userReport.report.name}
           classes={{ root: classes.headerRoot, title: classes.title }}
         />
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <CardContent>
             <Filters
-              report={report}
+              report={userReport.report}
               values={filters}
               onSubmit={this.changeFilters}
             />
           </CardContent>
         </Collapse>
         <CardContent className={classes.content} id={`report-${layout.i}`}>
-          {this.getReport(report.type, layout)}
+          {this.getReport(userReport.report.type, layout)}
         </CardContent>
       </Card>
     );
