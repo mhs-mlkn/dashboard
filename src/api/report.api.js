@@ -84,12 +84,12 @@ export default class ReportApi {
     id,
     filterVOS = [],
     parentParams = [],
-    useCache,
+    loadFromCache = true,
     page,
     size
   ) => {
     await Auth.refreshToken();
-    const params = { useCache, page, size };
+    const params = { loadFromCache, page, size };
     return axios
       .post(
         `${baseUrl}/userreport/${id}/exec`,
