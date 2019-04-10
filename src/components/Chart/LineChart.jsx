@@ -59,7 +59,13 @@ const Chart = props => {
           opacity={opacity[key]}
         />
       ))}
-      <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+      <CartesianGrid
+        stroke="transparent"
+        strokeDasharray="3 3"
+        vertical={false}
+        horizontalFill={["#555555", "#444444"]}
+        fillOpacity={0.2}
+      />
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip wrapperStyle={{ left: "0" }} />
