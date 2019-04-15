@@ -52,7 +52,6 @@ class Dashboard extends Component {
           const { layout = [] } = dashboard.config;
           return (
             <>
-              <ShareDashboard />
               <ReactGridLayout
                 width={width}
                 className="layout"
@@ -70,6 +69,7 @@ class Dashboard extends Component {
                   );
                 })}
               </ReactGridLayout>
+              <ShareDashboard />
             </>
           );
         }}
