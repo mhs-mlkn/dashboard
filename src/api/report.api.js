@@ -40,10 +40,17 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static getReportInstance = async (reportId, params) => {
+  static getReportInstance = async (reportId, params, dashboardId) => {
     await Auth.refreshToken();
     return axios
-      .post(`${reportUrl}/${reportId}/param`, params)
+      .post(`${reportUrl}/${reportId}/param?dashboardId=${dashboardId}`, params)
+      .then(res => res.data.result);
+  };
+
+  static getDrilldownInstance = async (reportId, instanceId, params) => {
+    await Auth.refreshToken();
+    return axios
+      .post(`${reportUrl}/${reportId}/userreport/${instanceId}/param`, params)
       .then(res => res.data.result);
   };
 
@@ -56,7 +63,7 @@ export default class ReportApi {
     await Auth.refreshToken();
     return axios
       .post(`${baseUrl}/dashboard`, { config: "[]", order })
-      .then(res => res.data.result.data);
+      .then(res => res.data.result);
   };
 
   static saveLayout = async (dashboardId, layout) => {
@@ -77,12 +84,12 @@ export default class ReportApi {
     id,
     filterVOS = [],
     parentParams = [],
-    useCache,
+    loadFromCache = true,
     page,
     size
   ) => {
     await Auth.refreshToken();
-    const params = { useCache, page, size };
+    const params = { loadFromCache, page, size };
     return axios
       .post(
         `${baseUrl}/userreport/${id}/exec`,

@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Refresh from "@material-ui/icons/Refresh";
 import FilterList from "@material-ui/icons/FilterList";
 import Save from "@material-ui/icons/Save";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
 import ReportContainer from "../../../containers/Report.container";
@@ -64,6 +65,10 @@ const ReportCardActions = props => {
       });
   };
 
+  const backActionHandler = () => {
+    actionHandler("BACK");
+  };
+
   return (
     <>
       {editEnabled && (
@@ -106,6 +111,11 @@ const ReportCardActions = props => {
       {!editEnabled && hasFilters && (
         <IconButton onClick={filterActionHandler}>
           <FilterList color="primary" fontSize="small" />
+        </IconButton>
+      )}
+      {!editEnabled && ReportContainer.isDrillDown(instanceId) && (
+        <IconButton onClick={backActionHandler} title="بازگشت">
+          <ArrowUpward color="primary" fontSize="small" />
         </IconButton>
       )}
     </>

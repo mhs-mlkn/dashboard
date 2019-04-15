@@ -65,10 +65,16 @@ const Chart = props => {
           onClick={onClickHandler}
         />
       ))}
-      <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+      <CartesianGrid
+        stroke="transparent"
+        strokeDasharray="3 3"
+        vertical={false}
+        horizontalFill={["#555555", "#444444"]}
+        fillOpacity={0.2}
+      />
       <XAxis dataKey="name" />
       <YAxis />
-      <Tooltip wrapperStyle={{ left: "0" }} />
+      <Tooltip wrapperStyle={{ left: "0" }} cursor={{ fill: "#FFF1" }} />
       <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
     </BarChart>
   );

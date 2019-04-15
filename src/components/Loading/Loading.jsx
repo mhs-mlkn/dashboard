@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <Grid
       container
-      spacing={16}
+      spacing={0}
       justify="center"
       alignItems="center"
       style={{ height: "100%" }}

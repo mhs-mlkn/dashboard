@@ -3,9 +3,9 @@ import { Subscribe } from "unstated";
 import { withSize } from "react-sizeme";
 import ReactGridLayout from "react-grid-layout";
 import Error from "../../components/Error/Error";
-import LayoutContainer from "../../containers/Layout.container";
 import ReportCard from "./ReportCard/ReportCard";
-import MyCustomEvent from "../../util/customEvent";
+import ShareDashboard from "./ShareDashboard/ShareDashboard";
+import LayoutContainer from "../../containers/Layout.container";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -14,14 +14,6 @@ class Dashboard extends Component {
   state = {
     index: 0,
     error: ""
-  };
-
-  componentWillMount = () => {
-    MyCustomEvent.on("SHARE_DASHBOARD", this.share);
-  };
-
-  componentWillUnmount = () => {
-    MyCustomEvent.removeEventListener("SHARE_DASHBOARD", this.share);
   };
 
   componentDidMount = () => {
@@ -45,12 +37,6 @@ class Dashboard extends Component {
     this.setState({ index });
   };
 
-  share = () => {
-    const { index } = this.props.match.params;
-    const dashboard = LayoutContainer.getDashboard(index);
-    alert(`SHARE ${index} ${dashboard.id}`);
-  };
-
   render = () => {
     const { width } = this.props.size;
     const { index, error } = this.state;
@@ -65,23 +51,26 @@ class Dashboard extends Component {
           const dashboard = Layout.getDashboard(index);
           const { layout = [] } = dashboard.config;
           return (
-            <ReactGridLayout
-              width={width}
-              className="layout"
-              cols={24}
-              rowHeight={10}
-              layout={layout}
-              style={{ direction: "ltr" }}
-            >
-              {layout.map(l => {
-                l.static = true;
-                return (
-                  <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
-                    <ReportCard layout={l} editEnabled={false} />
-                  </div>
-                );
-              })}
-            </ReactGridLayout>
+            <>
+              <ShareDashboard />
+              <ReactGridLayout
+                width={width}
+                className="layout"
+                cols={24}
+                rowHeight={10}
+                layout={layout}
+                style={{ direction: "ltr" }}
+              >
+                {layout.map(l => {
+                  l.static = true;
+                  return (
+                    <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
+                      <ReportCard layout={l} editEnabled={false} />
+                    </div>
+                  );
+                })}
+              </ReactGridLayout>
+            </>
           );
         }}
       </Subscribe>

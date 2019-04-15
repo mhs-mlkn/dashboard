@@ -70,7 +70,7 @@ class ChartWrapper extends Component {
     return false;
   };
 
-  loadData = async (useCache = false) => {
+  loadData = async (useCache = true) => {
     const { editEnabled, instanceId, filters } = this.props;
 
     if (editEnabled) {
@@ -84,7 +84,7 @@ class ChartWrapper extends Component {
       this.data = await ReportContainer.reportData(
         instanceId,
         filters || [],
-        [],
+        ReportContainer.isDrillDown(instanceId) ? this.getReportParams() : [],
         useCache
       );
       this.data = processData(this.data);
@@ -92,6 +92,18 @@ class ChartWrapper extends Component {
     } catch (error) {
       this.setState({ loading: false, error: "خطای بارگذاری اطلاعات" });
     }
+  };
+
+  getReportParams = () => {
+    const { instanceId, drillDownParamValue } = this.props;
+    const userReport = ReportContainer.state.userReports.find(
+      ur => ur.id === +instanceId
+    );
+    const param = userReport.report.query.queryParams.find(
+      p => p.fill === "BY_BUSINESS_OR_PARENT"
+    );
+    param.value = drillDownParamValue;
+    return [param];
   };
 
   handleRetry = async (useCache = false) => {
@@ -103,7 +115,7 @@ class ChartWrapper extends Component {
     const { instanceId } = this.props;
     if (instanceId === clickedId) {
       this.setState({ loading: true });
-      await this.loadData(true);
+      await this.loadData(false);
     }
   };
 
