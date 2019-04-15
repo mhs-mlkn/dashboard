@@ -51,7 +51,8 @@ export class LayoutContainer extends Container {
     const dashboard = this.getDashboard(index);
     let { layout = [] } = dashboard.config;
     layout = layout.filter(l => +l.i !== +instanceId);
-    return this.onLayoutChange(index, layout);
+    await this.onLayoutChange(index, layout);
+    return this.saveLayout(index);
   };
 
   onLayoutChange = async (index, layout) => {

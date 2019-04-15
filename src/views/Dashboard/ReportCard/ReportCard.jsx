@@ -50,6 +50,10 @@ class ReportCard extends Component {
     await this.initial(instanceId);
   };
 
+  componentWillUnmount = () => {
+    return clearInterval(this.refreshInterval);
+  };
+
   initial = async instanceId => {
     this.setState({ loading: true });
     const userReport = await ReportContainer.getUserReport(instanceId);
@@ -72,7 +76,9 @@ class ReportCard extends Component {
 
   setRefreshInterval = () => {
     const { refreshInterval } = this.state;
-    if (refreshInterval > 0) {
+    const { editEnabled } = this.props;
+
+    if (!editEnabled && refreshInterval > 0) {
       const { id: instanceId } = this.state.userReport;
       this.refreshInterval = setInterval(
         () =>

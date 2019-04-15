@@ -14,6 +14,7 @@ import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
 import PlayArrow from "@material-ui/icons/PlayArrow";
 import Pause from "@material-ui/icons/Pause";
+import AlertDialog from "../../../components/Dialog/AlertDialog";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 
@@ -34,6 +35,7 @@ const ReportCardActions = props => {
   const config = extractReportConfig(userReport.report);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(true);
 
   const handleMenuClick = event => {
@@ -60,11 +62,16 @@ const ReportCardActions = props => {
     actionHandler("FILTER");
   };
 
+  const toggleConfirm = () => setOpen(!open);
+
   const deleteReport = async () => {
     const { index } = props.match.params;
     try {
       await ReportContainer.removeInstance(instanceId);
       await LayoutContainer.removeFromLayout(index, instanceId);
+      props.enqueueSnackbar("با موفقیت حذف شد", {
+        variant: "success"
+      });
     } catch (error) {
       props.enqueueSnackbar("درخواست با خطا مواجه شد", {
         variant: "error"
@@ -95,9 +102,15 @@ const ReportCardActions = props => {
 
   return (
     <>
+      <AlertDialog
+        title="آیا اطمینان دارید؟"
+        handleConfirm={deleteReport}
+        handleClose={toggleConfirm}
+        open={open}
+      />
       {editEnabled && (
         <div>
-          <IconButton title="حذف" onClick={deleteReport}>
+          <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>
           <IconButton title="تنظیم" onClick={configReport}>
