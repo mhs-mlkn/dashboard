@@ -40,6 +40,7 @@ class ReportCard extends Component {
     expanded: false,
     filters: "",
     userReport: undefined,
+    refreshInterval: 0,
     loading: false,
     error: ""
   };
@@ -52,10 +53,36 @@ class ReportCard extends Component {
   initial = async instanceId => {
     this.setState({ loading: true });
     const userReport = await ReportContainer.getUserReport(instanceId);
-    this.setState({ loading: false, userReport });
+    const { refreshInterval } = this.extractReportConfig(userReport.report);
+    this.setState({
+      userReport,
+      refreshInterval,
+      loading: false
+    });
   };
 
-  actionHandler = action => {
+  extractReportConfig = report => {
+    try {
+      const config = JSON.parse(report.config || '{"refreshInterval":0}');
+      return config;
+    } catch (error) {
+      return { refreshInterval: 0 };
+    }
+  };
+
+  setRefreshInterval = () => {
+    const { refreshInterval } = this.state;
+    if (refreshInterval > 0) {
+      const { id: instanceId } = this.state.userReport;
+      this.refreshInterval = setInterval(
+        () =>
+          MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: true }),
+        refreshInterval * 1000
+      );
+    }
+  };
+
+  actionHandler = (action, data) => {
     switch (action) {
       case "FILTER":
         return this.toggleFilters();
@@ -65,6 +92,8 @@ class ReportCard extends Component {
         return this.initial(+this.props.layout.i);
       case "SHARE":
         return this.shareReport();
+      case "TOGGLE_INTERVAL":
+        return this.toggleInterval(data);
       default:
         break;
     }
@@ -76,7 +105,14 @@ class ReportCard extends Component {
 
   refreshReport = () => {
     const { id: instanceId } = this.state.userReport;
-    MyCustomEvent.emit("REFRESH_REPORT", instanceId);
+    MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: false });
+  };
+
+  toggleInterval = isRunning => {
+    if (!isRunning) {
+      return clearInterval(this.refreshInterval);
+    }
+    this.setRefreshInterval();
   };
 
   shareReport = () => {
@@ -156,9 +192,8 @@ class ReportCard extends Component {
         <CardHeader
           action={
             <ReportCardActions
-              instanceId={userReport.id}
+              userReport={userReport}
               editEnabled={editEnabled}
-              hasFilters={userReport.report.query.queryFilters.length > 0}
               actionHandler={this.actionHandler}
             />
           }
