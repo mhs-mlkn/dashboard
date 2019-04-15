@@ -111,11 +111,11 @@ class ChartWrapper extends Component {
     await this.loadData();
   };
 
-  reload = async clickedId => {
+  reload = async data => {
     const { instanceId } = this.props;
-    if (instanceId === clickedId) {
+    if (instanceId === data.instanceId) {
       this.setState({ loading: true });
-      await this.loadData(false);
+      await this.loadData(data.useCache);
     }
   };
 

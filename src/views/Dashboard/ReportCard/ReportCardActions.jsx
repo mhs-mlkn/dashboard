@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withSnackbar } from "notistack";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
@@ -12,13 +12,29 @@ import Save from "@material-ui/icons/Save";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
+import PlayArrow from "@material-ui/icons/PlayArrow";
+import Pause from "@material-ui/icons/Pause";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 
+const extractReportConfig = report => {
+  try {
+    const config = JSON.parse(report.config || '{"refreshInterval":0}');
+    return config;
+  } catch (error) {
+    return { refreshInterval: 0 };
+  }
+};
+
 const ReportCardActions = props => {
-  const { instanceId, editEnabled, hasFilters, actionHandler } = props;
+  const { editEnabled, userReport, actionHandler } = props;
+
+  const instanceId = userReport.id;
+  const hasFilters = userReport.report.query.queryFilters.length > 0;
+  const config = extractReportConfig(userReport.report);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isRunning, setIsRunning] = useState(true);
 
   const handleMenuClick = event => {
     setAnchorEl(event.currentTarget);
@@ -34,6 +50,10 @@ const ReportCardActions = props => {
 
   const refreshActionHandler = () => {
     actionHandler("REFRESH");
+  };
+
+  const toggleIntervalHandler = () => {
+    setIsRunning(!isRunning);
   };
 
   const filterActionHandler = () => {
@@ -69,6 +89,10 @@ const ReportCardActions = props => {
     actionHandler("BACK");
   };
 
+  useEffect(() => {
+    actionHandler("TOGGLE_INTERVAL", isRunning);
+  }, [isRunning]);
+
   return (
     <>
       {editEnabled && (
@@ -80,6 +104,15 @@ const ReportCardActions = props => {
             <Settings color="primary" fontSize="small" />
           </IconButton>
         </div>
+      )}
+      {!editEnabled && config.refreshInterval > 0 && (
+        <IconButton color="primary" onClick={toggleIntervalHandler}>
+          {isRunning > 0 ? (
+            <Pause fontSize="small" title="توقف بارگذاری خودکار" />
+          ) : (
+            <PlayArrow fontSize="small" title="شروع بارگذاری خودکار" />
+          )}
+        </IconButton>
       )}
       {!editEnabled && (
         <IconButton
