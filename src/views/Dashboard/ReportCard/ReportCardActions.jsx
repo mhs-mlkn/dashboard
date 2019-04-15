@@ -106,11 +106,15 @@ const ReportCardActions = props => {
         </div>
       )}
       {!editEnabled && config.refreshInterval > 0 && (
-        <IconButton color="primary" onClick={toggleIntervalHandler}>
-          {isRunning > 0 ? (
-            <Pause fontSize="small" title="توقف بارگذاری خودکار" />
+        <IconButton
+          color="primary"
+          onClick={toggleIntervalHandler}
+          title={isRunning ? "توقف بارگذاری خودکار" : "شروع بارگذاری خودکار"}
+        >
+          {isRunning ? (
+            <Pause fontSize="small" />
           ) : (
-            <PlayArrow fontSize="small" title="شروع بارگذاری خودکار" />
+            <PlayArrow fontSize="small" />
           )}
         </IconButton>
       )}

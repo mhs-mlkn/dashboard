@@ -66,7 +66,7 @@ class TableWrapper extends Component {
     return false;
   };
 
-  loadData = async (useCache = false) => {
+  loadData = async (useCache = true) => {
     const { pageSize, page } = this.state;
     const { editEnabled, instanceId, filters } = this.props;
 
@@ -128,11 +128,11 @@ class TableWrapper extends Component {
     await this.loadData();
   };
 
-  reload = async clickedId => {
+  reload = async data => {
     const { instanceId } = this.props;
-    if (instanceId === clickedId) {
+    if (instanceId === data.instanceId) {
       this.setState({ loading: true });
-      await this.loadData(true);
+      await this.loadData(data.useCache);
     }
   };
 
