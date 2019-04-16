@@ -58,12 +58,13 @@ class Dashboard extends Component {
                 cols={24}
                 rowHeight={10}
                 layout={layout}
+                isDraggable={false}
+                isResizable={false}
                 style={{ direction: "ltr" }}
               >
                 {layout.map(l => {
-                  l.static = true;
                   return (
-                    <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
+                    <div key={l.i} style={{ direction: "rtl" }}>
                       <ReportCard layout={l} editEnabled={false} />
                     </div>
                   );

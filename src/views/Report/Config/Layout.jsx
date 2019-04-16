@@ -94,7 +94,7 @@ class DashboardLayout extends Component {
                 {layout.map(l => {
                   l.static = false;
                   return (
-                    <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
+                    <div key={l.i} style={{ direction: "rtl" }}>
                       <ReportCard layout={l} editEnabled={true} />
                     </div>
                   );
