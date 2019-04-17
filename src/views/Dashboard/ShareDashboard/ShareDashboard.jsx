@@ -65,11 +65,14 @@ const ShareDashboard = props => {
 
   useEffect(() => {
     MyCustomEvent.on("SHARE_DASHBOARD", handleToggleOpen);
-    fetchUsers();
 
     return function cleanup() {
       MyCustomEvent.removeEventListener("SHARE_DASHBOARD", handleToggleOpen);
     };
+  }, [props.match.params.index]);
+
+  useEffect(() => {
+    fetchUsers();
   }, [props.match.params.index]);
 
   const handleToggleOpen = () => setOpen(!open);
