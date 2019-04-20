@@ -42,7 +42,7 @@ class Main extends Component {
   }
 
   reset = () => {
-    this.setState({ error: "" });
+    window.location.reload();
   };
 
   render = () => {

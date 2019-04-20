@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withSnackbar } from "notistack";
 import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
@@ -12,13 +12,31 @@ import Save from "@material-ui/icons/Save";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
+import PlayArrow from "@material-ui/icons/PlayArrow";
+import Pause from "@material-ui/icons/Pause";
+import AlertDialog from "../../../components/Dialog/AlertDialog";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 
+const extractReportConfig = report => {
+  try {
+    const config = JSON.parse(report.config || '{"refreshInterval":0}');
+    return config;
+  } catch (error) {
+    return { refreshInterval: 0 };
+  }
+};
+
 const ReportCardActions = props => {
-  const { instanceId, editEnabled, hasFilters, actionHandler } = props;
+  const { editEnabled, userReport, actionHandler } = props;
+
+  const instanceId = userReport.id;
+  const hasFilters = userReport.report.query.queryFilters.length > 0;
+  const config = extractReportConfig(userReport.report);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [isRunning, setIsRunning] = useState(true);
 
   const handleMenuClick = event => {
     setAnchorEl(event.currentTarget);
@@ -36,15 +54,24 @@ const ReportCardActions = props => {
     actionHandler("REFRESH");
   };
 
+  const toggleIntervalHandler = () => {
+    setIsRunning(!isRunning);
+  };
+
   const filterActionHandler = () => {
     actionHandler("FILTER");
   };
+
+  const toggleConfirm = () => setOpen(!open);
 
   const deleteReport = async () => {
     const { index } = props.match.params;
     try {
       await ReportContainer.removeInstance(instanceId);
       await LayoutContainer.removeFromLayout(index, instanceId);
+      props.enqueueSnackbar("با موفقیت حذف شد", {
+        variant: "success"
+      });
     } catch (error) {
       props.enqueueSnackbar("درخواست با خطا مواجه شد", {
         variant: "error"
@@ -69,17 +96,40 @@ const ReportCardActions = props => {
     actionHandler("BACK");
   };
 
+  useEffect(() => {
+    actionHandler("TOGGLE_INTERVAL", isRunning);
+  }, [isRunning]);
+
   return (
     <>
+      <AlertDialog
+        title="آیا اطمینان دارید؟"
+        handleConfirm={deleteReport}
+        handleClose={toggleConfirm}
+        open={open}
+      />
       {editEnabled && (
         <div>
-          <IconButton title="حذف" onClick={deleteReport}>
+          <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>
           <IconButton title="تنظیم" onClick={configReport}>
             <Settings color="primary" fontSize="small" />
           </IconButton>
         </div>
+      )}
+      {!editEnabled && config.refreshInterval > 0 && (
+        <IconButton
+          color="primary"
+          onClick={toggleIntervalHandler}
+          title={isRunning ? "توقف بارگذاری خودکار" : "شروع بارگذاری خودکار"}
+        >
+          {isRunning ? (
+            <Pause fontSize="small" />
+          ) : (
+            <PlayArrow fontSize="small" />
+          )}
+        </IconButton>
       )}
       {!editEnabled && (
         <IconButton

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Prompt } from "react-router";
 import { Subscribe } from "unstated";
 import { withSnackbar } from "notistack";
 import { withSize } from "react-sizeme";
@@ -15,6 +16,7 @@ import "react-resizable/css/styles.css";
 class DashboardLayout extends Component {
   state = {
     index: 0,
+    hasChanged: false,
     error: ""
   };
 
@@ -40,14 +42,20 @@ class DashboardLayout extends Component {
   };
 
   onLayoutChange = async layout => {
-    const { index } = this.state;
+    const { index, hasChanged } = this.state;
     await LayoutContainer.onLayoutChange(index, layout);
+    if (!hasChanged) {
+      this.setState({ hasChanged: true });
+    }
   };
 
   save = async () => {
     try {
-      const { index } = this.state;
+      const { index, hasChanged } = this.state;
       await LayoutContainer.saveLayout(index);
+      if (hasChanged) {
+        this.setState({ hasChanged: false });
+      }
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
       this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
@@ -56,7 +64,7 @@ class DashboardLayout extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { index, error } = this.state;
+    const { index, hasChanged, error } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -69,6 +77,10 @@ class DashboardLayout extends Component {
           const { layout = [] } = dashboard.config;
           return (
             <>
+              <Prompt
+                when={hasChanged}
+                message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
+              />
               <ReactGridLayout
                 width={width}
                 className="layout"
@@ -82,7 +94,7 @@ class DashboardLayout extends Component {
                 {layout.map(l => {
                   l.static = false;
                   return (
-                    <div key={l.i} data-grid={l} style={{ direction: "rtl" }}>
+                    <div key={l.i} style={{ direction: "rtl" }}>
                       <ReportCard layout={l} editEnabled={true} />
                     </div>
                   );
