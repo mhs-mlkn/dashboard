@@ -9,7 +9,9 @@ export class LayoutContainer extends Container {
   fetchDashboards = async () => {
     let dashboards = await Api.fetchDashboards();
     dashboards = dashboards.map(dashboard => {
-      dashboard.config = JSON.parse(dashboard.config || '{"layout": []}');
+      dashboard.config = JSON.parse(
+        dashboard.config || '{"layout": [], "settings": {}}'
+      );
       return dashboard;
     });
     return this.setState({ dashboards });
@@ -20,7 +22,7 @@ export class LayoutContainer extends Container {
     const id = await Api.addDashboard(order);
     const dashboards = [
       ...this.state.dashboards,
-      { id, config: { layout: [] } }
+      { id, config: { layout: [], settings: {} } }
     ];
     return this.setState({ dashboards });
   };
@@ -42,7 +44,7 @@ export class LayoutContainer extends Container {
         h: 12
       };
       layout.push(newItem);
-      await this.saveLayout(index);
+      await this.saveDashboard(index);
     }
     return Promise.resolve(instanceId);
   };
@@ -51,8 +53,9 @@ export class LayoutContainer extends Container {
     const dashboard = this.getDashboard(index);
     let { layout = [] } = dashboard.config;
     layout = layout.filter(l => +l.i !== +instanceId);
+    Reflect.deleteProperty(dashboard.config.settings, instanceId);
     await this.onLayoutChange(index, layout);
-    return this.saveLayout(index);
+    return this.saveDashboard(index);
   };
 
   onLayoutChange = async (index, layout) => {
@@ -64,10 +67,22 @@ export class LayoutContainer extends Container {
     return this.setState({ dashboards });
   };
 
-  saveLayout = async index => {
+  onSettingsChange = async (index, instanceId, reportSettings) => {
     const dashboard = this.getDashboard(index);
-    const { layout } = dashboard.config;
-    return Api.saveLayout(dashboard.id, JSON.stringify({ layout }));
+    dashboard.config = {
+      ...dashboard.config,
+      settings: { ...dashboard.config.settings, [instanceId]: reportSettings }
+    };
+    const dashboards = this.state.dashboards.map((d, i) =>
+      i === +index ? dashboard : d
+    );
+    return this.setState({ dashboards });
+  };
+
+  saveDashboard = async index => {
+    const dashboard = this.getDashboard(index);
+    const { layout, settings } = dashboard.config;
+    return Api.saveLayout(dashboard.id, JSON.stringify({ layout, settings }));
   };
 }
 

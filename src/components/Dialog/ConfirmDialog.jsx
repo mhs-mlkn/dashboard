@@ -11,7 +11,7 @@ const Transition = props => {
   return <Slide direction="up" {...props} />;
 };
 
-const AlertDialog = props => {
+const ConfirmDialog = props => {
   const { open, title = "", text = "", handleConfirm, handleClose } = props;
 
   const confirm = () => {
@@ -43,4 +43,4 @@ const AlertDialog = props => {
   );
 };
 
-export default AlertDialog;
+export default ConfirmDialog;

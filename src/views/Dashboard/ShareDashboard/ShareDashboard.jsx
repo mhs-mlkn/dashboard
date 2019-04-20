@@ -69,7 +69,7 @@ const ShareDashboard = props => {
     return function cleanup() {
       MyCustomEvent.removeEventListener("SHARE_DASHBOARD", handleToggleOpen);
     };
-  }, [props.match.params.index]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();

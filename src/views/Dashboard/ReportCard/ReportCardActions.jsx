@@ -14,7 +14,7 @@ import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
 import PlayArrow from "@material-ui/icons/PlayArrow";
 import Pause from "@material-ui/icons/Pause";
-import AlertDialog from "../../../components/Dialog/AlertDialog";
+import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 
@@ -62,7 +62,9 @@ const ReportCardActions = props => {
     actionHandler("FILTER");
   };
 
-  const toggleConfirm = () => setOpen(!open);
+  const toggleConfirm = () => {
+    setOpen(!open);
+  };
 
   const deleteReport = async () => {
     const { index } = props.match.params;
@@ -80,7 +82,7 @@ const ReportCardActions = props => {
   };
 
   const configReport = () => {
-    alert("NOT IMPLEMENTED");
+    actionHandler("CONFIG_REPORT");
   };
 
   const exportActionHandler = () => {
@@ -102,7 +104,7 @@ const ReportCardActions = props => {
 
   return (
     <>
-      <AlertDialog
+      <ConfirmDialog
         title="آیا اطمینان دارید؟"
         handleConfirm={deleteReport}
         handleClose={toggleConfirm}
