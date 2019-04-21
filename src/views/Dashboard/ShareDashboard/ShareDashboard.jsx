@@ -15,6 +15,7 @@ import Loading from "../../../components/Loading/Loading";
 import MyCustomEvent from "../../../util/customEvent";
 import LayoutContainer from "../../../containers/Layout.container";
 import ShareDashboardForm from "./ShareDashboardForm";
+import Api from "../../../api/report.api";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -62,6 +63,7 @@ const ShareDashboard = props => {
   const [open, setOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     MyCustomEvent.on("SHARE_DASHBOARD", handleToggleOpen);
@@ -69,32 +71,37 @@ const ShareDashboard = props => {
     return function cleanup() {
       MyCustomEvent.removeEventListener("SHARE_DASHBOARD", handleToggleOpen);
     };
-  }, [props.match.params.index]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, [props.match.params.index]);
+  }, [props.match.params.index, open]);
 
   const handleToggleOpen = () => setOpen(!open);
 
-  const fetchUsers = () => {
-    setLoading(true);
-    const { index } = props.match.params;
-    const dashboard = LayoutContainer.getDashboard(index);
-    setTimeout(() => {
-      const users = [
-        "09363261694",
-        "mhs.malekan@gmail.com",
-        "0946428611",
-        "m.malekan"
-      ];
+  const fetchUsers = async () => {
+    if (!open) return;
+
+    try {
+      setLoading(true);
+      const { index } = props.match.params;
+      const dashboard = LayoutContainer.getDashboard(index);
+      const users = await Api.getDashboardUsers(dashboard.id);
+      console.log(users);
       setUsers(users);
+    } catch (error) {
+      setError("دریافت لیست کاربران با خطا مواجه شد");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleDelete = user => () => {
     alert(`delete chip ${user}`);
+  };
+
+  const handleSubmit = ({ user, expire }) => {
+    console.log(user, expire.format("YYYY-MM-DD"));
   };
 
   return (
@@ -108,22 +115,28 @@ const ShareDashboard = props => {
     >
       <DialogTitle>اشتراک گذاری داشبورد</DialogTitle>
       <DialogContent>
-        {loading ? (
+        {error ? (
+          <Typography color="error" variant="h5" gutterBottom>
+            {error}
+          </Typography>
+        ) : loading ? (
           <Loading />
         ) : (
           <Grid container justify="center" alignItems="center">
             <Grid item xs={12} sm={12} lg={12}>
-              <ShareDashboardForm />
+              <ShareDashboardForm onSubmit={handleSubmit} />
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
-              {users.map(user => (
-                <Chip
-                  key={user}
-                  label={user}
-                  onDelete={handleDelete(user)}
-                  variant="outlined"
-                />
-              ))}
+              <div style={{ marginTop: "16px" }}>
+                {users.map(user => (
+                  <Chip
+                    key={user}
+                    label={user}
+                    onDelete={handleDelete(user)}
+                    variant="outlined"
+                  />
+                ))}
+              </div>
             </Grid>
           </Grid>
         )}

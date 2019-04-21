@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
-const Input = props => {
+const Select = props => {
   const { name, label, value = props.values[name] } = props;
   const touched = props.touched[name];
   const error = props.errors[name];
@@ -28,4 +28,4 @@ const Input = props => {
   );
 };
 
-export default Input;
+export default Select;

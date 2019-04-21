@@ -1,7 +1,7 @@
 import React from "react";
 import CustomTextarea from "../CustomInput/CustomTextarea";
 
-const Input = props => {
+const Textarea = props => {
   const {
     name,
     label,
@@ -44,4 +44,4 @@ const Input = props => {
   );
 };
 
-export default Input;
+export default Textarea;
