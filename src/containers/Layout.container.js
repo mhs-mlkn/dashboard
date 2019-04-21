@@ -31,6 +31,12 @@ export class LayoutContainer extends Container {
     return this.state.dashboards[index];
   };
 
+  getSettings = (dashboardId, instanceId) => {
+    const { config = {} } = this.state.dashboards[dashboardId];
+    const { settings = {} } = config;
+    return settings[instanceId] || {};
+  };
+
   addToLayout = async (index, instanceId) => {
     const dashboard = this.getDashboard(index);
     const { layout } = dashboard.config;
@@ -53,7 +59,7 @@ export class LayoutContainer extends Container {
     const dashboard = this.getDashboard(index);
     let { layout = [] } = dashboard.config;
     layout = layout.filter(l => +l.i !== +instanceId);
-    Reflect.deleteProperty(dashboard.config.settings, instanceId);
+    Reflect.deleteProperty(dashboard.config.settings || {}, instanceId);
     await this.onLayoutChange(index, layout);
     return this.saveDashboard(index);
   };
@@ -81,7 +87,7 @@ export class LayoutContainer extends Container {
 
   saveDashboard = async index => {
     const dashboard = this.getDashboard(index);
-    const { layout, settings } = dashboard.config;
+    const { layout = [], settings = {} } = dashboard.config;
     return Api.saveLayout(dashboard.id, JSON.stringify({ layout, settings }));
   };
 }

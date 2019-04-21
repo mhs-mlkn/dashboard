@@ -53,7 +53,7 @@ class DashboardLayout extends Component {
   save = async () => {
     try {
       const { index } = this.state;
-      await LayoutContainer.saveLayout(index);
+      await LayoutContainer.saveDashboard(index);
       this.setState({ hasChanged: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {

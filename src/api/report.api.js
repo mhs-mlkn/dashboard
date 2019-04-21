@@ -1,7 +1,5 @@
 import axios from "axios";
 import Auth from "../containers/Auth.container";
-import * as mockData from "../mockdata";
-// import { reports } from "../mockdata";
 
 const baseUrl = `${process.env.REACT_APP_BASE_URL}`;
 const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
@@ -9,12 +7,10 @@ const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
 export default class ReportApi {
   static getAll = async (page = 0, size = 12) => {
     await Auth.refreshToken();
-    // const params = { page, size };
-    // return axios
-    //   .get(`${reportUrl}/CollaboratorReports`, { params })
-    //   .then(res => res.data.result)
-    //   .catch(() => mockData.Reports);
-    return mockData.Reports;
+    const params = { page, size };
+    return axios
+      .get(`${reportUrl}/CollaboratorReports`, { params })
+      .then(res => res.data.result);
   };
 
   static get = async id => {
@@ -25,14 +21,8 @@ export default class ReportApi {
   };
 
   static getUserReports = async () => {
-    // await Auth.refreshToken();
-    // return axios
-    //   .get(`${baseUrl}/userreport`)
-    //   .then(res => res.data.result.data)
-    //   .catch(() =>
-    //     mockData.Reports.data.map(report => ({ id: report.id, report }))
-    //   );
-    return mockData.Reports.data.map(report => ({ id: report.id, report }));
+    await Auth.refreshToken();
+    return axios.get(`${baseUrl}/userreport`).then(res => res.data.result.data);
   };
 
   static getUserReport = async instanceId => {
@@ -65,11 +55,7 @@ export default class ReportApi {
 
   static fetchDashboards = async () => {
     await Auth.refreshToken();
-    // return axios
-    //   .get(`${baseUrl}/dashboard`)
-    //   .then(res => res.data.result.data)
-    //   .catch(() => mockData.Dashboards);
-    return mockData.Dashboards;
+    return axios.get(`${baseUrl}/dashboard`).then(res => res.data.result.data);
   };
 
   static addDashboard = async order => {

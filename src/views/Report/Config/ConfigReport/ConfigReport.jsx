@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Chart from "../../../../components/Chart/Chart";
 import BarCharConfigt from "./BarCharConfigt";
+import PieCharConfig from "./PieCharConfig";
 
 import { Charts as ChartData } from "../../../../mockdata";
 
@@ -13,8 +14,16 @@ const ConfigReport = props => {
   const getConfigComponent = reportType => {
     switch (reportType) {
       case "Bar":
+      case "Area":
+      case "Line":
         return (
           <BarCharConfigt config={config} onConfigChange={onConfigChange} />
+        );
+
+      case "Pie":
+      case "Radar":
+        return (
+          <PieCharConfig config={config} onConfigChange={onConfigChange} />
         );
 
       default:

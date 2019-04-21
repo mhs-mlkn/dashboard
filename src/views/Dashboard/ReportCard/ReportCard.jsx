@@ -117,7 +117,9 @@ class ReportCard extends Component {
   };
 
   configReport = () => {
-    MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
+    if (["Table", "Scalar"].indexOf(this.state.userReport.report.type) < 0) {
+      MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
+    }
   };
 
   toggleInterval = isRunning => {

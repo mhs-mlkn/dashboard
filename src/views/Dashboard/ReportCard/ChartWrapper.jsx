@@ -142,11 +142,7 @@ class ChartWrapper extends Component {
         type={type}
         height={height}
         onClick={this.chartClickHandler}
-        config={
-          LayoutContainer.state.dashboards[dashboardIndex].config.settings[
-            instanceId
-          ]
-        }
+        config={LayoutContainer.getSettings(dashboardIndex, instanceId)}
       />
     );
   };

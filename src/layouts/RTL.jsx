@@ -113,9 +113,9 @@ class RTL extends Component {
     axios.interceptors.response.use(
       response => response,
       error => {
-        // if ([401, 403].indexOf(error.response.status) > -1) {
-        //   this.props.history.push(loginRoute.path);
-        // }
+        if ([401, 403].indexOf(error.response.status) > -1) {
+          this.props.history.push(loginRoute.path);
+        }
         return Promise.reject(error);
       }
     );

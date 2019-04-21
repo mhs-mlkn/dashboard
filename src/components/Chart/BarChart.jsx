@@ -94,7 +94,11 @@ const Chart = props => {
         <YAxis />
       )}
       <Tooltip wrapperStyle={{ left: "0" }} cursor={{ fill: "#FFF1" }} />
-      <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <Legend
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...config.legend}
+      />
     </BarChart>
   );
 };

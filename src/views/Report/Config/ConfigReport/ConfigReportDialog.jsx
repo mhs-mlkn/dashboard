@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MyCustomEvent from "../../../../util/customEvent";
 import Dialog from "../../../../components/Dialog/Dialog";
 import ConfigReport from "./ConfigReport";
-import Layoutcontainer from "../../../../containers/Layout.container";
+import LayoutContainer from "../../../../containers/Layout.container";
 import { CHART_CONFIG } from "../../../../constants";
 
 const initialState = {
@@ -16,7 +16,7 @@ const initialState = {
 const ConfigReportDialog = props => {
   const [state, setState] = useState(initialState);
 
-  const handleConfigChange = config =>
+  const handleConfigChange = config => {
     setState({
       ...state,
       config: {
@@ -25,6 +25,7 @@ const ConfigReportDialog = props => {
         ...config
       }
     });
+  };
 
   useEffect(() => {
     MyCustomEvent.on("CONFIG_REPORT", onOpenDialog);
@@ -40,8 +41,7 @@ const ConfigReportDialog = props => {
       userReport,
       config: {
         ...CHART_CONFIG[userReport.report.type],
-        ...Layoutcontainer.state.dashboards[props.dashboardIndex].config
-          .settings[userReport.id]
+        ...LayoutContainer.getSettings(props.dashboardIndex, userReport.id)
       },
       open: true
     });
@@ -53,7 +53,7 @@ const ConfigReportDialog = props => {
 
   const handleOnSave = async () => {
     setState({ ...state, loading: true });
-    await Layoutcontainer.onSettingsChange(
+    await LayoutContainer.onSettingsChange(
       props.dashboardIndex,
       state.userReport.id,
       state.config
