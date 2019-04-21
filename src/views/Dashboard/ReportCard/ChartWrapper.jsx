@@ -3,8 +3,9 @@ import Chart from "../../../components/Chart/Chart";
 import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
-import * as mockData from "../../../mockdata";
+import LayoutContainer from "../../../containers/Layout.container";
 import MyCustomEvent from "../../../util/customEvent";
+import * as mockData from "../../../mockdata";
 
 const processData = ({ cols, rows }) => {
   let data = [];
@@ -125,7 +126,7 @@ class ChartWrapper extends Component {
 
   render = () => {
     const { loading, error } = this.state;
-    const { type, height } = this.props;
+    const { type, height, dashboardIndex, instanceId } = this.props;
 
     if (loading) {
       return <Loading />;
@@ -141,6 +142,7 @@ class ChartWrapper extends Component {
         type={type}
         height={height}
         onClick={this.chartClickHandler}
+        config={LayoutContainer.getSettings(dashboardIndex, instanceId)}
       />
     );
   };

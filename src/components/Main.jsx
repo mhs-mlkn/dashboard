@@ -23,10 +23,12 @@ class Main extends Component {
       console.log("Main.loadInitialData...");
       this.setState({ loading: true });
       await AuthContainer.refreshToken();
-      await AuthContainer.fetchUser();
-      await LayoutContainer.fetchDashboards();
-      await ReportContainer.getAll(0, 12);
-      await ReportContainer.getUserReports();
+      await Promise.all([
+        AuthContainer.fetchUser(),
+        LayoutContainer.fetchDashboards(),
+        ReportContainer.getAll(0, 12),
+        ReportContainer.getUserReports()
+      ]);
       this.setState({ loading: false });
     } catch (error) {
       this.setState({ loading: false, error });

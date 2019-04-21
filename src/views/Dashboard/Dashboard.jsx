@@ -65,7 +65,11 @@ class Dashboard extends Component {
                 {layout.map(l => {
                   return (
                     <div key={l.i} style={{ direction: "rtl" }}>
-                      <ReportCard layout={l} editEnabled={false} />
+                      <ReportCard
+                        dashboardIndex={index}
+                        layout={l}
+                        editEnabled={false}
+                      />
                     </div>
                   );
                 })}
