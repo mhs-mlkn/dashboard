@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { Formik, Form } from "formik";
-import Input from "../../../components/FormikInputs";
+import { Formik, Form, Field } from "formik";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Input, { DatePicker } from "../../../components/FormikInputs";
 
-const initialValues = { user: "" };
+const initialValues = { user: "", expire: null };
 
 class ShareDashboardForm extends Component {
   submit = (values, { resetForm, setSubmitting }) => {
     setTimeout(() => {
+      this.props.onSubmit(values);
       setSubmitting(false);
       resetForm(initialValues);
     }, 0);
@@ -17,17 +20,32 @@ class ShareDashboardForm extends Component {
     if (!values.user) {
       errors.user = "مشخصات کاربر را وارد کنید";
     }
+    if (!values.expire) {
+      errors.expire = "تاریخ انقضای اشتراک را انتخاب نمایید";
+    }
     return errors;
   };
 
   renderForm = formikProps => {
     return (
       <Form autoComplete="off">
-        <Input
-          name="user"
-          label="نام کاربری، ایمیل یا شماره همراه"
-          {...formikProps}
-        />
+        <Grid container>
+          <Grid item xs={12} md={8}>
+            <Input
+              name="user"
+              label="نام کاربری، ایمیل یا شماره همراه"
+              {...formikProps}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Field name="expire" component={DatePicker} />
+          </Grid>
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+              تایید
+            </Button>
+          </Grid>
+        </Grid>
       </Form>
     );
   };

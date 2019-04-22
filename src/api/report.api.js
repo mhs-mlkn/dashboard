@@ -65,6 +65,11 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
+  static getDashboardUsers = async () => {
+    await Auth.refreshToken();
+    return axios.get(`${baseUrl}/dashboard/all`).then(res => res.data.result);
+  };
+
   static saveLayout = async (dashboardId, layout) => {
     await Auth.refreshToken();
     return axios
