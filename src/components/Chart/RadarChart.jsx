@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   RadarChart,
   Radar,
@@ -17,6 +17,8 @@ import pink from "@material-ui/core/colors/pink";
 import grey from "@material-ui/core/colors/grey";
 import brown from "@material-ui/core/colors/brown";
 
+import { RADAR_CHART_CONFIG as CONFIG } from "../../constants";
+
 const colors = [purple, orange, red, yellow, blue, green, pink, grey, brown];
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
@@ -24,7 +26,12 @@ const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 const Chart = props => {
   const [opacity, setOpacity] = useState({});
   const { data, width, height } = props;
+  let { config = CONFIG } = props;
   const keys = getDataKeys(data[0] || {});
+
+  useEffect(() => {
+    config = { ...CONFIG, ...config };
+  }, [props.config]);
 
   const handleMouseEnter = o => {
     const { dataKey } = o;
@@ -48,6 +55,7 @@ const Chart = props => {
       width={width}
       height={height}
       margin={{ top: 5, right: 10 }}
+      innerRadius={config.innerRadius}
     >
       {keys.map((key, i) => (
         <Radar
@@ -57,13 +65,18 @@ const Chart = props => {
           stroke={colors[i % 9]["500"]}
           fill={colors[i % 9]["500"]}
           opacity={opacity[key]}
+          dot={false}
         />
       ))}
       <PolarGrid />
       <PolarAngleAxis dataKey="name" />
       {/* <PolarRadiusAxis /> */}
       <Tooltip wrapperStyle={{ left: "0" }} />
-      <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <Legend
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...config.legend}
+      />
     </RadarChart>
   );
 };

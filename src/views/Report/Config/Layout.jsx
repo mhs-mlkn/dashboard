@@ -9,6 +9,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import Error from "../../../components/Error/Error";
 import LayoutContainer from "../../../containers/Layout.container";
 import ReportCard from "../../Dashboard/ReportCard/ReportCard";
+import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -51,11 +52,9 @@ class DashboardLayout extends Component {
 
   save = async () => {
     try {
-      const { index, hasChanged } = this.state;
-      await LayoutContainer.saveLayout(index);
-      if (hasChanged) {
-        this.setState({ hasChanged: false });
-      }
+      const { index } = this.state;
+      await LayoutContainer.saveDashboard(index);
+      this.setState({ hasChanged: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
       this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
@@ -95,7 +94,11 @@ class DashboardLayout extends Component {
                   l.static = false;
                   return (
                     <div key={l.i} style={{ direction: "rtl" }}>
-                      <ReportCard layout={l} editEnabled={true} />
+                      <ReportCard
+                        dashboardIndex={index}
+                        layout={l}
+                        editEnabled={true}
+                      />
                     </div>
                   );
                 })}
@@ -109,6 +112,7 @@ class DashboardLayout extends Component {
               >
                 <SaveIcon />
               </Fab>
+              <ConfigReportDialog dashboardIndex={index} />
             </>
           );
         }}

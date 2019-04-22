@@ -100,6 +100,8 @@ class ReportCard extends Component {
         return this.shareReport();
       case "TOGGLE_INTERVAL":
         return this.toggleInterval(data);
+      case "CONFIG_REPORT":
+        return this.configReport();
       default:
         break;
     }
@@ -112,6 +114,12 @@ class ReportCard extends Component {
   refreshReport = () => {
     const { id: instanceId } = this.state.userReport;
     MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: false });
+  };
+
+  configReport = () => {
+    if (["Table", "Scalar"].indexOf(this.state.userReport.report.type) < 0) {
+      MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
+    }
   };
 
   toggleInterval = isRunning => {
@@ -165,6 +173,7 @@ class ReportCard extends Component {
         return (
           <ChartWrapper
             instanceId={instanceId}
+            dashboardIndex={this.props.dashboardIndex}
             type={reportType}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}

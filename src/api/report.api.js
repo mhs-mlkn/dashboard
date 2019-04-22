@@ -1,6 +1,5 @@
 import axios from "axios";
 import Auth from "../containers/Auth.container";
-// import { reports } from "../mockdata";
 
 const baseUrl = `${process.env.REACT_APP_BASE_URL}`;
 const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;

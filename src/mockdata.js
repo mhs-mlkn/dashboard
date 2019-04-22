@@ -1,4 +1,4 @@
-export const reports = {
+export const Reports = {
   data: [
     {
       chartType: "Simple",
@@ -207,5 +207,17 @@ export const Charts = [
     uv: 3490,
     pv: 4300,
     amt: 2100
+  }
+];
+
+export const Dashboards = [
+  {
+    id: 1,
+    config:
+      '{"layout": [{"i": "8", "x": 0, "y": 0, "w": 12, "h": 24}], "settings": {}}'
+  },
+  {
+    id: 2,
+    config: '{"layout": []}'
   }
 ];
