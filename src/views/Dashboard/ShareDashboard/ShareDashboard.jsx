@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { withSnackbar } from "notistack";
 import { withRouter } from "react-router";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -61,9 +62,12 @@ const ShareDashboard = props => {
   const { fullScreen } = props;
 
   const [open, setOpen] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [sharedItems, setSharedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { index } = props.match.params;
+  const dashboard = LayoutContainer.getDashboard(index);
 
   useEffect(() => {
     MyCustomEvent.on("SHARE_DASHBOARD", handleToggleOpen);
@@ -84,11 +88,8 @@ const ShareDashboard = props => {
 
     try {
       setLoading(true);
-      const { index } = props.match.params;
-      const dashboard = LayoutContainer.getDashboard(index);
-      const users = await Api.getDashboardUsers(dashboard.id);
-      console.log(users);
-      setUsers([]);
+      const sharedItems = await Api.getDashboardUsers(dashboard.id);
+      setSharedItems(sharedItems);
     } catch (error) {
       setError("دریافت لیست کاربران با خطا مواجه شد");
     } finally {
@@ -96,12 +97,33 @@ const ShareDashboard = props => {
     }
   };
 
-  const handleDelete = user => () => {
-    alert(`delete chip ${user}`);
+  const handleDelete = sharedItem => async () => {
+    try {
+      await Api.deleteDashboardUser(sharedItem.id);
+      const items = sharedItems.filter(item => +item.id !== +sharedItem.id);
+      setSharedItems(items);
+    } catch (error) {
+      props.enqueueSnackbar("حذف کاربر با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
   };
 
-  const handleSubmit = ({ user, expire }) => {
-    console.log(user, expire.format("YYYY-MM-DD"));
+  const handleSubmit = async ({ identity, expire }) => {
+    console.log(identity, expire.format("YYYY-MM-DD"));
+    try {
+      const item = await Api.addDashboardUser(dashboard.id, {
+        identity,
+        expire: expire.format("YYYY-MM-DD"),
+        editable: true
+      });
+      setSharedItems([...sharedItems, item]);
+    } catch (error) {
+      console.log(error);
+      props.enqueueSnackbar("عملیات با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
   };
 
   return (
@@ -128,11 +150,11 @@ const ShareDashboard = props => {
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
               <div style={{ marginTop: "16px" }}>
-                {users.map(user => (
+                {sharedItems.map(item => (
                   <Chip
-                    key={user}
-                    label={user}
-                    onDelete={handleDelete(user)}
+                    key={item.id}
+                    label={item.user.username}
+                    onDelete={handleDelete(item)}
                     variant="outlined"
                   />
                 ))}
@@ -151,4 +173,5 @@ const ShareDashboard = props => {
 };
 
 const WithMobileDialog = withMobileDialog({ breakpoint: "xs" })(ShareDashboard);
-export default withRouter(WithMobileDialog);
+const WIthSnackbar = withSnackbar(WithMobileDialog);
+export default withRouter(WIthSnackbar);

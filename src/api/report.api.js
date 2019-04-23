@@ -73,9 +73,25 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static getDashboardUsers = async () => {
+  static getDashboardUsers = async dashboardId => {
     await Auth.refreshToken();
-    return axios.get(`${baseUrl}/dashboard/all`).then(res => res.data.result);
+    return axios
+      .get(`${baseUrl}/dashboard/${dashboardId}/users`)
+      .then(res => res.data.result.data);
+  };
+
+  static addDashboardUser = async (dashboardId, params) => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${baseUrl}/dashboard/${dashboardId}/share`, { params })
+      .then(res => res.data.result.data);
+  };
+
+  static deleteDashboardUser = async sharedId => {
+    await Auth.refreshToken();
+    return axios
+      .delete(`${baseUrl}/dashboard/shared/${sharedId}`)
+      .then(res => res.data.result.data);
   };
 
   static saveLayout = async (dashboardId, layout) => {

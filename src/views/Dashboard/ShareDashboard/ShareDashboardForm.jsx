@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Input, { DatePicker } from "../../../components/FormikInputs";
 
-const initialValues = { user: "", expire: null };
+const initialValues = { identity: "", expire: null };
 
 class ShareDashboardForm extends Component {
   submit = (values, { resetForm, setSubmitting }) => {
@@ -17,8 +17,8 @@ class ShareDashboardForm extends Component {
 
   validate = values => {
     let errors = {};
-    if (!values.user) {
-      errors.user = "مشخصات کاربر را وارد کنید";
+    if (!values.identity) {
+      errors.identity = "مشخصات کاربر را وارد کنید";
     }
     if (!values.expire) {
       errors.expire = "تاریخ انقضای اشتراک را انتخاب نمایید";
@@ -32,7 +32,7 @@ class ShareDashboardForm extends Component {
         <Grid container>
           <Grid item xs={12} md={8}>
             <Input
-              name="user"
+              name="identity"
               label="نام کاربری، ایمیل یا شماره همراه"
               {...formikProps}
             />
