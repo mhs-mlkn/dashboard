@@ -39,10 +39,18 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static getReportInstance = async (reportId, params, dashboardId) => {
+  static getReportInstance = async (
+    reportId,
+    userReportName,
+    params,
+    dashboardId
+  ) => {
     await Auth.refreshToken();
     return axios
-      .post(`${reportUrl}/${reportId}/param?dashboardId=${dashboardId}`, params)
+      .post(
+        `${reportUrl}/${reportId}/param?dashboardId=${dashboardId}&name=${userReportName}`,
+        params
+      )
       .then(res => res.data.result);
   };
 

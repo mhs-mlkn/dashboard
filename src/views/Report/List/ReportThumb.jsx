@@ -98,30 +98,9 @@ class ReportThumbCard extends Component {
 
   addToDashboard = async dashboardIndex => {
     const { report } = this.props;
-    const hasParams = report.query.queryParams.some(
-      p => ["BY_BUSINESS", "BY_BUSINESS_OR_PARENT"].indexOf(p.fill) > -1
+    return this.props.navigate(
+      `/user/reports/${report.id}/config/params/${dashboardIndex}`
     );
-    if (hasParams) {
-      return this.props.navigate(
-        `/user/reports/${report.id}/config/params/${dashboardIndex}`
-      );
-    }
-
-    try {
-      this.setState({ loading: true });
-      const dashboardId = LayoutContainer.getDashboard(dashboardIndex).id;
-      const instanceId = await ReportContainer.getReportInstance(
-        report.id,
-        [],
-        dashboardId
-      );
-      await LayoutContainer.addToLayout(dashboardIndex, instanceId);
-      this.setState({ loading: false });
-      this.props.navigate(`/user/dashboard/layout/${dashboardIndex}`);
-    } catch (error) {
-      this.setState({ loading: false, error: error.message });
-      this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
-    }
   };
 
   getReport = (reportType, data) => {

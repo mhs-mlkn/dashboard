@@ -50,10 +50,10 @@ class ReportParams extends Component {
     });
   };
 
-  submit = async ({ params }) => {
+  submit = async ({ userReportName, params }) => {
     this.setState({ loading: true });
     const { id: reportId, index = 0 } = this.props.match.params;
-    await this.createInstance(reportId, params, index);
+    await this.createInstance(reportId, userReportName, params, index);
     if (this.hasDrillDown(this.state.report)) {
       if (this.hasParams(this.state.drillDownReport)) {
         const params = this.state.drillDownReport
@@ -89,10 +89,11 @@ class ReportParams extends Component {
     this.props.history.replace(`/user/dashboard/layout/${index}`);
   };
 
-  createInstance = async (reportId, params, dashboardIndex) => {
+  createInstance = async (reportId, userReportName, params, dashboardIndex) => {
     const dashboardId = LayoutContainer.getDashboard(dashboardIndex).id;
     const instanceId = await ReportContainer.getReportInstance(
       reportId,
+      userReportName,
       params,
       dashboardId
     );
@@ -186,6 +187,14 @@ class ReportParams extends Component {
           </Grid>
         </Grid>
         <Grid container>
+          <Grid item xs={12} sm={12} md={3}>
+            <Input
+              name="userReportName"
+              label="عنوان نمایشی گزارش"
+              value={values.userReportName}
+              {...props}
+            />
+          </Grid>
           <FieldArray
             name="params"
             render={() => {
@@ -232,6 +241,7 @@ class ReportParams extends Component {
       >
         <Formik
           initialValues={{
+            userReportName: "",
             params: this.state.params
           }}
           enableReinitialize={true}
