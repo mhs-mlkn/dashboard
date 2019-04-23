@@ -90,5 +90,5 @@ const CustomDialog = props => {
   );
 };
 
-const WithMobileDialog = withMobileDialog({ breakpoint: "sm" })(CustomDialog);
+const WithMobileDialog = withMobileDialog({ breakpoint: "md" })(CustomDialog);
 export default WithMobileDialog;

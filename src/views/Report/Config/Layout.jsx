@@ -5,6 +5,7 @@ import { withSnackbar } from "notistack";
 import { withSize } from "react-sizeme";
 import ReactGridLayout from "react-grid-layout";
 import Fab from "@material-ui/core/Fab";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import SaveIcon from "@material-ui/icons/Save";
 import Error from "../../../components/Error/Error";
 import LayoutContainer from "../../../containers/Layout.container";
@@ -14,10 +15,31 @@ import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
+function hasLayoutChanged(a, b) {
+  if (a.length !== b.length) {
+    return true;
+  }
+  for (let index = 0; index < a.length; index++) {
+    const itemA = a[index];
+    const itemB = b[index];
+    if (
+      itemA.i !== itemB.i ||
+      itemA.x !== itemB.x ||
+      itemA.y !== itemB.y ||
+      itemA.w !== itemB.w ||
+      itemA.h !== itemB.h
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 class DashboardLayout extends Component {
   state = {
     index: 0,
     hasChanged: false,
+    loading: false,
     error: ""
   };
 
@@ -45,25 +67,45 @@ class DashboardLayout extends Component {
   onLayoutChange = async layout => {
     const { index, hasChanged } = this.state;
     await LayoutContainer.onLayoutChange(index, layout);
-    if (!hasChanged) {
+    if (
+      !hasChanged &&
+      hasLayoutChanged(
+        layout,
+        LayoutContainer.state.dashboards[index].config.layout
+      )
+    ) {
       this.setState({ hasChanged: true });
     }
+  };
+
+  onSettingsChange = async (userReportId, settings) => {
+    if (!this.state.hasChanged) {
+      this.setState({ hasChanged: true });
+    }
+    await LayoutContainer.onSettingsChange(
+      this.state.index,
+      userReportId,
+      settings
+    );
+    console.log(userReportId, settings);
   };
 
   save = async () => {
     try {
       const { index } = this.state;
+      this.setState({ loading: true });
       await LayoutContainer.saveDashboard(index);
-      this.setState({ hasChanged: false });
+      this.setState({ hasChanged: false, loading: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
+      this.setState({ loading: false });
       this.props.enqueueSnackbar("با خطا مواجه شد", { variant: "error" });
     }
   };
 
   render = () => {
     const { width } = this.props.size;
-    const { index, hasChanged, error } = this.state;
+    const { index, hasChanged, error, loading } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -110,9 +152,16 @@ class DashboardLayout extends Component {
                 className="fab"
                 onClick={this.save}
               >
-                <SaveIcon />
+                {loading ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  <SaveIcon />
+                )}
               </Fab>
-              <ConfigReportDialog dashboardIndex={index} />
+              <ConfigReportDialog
+                dashboardIndex={index}
+                onSettingsChange={this.onSettingsChange}
+              />
             </>
           );
         }}

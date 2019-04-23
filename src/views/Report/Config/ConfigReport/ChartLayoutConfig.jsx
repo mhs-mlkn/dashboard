@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const styles = theme => ({
@@ -23,6 +24,7 @@ const ChartLayoutConfig = props => {
 
   return (
     <FormControl component="fieldset">
+      <FormLabel component="legend">چینش نمودار</FormLabel>
       <RadioGroup
         className={classes.group}
         name="layout"

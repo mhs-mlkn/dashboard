@@ -212,7 +212,7 @@ class ReportCard extends Component {
               actionHandler={this.actionHandler}
             />
           }
-          title={userReport.report.name}
+          title={userReport.name || userReport.report.name}
           classes={{ root: classes.headerRoot, title: classes.title }}
         />
         <Collapse in={expanded} timeout="auto" unmountOnExit>

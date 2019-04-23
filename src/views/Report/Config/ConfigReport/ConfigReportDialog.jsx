@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { isEqual } from "lodash";
 import MyCustomEvent from "../../../../util/customEvent";
 import Dialog from "../../../../components/Dialog/Dialog";
 import ConfigReport from "./ConfigReport";
@@ -52,12 +53,14 @@ const ConfigReportDialog = props => {
   };
 
   const handleOnSave = async () => {
-    setState({ ...state, loading: true });
-    await LayoutContainer.onSettingsChange(
-      props.dashboardIndex,
-      state.userReport.id,
-      state.config
-    );
+    const settings = {
+      ...CHART_CONFIG[state.userReport.report.type],
+      ...LayoutContainer.getSettings(props.dashboardIndex, state.userReport.id)
+    };
+
+    if (isEqual(state.config, settings) === false) {
+      props.onSettingsChange(state.userReport.id, state.config);
+    }
     setState({ ...state, userReport: "", loading: false, open: false });
   };
 

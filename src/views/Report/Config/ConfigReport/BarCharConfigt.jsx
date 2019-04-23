@@ -15,20 +15,30 @@ const BarCharConfigt = props => {
 
   return (
     <Grid container>
-      <Grid item sm={12} md={12} lg={6}>
-        <ChartLayoutConfig layout={layout} onChange={handleChange} />
-        <Switch
-          name="stacked"
-          label="نمایش پشته ای"
-          value={stacked}
-          onChange={handleChange}
-        />
-        <Switch
-          name="brush"
-          label="ابزار زوم"
-          value={brush}
-          onChange={handleChange}
-        />
+      <Grid item xs={12} sm={5} md={5} lg={5} style={{ marginBottom: "20px" }}>
+        <Grid container>
+          <Grid item xs={12} sm={12} md={12}>
+            <ChartLayoutConfig layout={layout} onChange={handleChange} />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            <Switch
+              name="stacked"
+              label="نمایش پشته ای"
+              value={stacked}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            <Switch
+              name="brush"
+              label="ابزار زوم"
+              value={brush}
+              onChange={handleChange}
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} sm={7} md={7} lg={7}>
         <ChartLegendConfig legendConfig={legend} onChange={handleChange} />
       </Grid>
     </Grid>

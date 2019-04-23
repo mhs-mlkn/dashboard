@@ -9,6 +9,9 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const styles = theme => ({
+  formControl: {
+    marginBottom: theme.spacing.unit * 2
+  },
   group: {
     display: "block"
   },
@@ -46,7 +49,7 @@ const ChartLegendConfig = props => {
 
   return (
     <FormControl component="fieldset" fullWidth>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">چینش علائم نمودار</FormLabel>
         <RadioGroup
           className={classes.group}
@@ -66,7 +69,7 @@ const ChartLegendConfig = props => {
           />
         </RadioGroup>
       </FormControl>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">تراز افقی علائم نمودار</FormLabel>
         <RadioGroup
           className={classes.group}
@@ -91,7 +94,7 @@ const ChartLegendConfig = props => {
           />
         </RadioGroup>
       </FormControl>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">تراز عمودی علائم نمودار</FormLabel>
         <RadioGroup
           className={classes.group}
@@ -116,7 +119,7 @@ const ChartLegendConfig = props => {
           />
         </RadioGroup>
       </FormControl>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" className={classes.formControl}>
         <TextField
           select={true}
           name="iconType"

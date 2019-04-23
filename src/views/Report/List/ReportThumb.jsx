@@ -19,7 +19,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Chart from "../../../components/Chart/Chart";
 import Table from "../../../components/Table/Table";
 import Scalar from "../../../components/Scalar/Scalar";
-import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 import * as mockData from "../../../mockdata";
 
