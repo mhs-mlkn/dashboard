@@ -88,7 +88,7 @@ const ShareDashboard = props => {
       const dashboard = LayoutContainer.getDashboard(index);
       const users = await Api.getDashboardUsers(dashboard.id);
       console.log(users);
-      setUsers(users);
+      setUsers([]);
     } catch (error) {
       setError("دریافت لیست کاربران با خطا مواجه شد");
     } finally {

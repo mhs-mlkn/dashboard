@@ -36,7 +36,7 @@ const DatePickerField = ({ field, form, classes, ...other }) => {
         cancelLabel="لغو"
         clearLabel="پاک کردن"
         name={field.name}
-        value={field.value}
+        value={field.value ? field.value : null}
         format="jYYYY/jMM/jDD"
         labelFunc={labelFunc}
         helperText={touched && currentError}
@@ -48,7 +48,6 @@ const DatePickerField = ({ field, form, classes, ...other }) => {
             ? [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]
             : []
         }
-        label="انقضا"
         variant="outlined"
         margin="normal"
         fullWidth

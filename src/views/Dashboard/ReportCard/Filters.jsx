@@ -1,13 +1,20 @@
 import React, { Component } from "react";
+import { withStyles } from "@material-ui/core/styles";
 import { pickBy, identity } from "lodash";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Grid from "@material-ui/core/Grid";
 import TextInput from "@material-ui/core/TextField";
-import { DatePicker } from "react-advance-jalaali-datepicker";
+import { DatePicker } from "../../../components/FormikInputs";
 import moment from "moment-jalaali";
+
+const styles = theme => ({
+  textField: {
+    paddingRight: theme.spacing.unit
+  }
+});
 
 class Filters extends Component {
   submit = values => {
@@ -33,28 +40,34 @@ class Filters extends Component {
   };
 
   convertFilters = values => {
-    // const { queryFilters } = this.props.report.query;
+    const { queryFilters } = this.props.report.query;
     values = pickBy(values, identity);
     const filters = [];
     if (Object.keys(values).length === 0) {
       return filters;
     }
     for (const p in values) {
-      // const filter = queryFilters.find(f => f.id === p);
-      filters.push({ id: p, value: values[p] });
+      const filter = queryFilters.find(f => f.id === +p);
+      filters.push({
+        id: p,
+        value:
+          filter.type === "DATE" ? values[p].format("YYYY-MM-DD") : values[p]
+      });
     }
     return filters;
   };
 
   getInitials = (values, formikProps) => {
     const initials = {};
+    const { queryFilters: filters } = this.props.report.query;
     if (values && Object.keys(values).length > 0) {
       for (const val of values) {
-        initials[val.id] = val.value;
+        const filter = filters.find(f => f.id === +val.id);
+        initials[val.id] =
+          filter.type === "DATE" ? moment(val.value) : val.value;
       }
       return initials;
     }
-    const { queryFilters: filters } = this.props.report.query;
     for (const filter of filters) {
       if (formikProps && formikProps.setFieldValue) {
         formikProps.setFieldValue(filter.id + "", "");
@@ -68,31 +81,8 @@ class Filters extends Component {
     const name = id + "";
     switch (type) {
       case "DATE":
-        return (
-          <DatePicker
-            inputComponent={props => {
-              return (
-                <TextInput
-                  id={`${id}-${key}`}
-                  name={name}
-                  label={title}
-                  inputProps={{ ...props }}
-                />
-              );
-            }}
-            format="jYYYY/jMM/jDD"
-            preSelected={
-              props.values[name] &&
-              moment(props.values[name]).format("jYYYY/jMM/jDD")
-            }
-            onChange={(_, date) =>
-              props.setFieldValue(
-                name,
-                moment(date, "jYYYY/jMM/jDD").format("YYYY-MM-DD")
-              )
-            }
-          />
-        );
+        return <Field name={name} label={title} component={DatePicker} />;
+
       case "BOOLEAN":
         return (
           <FormControlLabel
@@ -117,7 +107,11 @@ class Filters extends Component {
             name={name}
             label={title}
             value={props.values[name]}
+            fullWidth
+            variant="outlined"
+            margin="normal"
             onChange={props.handleChange}
+            className={this.props.classes.textField}
           />
         );
     }
@@ -130,14 +124,7 @@ class Filters extends Component {
         <Grid container>
           {filters.map(f => {
             return (
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={3}
-                key={f.id}
-                style={{ marginTop: "20px" }}
-              >
+              <Grid item xs={12} sm={4} md={2} key={f.id}>
                 {this.getInputElement(f, props)}
               </Grid>
             );
@@ -172,4 +159,4 @@ class Filters extends Component {
   };
 }
 
-export default Filters;
+export default withStyles(styles)(Filters);

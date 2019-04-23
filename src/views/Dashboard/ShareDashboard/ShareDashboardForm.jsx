@@ -38,7 +38,7 @@ class ShareDashboardForm extends Component {
             />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Field name="expire" component={DatePicker} />
+            <Field name="expire" label="انقضا" component={DatePicker} />
           </Grid>
           <Grid item xs={12}>
             <Button type="submit" variant="contained" color="primary" fullWidth>
