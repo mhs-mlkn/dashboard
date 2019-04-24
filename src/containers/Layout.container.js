@@ -3,7 +3,8 @@ import Api from "../api/report.api";
 
 export class LayoutContainer extends Container {
   state = {
-    dashboards: []
+    dashboards: [],
+    isDirty: false
   };
 
   fetchDashboards = async () => {
@@ -70,7 +71,7 @@ export class LayoutContainer extends Container {
     const dashboards = this.state.dashboards.map((d, i) =>
       i === +index ? dashboard : d
     );
-    return this.setState({ dashboards });
+    return this.setState({ dashboards, isDirty: true });
   };
 
   onSettingsChange = async (index, instanceId, reportSettings) => {
@@ -88,7 +89,8 @@ export class LayoutContainer extends Container {
   saveDashboard = async index => {
     const dashboard = this.getDashboard(index);
     const { layout = [], settings = {} } = dashboard.config;
-    return Api.saveLayout(dashboard.id, JSON.stringify({ layout, settings }));
+    await Api.saveLayout(dashboard.id, JSON.stringify({ layout, settings }));
+    return this.setState({ isDirty: false });
   };
 }
 
