@@ -4,13 +4,13 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { withStyles } from "@material-ui/core/styles";
 import { withSize } from "react-sizeme";
 import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import CustomTableHead from "./CustomTableHead";
 import TableActions from "./TableActions";
 
 const styles = theme => {
@@ -31,13 +31,6 @@ const styles = theme => {
   };
 };
 
-const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.grey["800"],
-    fontSize: "11px"
-  }
-}))(TableCell);
-
 class CustomTable extends Component {
   componentDidMount = () => {
     this.ps = new PerfectScrollbar(this.refs.tableWrapper);
@@ -50,6 +43,10 @@ class CustomTable extends Component {
   handleChangeRowsPerPage = event => {
     this.props.onChangePageSize &&
       this.props.onChangePageSize(+event.target.value);
+  };
+
+  handleSort = orderBy => {
+    this.props.onSort && this.props.onSort(orderBy);
   };
 
   getData = (cell, i) => {
@@ -66,6 +63,8 @@ class CustomTable extends Component {
       count,
       rowsPerPage = 10,
       page = 0,
+      orderBy = "",
+      order = "",
       loading,
       aspect = 0,
       height = 0,
@@ -91,13 +90,12 @@ class CustomTable extends Component {
         ref="tableWrapper"
       >
         <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              {cols.map((col, key) => (
-                <CustomTableCell key={key}>{col.key}</CustomTableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+          <CustomTableHead
+            cols={cols}
+            orderBy={orderBy}
+            order={order}
+            onSort={this.handleSort}
+          />
           <TableBody>
             {loading ? (
               <TableRow>

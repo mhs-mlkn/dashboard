@@ -59,8 +59,26 @@ export class ReportContainer extends Container {
     return this.setState({ userReports });
   };
 
-  reportData = async (reportId, filters, params, useCache, page, size) => {
-    return Api.reportData(reportId, filters, params, useCache, page, size);
+  reportData = async (
+    reportId,
+    filters,
+    params,
+    useCache,
+    page,
+    size,
+    orderBy,
+    order
+  ) => {
+    return Api.reportData(
+      reportId,
+      filters,
+      params,
+      useCache,
+      page,
+      size,
+      orderBy,
+      order
+    );
   };
 
   isDrillDown = instanceId =>

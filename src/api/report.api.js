@@ -114,14 +114,22 @@ export default class ReportApi {
     parentParams = [],
     loadFromCache = true,
     page,
-    size
+    size,
+    orderBy,
+    order
   ) => {
     await Auth.refreshToken();
     const params = { loadFromCache, page, size };
     return axios
       .post(
         `${baseUrl}/userreport/${id}/exec`,
-        { filterVOS, parentParams },
+        {
+          filterVOS,
+          parentParams,
+          orderByElementVOS: orderBy
+            ? [{ name: orderBy, isDesc: order === "desc" }]
+            : []
+        },
         { params }
       )
       .then(res => res.data.result);
