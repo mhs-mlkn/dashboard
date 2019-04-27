@@ -20,6 +20,7 @@ export default [
   {
     title: "داشبورد",
     path: "/user/dashboard",
+    url: "/user/dashboard/0",
     matchTest: path => RegExp("/user/dashboard/\\d+", "g").test(path),
     component: Dashboard,
     icon: DashboardIcon
@@ -50,6 +51,7 @@ export default [
   {
     title: "تنظیم داشبورد",
     path: "/user/dashboard/layout",
+    url: "/user/dashboard/layout/0",
     matchTest: path => path.startsWith("/user/dashboard/layout"),
     component: DashboardLayout,
     icon: AspectRatioIcon

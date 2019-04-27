@@ -48,7 +48,7 @@ const ChartLegendConfig = props => {
   };
 
   return (
-    <FormControl component="fieldset" fullWidth>
+    <FormControl component="fieldset">
       <FormControl component="fieldset" className={classes.formControl}>
         <FormLabel component="legend">چینش علائم نمودار</FormLabel>
         <RadioGroup
@@ -128,7 +128,6 @@ const ChartLegendConfig = props => {
           onChange={handleChange}
           margin="normal"
           variant="outlined"
-          fullWidth
         >
           {ICON_TYPES.map((t, i) => (
             <MenuItem value={t} key={i}>

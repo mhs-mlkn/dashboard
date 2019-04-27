@@ -39,7 +39,7 @@ const sidebar = props => {
 
       return (
         <NavLink
-          to={route.path}
+          to={route.url || route.path}
           activeClassName="active"
           className={classes.item}
           key={index}

@@ -3,6 +3,7 @@ import Scalar from "../../../components/Scalar/Scalar";
 import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
+import LayoutContainer from "../../../containers/Layout.container";
 import * as mockData from "../../../mockdata";
 import MyCustomEvent from "../../../util/customEvent";
 
@@ -59,7 +60,7 @@ class ScalarWrapper extends Component {
   };
 
   loadData = async (useCache = true) => {
-    const { editEnabled, instanceId, filters } = this.props;
+    const { editEnabled, instanceId, dashboardIndex, filters } = this.props;
 
     if (editEnabled) {
       this.setState({ loading: false });
@@ -97,7 +98,7 @@ class ScalarWrapper extends Component {
 
   render = () => {
     const { loading, error } = this.state;
-    const { height } = this.props;
+    const { instanceId, dashboardIndex, height } = this.props;
 
     if (loading) {
       return <Loading />;
@@ -107,7 +108,13 @@ class ScalarWrapper extends Component {
       return <Error message={error} onRetry={this.handleRetry} />;
     }
 
-    return <Scalar data={this.data} height={height} />;
+    return (
+      <Scalar
+        data={this.data}
+        height={height}
+        config={LayoutContainer.getSettings(dashboardIndex, instanceId)}
+      />
+    );
   };
 }
 

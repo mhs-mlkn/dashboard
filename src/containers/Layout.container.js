@@ -72,9 +72,13 @@ export class LayoutContainer extends Container {
 
   onLayoutChange = async (index, layout) => {
     const dashboard = this.getDashboard(index);
+    const updatedDashboard = {
+      ...dashboard,
+      config: { ...dashboard.config, layout }
+    };
     dashboard.config = { ...dashboard.config, layout };
     const dashboards = this.state.dashboards.map((d, i) =>
-      i === +index ? dashboard : d
+      i === +index ? updatedDashboard : d
     );
     return this.setState({ dashboards, isDirty: true });
   };

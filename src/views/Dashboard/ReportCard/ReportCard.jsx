@@ -117,7 +117,7 @@ class ReportCard extends Component {
   };
 
   configReport = () => {
-    if (["Table", "Scalar"].indexOf(this.state.userReport.report.type) < 0) {
+    if (["Table"].indexOf(this.state.userReport.report.type) < 0) {
       MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
     }
   };
@@ -163,6 +163,7 @@ class ReportCard extends Component {
         return (
           <ScalarWrapper
             instanceId={instanceId}
+            dashboardIndex={this.props.dashboardIndex}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height * 10}

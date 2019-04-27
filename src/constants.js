@@ -36,10 +36,17 @@ export const RADAR_CHART_CONFIG = {
   legend: LEGEND_CONFIG
 };
 
+export const SCALAR_CONFIG = {
+  mainBackground: "#424951",
+  infoBackground: "#3a4047",
+  textColor: "#a1a1a1"
+};
+
 export const CHART_CONFIG = {
   Bar: BAR_CHART_CONFIG,
   Area: AREA_CHART_CONFIG,
   Line: Line_CHART_CONFIG,
   Pie: PIE_CHART_CONFIG,
-  Radar: RADAR_CHART_CONFIG
+  Radar: RADAR_CHART_CONFIG,
+  Scalar: SCALAR_CONFIG
 };
