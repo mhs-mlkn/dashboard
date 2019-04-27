@@ -38,7 +38,6 @@ function hasLayoutChanged(a, b) {
 class DashboardLayout extends Component {
   state = {
     index: 0,
-    hasChanged: false,
     loading: false,
     error: ""
   };
@@ -65,29 +64,22 @@ class DashboardLayout extends Component {
   };
 
   onLayoutChange = async layout => {
-    const { index, hasChanged } = this.state;
-    await LayoutContainer.onLayoutChange(index, layout);
-    if (
-      !hasChanged &&
-      hasLayoutChanged(
-        layout,
-        LayoutContainer.state.dashboards[index].config.layout
-      )
-    ) {
-      this.setState({ hasChanged: true });
+    const { index } = this.state;
+    const { dashboards } = LayoutContainer.state;
+    const savedLayout = dashboards[index].config.layout;
+    const isLayoutDirty = hasLayoutChanged(layout, savedLayout);
+
+    if (isLayoutDirty) {
+      await LayoutContainer.onLayoutChange(index, layout);
     }
   };
 
   onSettingsChange = async (userReportId, settings) => {
-    if (!this.state.hasChanged) {
-      this.setState({ hasChanged: true });
-    }
     await LayoutContainer.onSettingsChange(
       this.state.index,
       userReportId,
       settings
     );
-    console.log(userReportId, settings);
   };
 
   save = async () => {
@@ -95,7 +87,7 @@ class DashboardLayout extends Component {
       const { index } = this.state;
       this.setState({ loading: true });
       await LayoutContainer.saveDashboard(index);
-      this.setState({ hasChanged: false, loading: false });
+      this.setState({ loading: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
       this.setState({ loading: false });
@@ -105,7 +97,7 @@ class DashboardLayout extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { index, hasChanged, error, loading } = this.state;
+    const { index, error, loading } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -119,7 +111,7 @@ class DashboardLayout extends Component {
           return (
             <>
               <Prompt
-                when={hasChanged}
+                when={Layout.state.isDirty}
                 message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
               />
               <ReactGridLayout
