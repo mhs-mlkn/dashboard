@@ -111,7 +111,7 @@ const ReportCardActions = props => {
         open={open}
       />
       {editEnabled && (
-        <div>
+        <div className="draggableCancel">
           <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>

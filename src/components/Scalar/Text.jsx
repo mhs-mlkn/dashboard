@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withSize } from "react-sizeme";
 import { withStyles } from "@material-ui/core/styles";
 import Info from "@material-ui/icons/Info";
+
+import { SCALAR_CONFIG as CONFIG } from "../../constants";
 
 const styles = theme => ({
   box: {
@@ -51,16 +53,33 @@ const styles = theme => ({
 const ScalarText = props => {
   const { data, height, aspect = 0, size, classes } = props;
   const [title, value] = data;
+  let { config = CONFIG } = props;
+
+  useEffect(() => {
+    config = { ...CONFIG, ...config };
+  }, [props.config]);
+
+  const boxStyles = {
+    height: aspect ? size.width / aspect : height || "100%",
+    backgroundColor: config.mainBackground,
+    color: config.textColor
+  };
+
   return (
-    <div
-      className={classes.box}
-      style={{ height: aspect ? size.width / aspect : height || "100%" }}
-    >
+    <div className={classes.box} style={boxStyles}>
       <div className={classes.boxTop}>
         <span>{value}</span>
       </div>
       <div className={classes.boxInfo}>
-        <span className={classes.boxInfoSpan}>{title}</span>
+        <span
+          className={classes.boxInfoSpan}
+          style={{
+            backgroundColor: config.infoBackground,
+            color: config.textColor
+          }}
+        >
+          {title}
+        </span>
       </div>
       <div className={classes.boxBottom}>
         <Info style={{ fontSize: "75px" }} color="primary" />

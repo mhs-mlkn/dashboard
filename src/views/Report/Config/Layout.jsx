@@ -122,6 +122,7 @@ class DashboardLayout extends Component {
                 layout={layout}
                 onDragStop={this.onLayoutChange}
                 onResizeStop={this.onLayoutChange}
+                draggableCancel=".draggableCancel"
                 style={{ direction: "ltr" }}
               >
                 {layout.map(l => {
