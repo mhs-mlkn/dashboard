@@ -16,6 +16,8 @@ class TableWrapper extends Component {
   state = {
     page: 0,
     pageSize: 10,
+    orderBy: "",
+    order: "",
     loading: false,
     error: ""
   };
@@ -39,12 +41,20 @@ class TableWrapper extends Component {
       return this.setState({ error: "", loading: true, page: 0 });
     }
 
-    const { pageSize, page } = this.state;
-    const { pageSize: prevPageSize, page: prevCurrentPage } = prevState;
+    const { pageSize, page, orderBy, order } = this.state;
+    const {
+      pageSize: prevPageSize,
+      page: prevCurrentPage,
+      orderBy: prevOrderBy,
+      order: prevOrder
+    } = prevState;
+
     if (
       this.hasFilterApplied ||
       prevPageSize !== pageSize ||
-      prevCurrentPage !== page
+      prevCurrentPage !== page ||
+      prevOrderBy !== orderBy ||
+      prevOrder !== order
     ) {
       await this.loadData();
     }
@@ -67,7 +77,7 @@ class TableWrapper extends Component {
   };
 
   loadData = async (useCache = true) => {
-    const { pageSize, page } = this.state;
+    const { pageSize, page, orderBy, order } = this.state;
     const { editEnabled, instanceId, filters } = this.props;
 
     if (editEnabled) {
@@ -85,7 +95,9 @@ class TableWrapper extends Component {
         [],
         useCache,
         page,
-        pageSize
+        pageSize,
+        orderBy,
+        order
       );
       this.totalCount = this.getTotalCount(this.data);
       this.setState({ loading: false, error: "" });
@@ -123,6 +135,21 @@ class TableWrapper extends Component {
     });
   };
 
+  handleSort = col => {
+    const { orderBy, order } = this.state;
+    if (orderBy !== col) {
+      return this.setState({
+        error: "",
+        loading: true,
+        orderBy: col,
+        order: "desc"
+      });
+    } else if (orderBy === col && order === "desc") {
+      return this.setState({ error: "", loading: true, order: "asc" });
+    }
+    return this.setState({ error: "", loading: true, orderBy: "", order: "" });
+  };
+
   handleRetry = async () => {
     this.setState({ loading: true });
     await this.loadData();
@@ -137,7 +164,7 @@ class TableWrapper extends Component {
   };
 
   render = () => {
-    const { page, pageSize, loading, error } = this.state;
+    const { page, pageSize, orderBy, order, loading, error } = this.state;
     const { height } = this.props;
 
     if (error) {
@@ -150,11 +177,14 @@ class TableWrapper extends Component {
         rows={this.data.rows}
         count={this.totalCount}
         page={page}
+        orderBy={orderBy}
+        order={order}
         rowsPerPage={pageSize}
         loading={loading}
         height={height}
         onChangePageSize={this.handleChangePageSize}
         onChangePage={this.handleChangePage}
+        onSort={this.handleSort}
       />
     );
   };
