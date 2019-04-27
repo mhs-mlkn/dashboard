@@ -13,6 +13,11 @@ export class LayoutContainer extends Container {
       dashboard.config = JSON.parse(
         dashboard.config || '{"layout": [], "settings": {}}'
       );
+      dashboard.config.layout = dashboard.config.layout.map(l => {
+        l.minW = 4;
+        l.minH = 7;
+        return l;
+      });
       return dashboard;
     });
     return this.setState({ dashboards });
@@ -46,7 +51,7 @@ export class LayoutContainer extends Container {
       const newItem = {
         i: `${instanceId}`,
         x: 0,
-        y: Math.max(...layout.map(o => o.y), 0) + 1,
+        y: this._getMaxY(index),
         w: 12,
         h: 12
       };
@@ -83,7 +88,7 @@ export class LayoutContainer extends Container {
     const dashboards = this.state.dashboards.map((d, i) =>
       i === +index ? dashboard : d
     );
-    return this.setState({ dashboards });
+    return this.setState({ dashboards, isDirty: true });
   };
 
   saveDashboard = async index => {
@@ -91,6 +96,15 @@ export class LayoutContainer extends Container {
     const { layout = [], settings = {} } = dashboard.config;
     await Api.saveLayout(dashboard.id, JSON.stringify({ layout, settings }));
     return this.setState({ isDirty: false });
+  };
+
+  _getMaxY = index => {
+    const layout = this.getDashboard(index).config.layout;
+    if (layout.length === 0) {
+      return 0;
+    }
+    let item = layout.reduce((max, i) => (i.y > max.y ? i : max), layout[0]);
+    return item.y + item.h + 1;
   };
 }
 
