@@ -18,6 +18,8 @@ class DashboardLayout extends Component {
   state = {
     breakpoint: "lg",
     layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
+    reRender: 0,
+    isDirty: false,
     index: 0,
     loading: false,
     error: ""
@@ -49,7 +51,7 @@ class DashboardLayout extends Component {
   };
 
   onLayoutChange = async (_, layouts) => {
-    this.setState({ layouts });
+    this.setState({ layouts, isDirty: true });
   };
 
   onSettingsChange = async (userReportId, settings) => {
@@ -58,6 +60,10 @@ class DashboardLayout extends Component {
       userReportId,
       settings
     );
+    this.setState(({ reRender }) => ({
+      isDirty: true,
+      reRender: reRender + 1
+    }));
   };
 
   save = async () => {
@@ -76,7 +82,7 @@ class DashboardLayout extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { layouts, breakpoint, index, error, loading } = this.state;
+    const { layouts, breakpoint, isDirty, index, error, loading } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -85,7 +91,7 @@ class DashboardLayout extends Component {
     return (
       <>
         <Prompt
-          when={LayoutContainer.state.isDirty}
+          when={isDirty}
           message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
         />
         <ResponsiveGridLayout

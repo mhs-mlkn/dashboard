@@ -9,8 +9,7 @@ const MIN_H = { lg: 7, md: 7, sm: 5, xs: 5, xxs: 5 };
 
 export class LayoutContainer extends Container {
   state = {
-    dashboards: [],
-    isDirty: false
+    dashboards: []
   };
 
   fetchDashboards = async () => {
@@ -76,7 +75,7 @@ export class LayoutContainer extends Container {
     const dashboards = this.state.dashboards.map((d, i) =>
       i === +dashboardIndex ? updatedDashboard : d
     );
-    return this.setState({ dashboards, isDirty: true });
+    return this.setState({ dashboards });
   };
 
   onSettingsChange = async (dashboardIndex, instanceId, reportSettings) => {
@@ -91,13 +90,12 @@ export class LayoutContainer extends Container {
     const dashboards = this.state.dashboards.map((d, i) =>
       i === +dashboardIndex ? updatedDashboard : d
     );
-    return this.setState({ dashboards, isDirty: true });
+    return this.setState({ dashboards });
   };
 
   saveDashboard = async dashboardIndex => {
     const dashboard = this.getDashboard(dashboardIndex);
-    await Api.saveDashboard(dashboard);
-    return this.setState({ isDirty: false });
+    return Api.saveDashboard(dashboard);
   };
 }
 
