@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Subscribe } from "unstated";
 import { withSize } from "react-sizeme";
-import ReactGridLayout from "react-grid-layout";
+import { Responsive as ResponsiveGridLayout } from "react-grid-layout";
 import Error from "../../components/Error/Error";
 import ReportCard from "./ReportCard/ReportCard";
 import ShareDashboard from "./ShareDashboard/ShareDashboard";
@@ -12,73 +11,73 @@ import "react-resizable/css/styles.css";
 
 class Dashboard extends Component {
   state = {
+    breakpoint: "lg",
+    layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
     index: 0,
     error: ""
   };
 
   componentDidMount = () => {
     const { index } = this.props.match.params;
-    this.setIndex(index);
+    this.initialize(index);
   };
 
   componentDidUpdate = async prevProps => {
     const { index: prevIndex } = prevProps.match.params;
     const { index } = this.props.match.params;
     if (prevIndex !== index) {
-      this.setIndex(index);
+      this.initialize(index);
     }
   };
 
-  setIndex = index => {
+  initialize = index => {
     const dashboardsCount = LayoutContainer.state.dashboards.length;
     if (index === undefined || index >= dashboardsCount) {
       return this.props.history.replace(`/user/dashboard/0`);
     }
-    this.setState({ index });
+    this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+  };
+
+  onBreakpointChange = breakpoint => {
+    this.setState({ breakpoint });
   };
 
   render = () => {
     const { width } = this.props.size;
-    const { index, error } = this.state;
+    const { layouts, breakpoint, index, error } = this.state;
 
     if (error) {
       return <Error message={error} />;
     }
 
     return (
-      <Subscribe to={[LayoutContainer]}>
-        {Layout => {
-          const dashboard = Layout.getDashboard(index);
-          const { layout = [] } = dashboard.config;
-          return (
-            <>
-              <ReactGridLayout
-                width={width}
-                className="layout"
-                cols={24}
-                rowHeight={10}
-                layout={layout}
-                isDraggable={false}
-                isResizable={false}
-                style={{ direction: "ltr" }}
-              >
-                {layout.map(l => {
-                  return (
-                    <div key={l.i} style={{ direction: "rtl" }}>
-                      <ReportCard
-                        dashboardIndex={index}
-                        layout={l}
-                        editEnabled={false}
-                      />
-                    </div>
-                  );
-                })}
-              </ReactGridLayout>
-              <ShareDashboard />
-            </>
-          );
-        }}
-      </Subscribe>
+      <>
+        <ResponsiveGridLayout
+          layouts={layouts}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
+          rowHeight={10}
+          width={width}
+          className="layout"
+          onBreakpointChange={this.onBreakpointChange}
+          isDraggable={false}
+          isResizable={false}
+          style={{ direction: "ltr" }}
+        >
+          {layouts[breakpoint].map(l => {
+            return (
+              <div key={l.i} style={{ direction: "rtl" }}>
+                <ReportCard
+                  dashboardIndex={index}
+                  layout={l}
+                  editEnabled={false}
+                />
+              </div>
+            );
+          })}
+        </ResponsiveGridLayout>
+        <ShareDashboard />
+      </>
     );
   };
 }

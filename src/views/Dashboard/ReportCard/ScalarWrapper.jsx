@@ -60,7 +60,7 @@ class ScalarWrapper extends Component {
   };
 
   loadData = async (useCache = true) => {
-    const { editEnabled, instanceId, dashboardIndex, filters } = this.props;
+    const { editEnabled, instanceId, filters } = this.props;
 
     if (editEnabled) {
       this.setState({ loading: false });
