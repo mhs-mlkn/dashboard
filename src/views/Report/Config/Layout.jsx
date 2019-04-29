@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Prompt } from "react-router";
-import { Subscribe } from "unstated";
 import { withSnackbar } from "notistack";
 import { withSize } from "react-sizeme";
-import ReactGridLayout from "react-grid-layout";
+import { Responsive as ResponsiveGridLayout } from "react-grid-layout";
 import Fab from "@material-ui/core/Fab";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import SaveIcon from "@material-ui/icons/Save";
@@ -15,28 +14,10 @@ import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
-function hasLayoutChanged(a, b) {
-  if (a.length !== b.length) {
-    return true;
-  }
-  for (let index = 0; index < a.length; index++) {
-    const itemA = a[index];
-    const itemB = b[index];
-    if (
-      itemA.i !== itemB.i ||
-      itemA.x !== itemB.x ||
-      itemA.y !== itemB.y ||
-      itemA.w !== itemB.w ||
-      itemA.h !== itemB.h
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
-
 class DashboardLayout extends Component {
   state = {
+    breakpoint: "lg",
+    layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
     index: 0,
     loading: false,
     error: ""
@@ -44,34 +25,31 @@ class DashboardLayout extends Component {
 
   componentDidMount = async () => {
     const { index } = this.props.match.params;
-    this.setIndex(index);
+    this.initialize(index);
   };
 
   componentDidUpdate = async prevProps => {
     const { index: prevIndex } = prevProps.match.params;
     const { index } = this.props.match.params;
     if (prevIndex !== index) {
-      this.setIndex(index);
+      this.initialize(index);
     }
   };
 
-  setIndex = index => {
+  initialize = index => {
     const dashboardsCount = LayoutContainer.state.dashboards.length;
     if (index === undefined || index >= dashboardsCount) {
       return this.props.history.replace(`/user/dashboard/layout/0`);
     }
-    this.setState({ index });
+    this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
   };
 
-  onLayoutChange = async layout => {
-    const { index } = this.state;
-    const { dashboards } = LayoutContainer.state;
-    const savedLayout = dashboards[index].config.layout;
-    const isLayoutDirty = hasLayoutChanged(layout, savedLayout);
+  onBreakpointChange = breakpoint => {
+    this.setState({ breakpoint });
+  };
 
-    if (isLayoutDirty) {
-      await LayoutContainer.onLayoutChange(index, layout);
-    }
+  onLayoutChange = async (_, layouts) => {
+    this.setState({ layouts });
   };
 
   onSettingsChange = async (userReportId, settings) => {
@@ -84,8 +62,9 @@ class DashboardLayout extends Component {
 
   save = async () => {
     try {
-      const { index } = this.state;
+      const { index, layouts } = this.state;
       this.setState({ loading: true });
+      await LayoutContainer.setLayouts(index, layouts);
       await LayoutContainer.saveDashboard(index);
       this.setState({ loading: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
@@ -97,68 +76,56 @@ class DashboardLayout extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { index, error, loading } = this.state;
+    const { layouts, breakpoint, index, error, loading } = this.state;
 
     if (error) {
       return <Error message={error} />;
     }
 
     return (
-      <Subscribe to={[LayoutContainer]}>
-        {Layout => {
-          const dashboard = Layout.getDashboard(index);
-          const { layout = [] } = dashboard.config;
-          return (
-            <>
-              <Prompt
-                when={Layout.state.isDirty}
-                message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
-              />
-              <ReactGridLayout
-                width={width}
-                className="layout"
-                cols={24}
-                rowHeight={10}
-                layout={layout}
-                onDragStop={this.onLayoutChange}
-                onResizeStop={this.onLayoutChange}
-                draggableCancel=".draggableCancel"
-                style={{ direction: "ltr" }}
-              >
-                {layout.map(l => {
-                  l.static = false;
-                  return (
-                    <div key={l.i} style={{ direction: "rtl" }}>
-                      <ReportCard
-                        dashboardIndex={index}
-                        layout={l}
-                        editEnabled={true}
-                      />
-                    </div>
-                  );
-                })}
-              </ReactGridLayout>
-              <Fab
-                title="ذخیره"
-                color="primary"
-                size="medium"
-                className="fab"
-                onClick={this.save}
-              >
-                {loading ? (
-                  <CircularProgress color="secondary" />
-                ) : (
-                  <SaveIcon />
-                )}
-              </Fab>
-              <ConfigReportDialog
-                dashboardIndex={index}
-                onSettingsChange={this.onSettingsChange}
-              />
-            </>
-          );
-        }}
-      </Subscribe>
+      <>
+        <Prompt
+          when={LayoutContainer.state.isDirty}
+          message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
+        />
+        <ResponsiveGridLayout
+          layouts={layouts}
+          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+          cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
+          rowHeight={10}
+          width={width}
+          className="layout"
+          onBreakpointChange={this.onBreakpointChange}
+          onLayoutChange={this.onLayoutChange}
+          draggableCancel=".draggableCancel"
+          style={{ direction: "ltr" }}
+        >
+          {layouts[breakpoint].map(l => {
+            return (
+              <div key={l.i} style={{ direction: "rtl" }}>
+                <ReportCard
+                  dashboardIndex={index}
+                  layout={l}
+                  editEnabled={true}
+                />
+              </div>
+            );
+          })}
+        </ResponsiveGridLayout>
+        <Fab
+          title="ذخیره"
+          color="primary"
+          size="medium"
+          className="fab"
+          onClick={this.save}
+        >
+          {loading ? <CircularProgress color="secondary" /> : <SaveIcon />}
+        </Fab>
+        <ConfigReportDialog
+          dashboardIndex={index}
+          onSettingsChange={this.onSettingsChange}
+        />
+      </>
     );
   };
 }

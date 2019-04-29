@@ -103,7 +103,7 @@ const ReportCardActions = props => {
   }, [isRunning]);
 
   return (
-    <>
+    <div style={{ zIndex: "100000" }}>
       <ConfirmDialog
         title="آیا اطمینان دارید؟"
         handleConfirm={deleteReport}
@@ -170,7 +170,7 @@ const ReportCardActions = props => {
           <ArrowUpward color="primary" fontSize="small" />
         </IconButton>
       )}
-    </>
+    </div>
   );
 };
 

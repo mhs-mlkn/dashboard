@@ -94,10 +94,10 @@ export default class ReportApi {
       .then(res => res.data.result.data);
   };
 
-  static saveLayout = async (dashboardId, layout) => {
+  static saveDashboard = async ({ id, config }) => {
     await Auth.refreshToken();
     return axios
-      .put(`${baseUrl}/dashboard/${dashboardId}`, { config: layout })
+      .put(`${baseUrl}/dashboard/${id}`, { config: JSON.stringify(config) })
       .then(res => res.data.result.data);
   };
 
