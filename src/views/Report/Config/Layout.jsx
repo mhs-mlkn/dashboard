@@ -14,6 +14,26 @@ import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
+function hasLayoutChanged(a, b) {
+  if (a.length !== b.length) {
+    return true;
+  }
+  for (let index = 0; index < a.length; index++) {
+    const itemA = a[index];
+    const itemB = b[index];
+    if (
+      itemA.i !== itemB.i ||
+      itemA.x !== itemB.x ||
+      itemA.y !== itemB.y ||
+      itemA.w !== itemB.w ||
+      itemA.h !== itemB.h
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 class DashboardLayout extends Component {
   state = {
     breakpoint: "lg",
@@ -51,7 +71,11 @@ class DashboardLayout extends Component {
   };
 
   onLayoutChange = async (_, layouts) => {
-    this.setState({ layouts, isDirty: true });
+    const { layouts: savedLayouts, breakpoint: br } = this.state;
+    const isLayoutDirty = hasLayoutChanged(layouts[br], savedLayouts[br]);
+    if (isLayoutDirty) {
+      this.setState({ layouts: layouts, isDirty: true });
+    }
   };
 
   onSettingsChange = async (userReportId, settings) => {
@@ -72,7 +96,7 @@ class DashboardLayout extends Component {
       this.setState({ loading: true });
       await LayoutContainer.setLayouts(index, layouts);
       await LayoutContainer.saveDashboard(index);
-      this.setState({ loading: false });
+      this.setState({ loading: false, isDirty: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
       this.setState({ loading: false });
