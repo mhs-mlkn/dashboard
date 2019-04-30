@@ -38,10 +38,21 @@ class ShareDashboardForm extends Component {
             />
           </Grid>
           <Grid item xs={12} md={4}>
-            <Field name="expire" label="انقضا" component={DatePicker} />
+            <Field
+              name="expire"
+              label="انقضا"
+              component={DatePicker}
+              style={{ paddingLeft: 0 }}
+            />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ borderRadius: 0 }}
+            >
               تایید
             </Button>
           </Grid>

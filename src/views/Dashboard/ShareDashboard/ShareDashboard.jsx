@@ -11,6 +11,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
 import MuiChip from "@material-ui/core/Chip";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import withMobileDialog from "@material-ui/core/withMobileDialog";
 import Loading from "../../../components/Loading/Loading";
 import MyCustomEvent from "../../../util/customEvent";
@@ -64,6 +65,7 @@ const ShareDashboard = props => {
   const [open, setOpen] = useState(false);
   const [sharedItems, setSharedItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [addUserLoading, setUserLoading] = useState(false);
   const [error, setError] = useState("");
 
   const { index } = props.match.params;
@@ -102,6 +104,9 @@ const ShareDashboard = props => {
       await Api.deleteDashboardUser(sharedItem.id);
       const items = sharedItems.filter(item => +item.id !== +sharedItem.id);
       setSharedItems(items);
+      props.enqueueSnackbar("با موفقیت حذف شد", {
+        variant: "success"
+      });
     } catch (error) {
       props.enqueueSnackbar("حذف کاربر با خطا مواجه شد", {
         variant: "error"
@@ -110,8 +115,8 @@ const ShareDashboard = props => {
   };
 
   const handleSubmit = async ({ identity, expire }) => {
-    console.log(identity, expire.format("YYYY-MM-DD"));
     try {
+      setUserLoading(true);
       const item = await Api.addDashboardUser(dashboard.id, {
         identity,
         expire: expire.format("YYYY-MM-DD"),
@@ -119,10 +124,11 @@ const ShareDashboard = props => {
       });
       setSharedItems([...sharedItems, item]);
     } catch (error) {
-      console.log(error);
-      props.enqueueSnackbar("عملیات با خطا مواجه شد", {
+      props.enqueueSnackbar(error.message, {
         variant: "error"
       });
+    } finally {
+      setUserLoading(false);
     }
   };
 
@@ -147,6 +153,7 @@ const ShareDashboard = props => {
           <Grid container justify="center" alignItems="center">
             <Grid item xs={12} sm={12} lg={12}>
               <ShareDashboardForm onSubmit={handleSubmit} />
+              {addUserLoading && <LinearProgress />}
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
               <div style={{ marginTop: "16px" }}>
