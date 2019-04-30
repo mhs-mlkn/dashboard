@@ -80,7 +80,14 @@ const ShareDashboard = props => {
   }, []);
 
   useEffect(() => {
-    fetchUsers();
+    try {
+      setLoading(true);
+      fetchUsers();
+    } catch (error) {
+      setError("دریافت لیست کاربران با خطا مواجه شد");
+    } finally {
+      setLoading(false);
+    }
   }, [props.match.params.index, open]);
 
   const handleToggleOpen = () => setOpen(!open);
@@ -88,15 +95,8 @@ const ShareDashboard = props => {
   const fetchUsers = async () => {
     if (!open) return;
 
-    try {
-      setLoading(true);
-      const sharedItems = await Api.getDashboardUsers(dashboard.id);
-      setSharedItems(sharedItems);
-    } catch (error) {
-      setError("دریافت لیست کاربران با خطا مواجه شد");
-    } finally {
-      setLoading(false);
-    }
+    const sharedItems = await Api.getDashboardUsers(dashboard.id);
+    setSharedItems(sharedItems);
   };
 
   const handleDelete = sharedItem => async () => {
@@ -117,12 +117,12 @@ const ShareDashboard = props => {
   const handleSubmit = async ({ identity, expire }) => {
     try {
       setUserLoading(true);
-      const item = await Api.addDashboardUser(dashboard.id, {
+      await Api.addDashboardUser(dashboard.id, {
         identity,
         expire: expire.format("YYYY-MM-DD"),
         editable: true
       });
-      setSharedItems([...sharedItems, item]);
+      await fetchUsers();
     } catch (error) {
       props.enqueueSnackbar(error.message, {
         variant: "error"
