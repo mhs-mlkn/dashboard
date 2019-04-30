@@ -156,11 +156,8 @@ const ReportCardActions = props => {
             <MenuItem onClick={exportActionHandler}>PNG</MenuItem>
           </Menu>
         </>
-        // <IconButton onClick={exportActionHandler}>
-        //   <Save color="primary" fontSize="small" />
-        // </IconButton>
       )}
-      {!editEnabled && hasFilters && (
+      {!editEnabled && hasFilters && userReport.report.type === "Table" && (
         <IconButton onClick={filterActionHandler}>
           <FilterList color="primary" fontSize="small" />
         </IconButton>
