@@ -31,7 +31,6 @@ const DatePickerField = ({ field, form, classes, ...other }) => {
       <DatePicker
         clearable
         autoOk
-        disablePast
         okLabel="تایید"
         cancelLabel="لغو"
         clearLabel="پاک کردن"

@@ -41,6 +41,7 @@ class ShareDashboardForm extends Component {
             <Field
               name="expire"
               label="انقضا"
+              disablePast
               component={DatePicker}
               style={{ paddingLeft: 0 }}
             />
