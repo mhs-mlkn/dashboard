@@ -13,11 +13,11 @@ import Slide from "@material-ui/core/Slide";
 import MuiChip from "@material-ui/core/Chip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import withMobileDialog from "@material-ui/core/withMobileDialog";
-import Loading from "../../../components/Loading/Loading";
-import MyCustomEvent from "../../../util/customEvent";
-import LayoutContainer from "../../../containers/Layout.container";
-import ShareDashboardForm from "./ShareDashboardForm";
-import Api from "../../../api/report.api";
+import Loading from "../../../../components/Loading/Loading";
+import MyCustomEvent from "../../../../util/customEvent";
+import LayoutContainer from "../../../../containers/Layout.container";
+import ManageAccessForm from "./ManageAccessForm";
+import Api from "../../../../api/report.api";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -59,7 +59,7 @@ const Chip = withStyles(theme => ({
   }
 }))(MuiChip);
 
-const ShareDashboard = props => {
+const ManageAccess = props => {
   const { fullScreen } = props;
 
   const [open, setOpen] = useState(false);
@@ -72,10 +72,10 @@ const ShareDashboard = props => {
   const dashboard = LayoutContainer.getDashboard(index);
 
   useEffect(() => {
-    MyCustomEvent.on("SHARE_DASHBOARD", handleToggleOpen);
+    MyCustomEvent.on("MANAGE_ACCESS", handleToggleOpen);
 
     return function cleanup() {
-      MyCustomEvent.removeEventListener("SHARE_DASHBOARD", handleToggleOpen);
+      MyCustomEvent.removeEventListener("MANAGE_ACCESS", handleToggleOpen);
     };
   }, []);
 
@@ -88,7 +88,7 @@ const ShareDashboard = props => {
     } finally {
       setLoading(false);
     }
-  }, [props.match.params.index, open]);
+  }, [open]);
 
   const handleToggleOpen = () => setOpen(!open);
 
@@ -117,12 +117,12 @@ const ShareDashboard = props => {
   const handleSubmit = async ({ identity, expire }) => {
     try {
       setUserLoading(true);
-      const item = await Api.addDashboardUser(dashboard.id, {
+      await Api.addDashboardUser(dashboard.id, {
         identity,
         expire: expire.format("YYYY-MM-DD"),
         editable: true
       });
-      setSharedItems([...sharedItems, item]);
+      await fetchUsers();
     } catch (error) {
       props.enqueueSnackbar(error.message, {
         variant: "error"
@@ -152,7 +152,7 @@ const ShareDashboard = props => {
         ) : (
           <Grid container justify="center" alignItems="center">
             <Grid item xs={12} sm={12} lg={12}>
-              <ShareDashboardForm onSubmit={handleSubmit} />
+              <ManageAccessForm onSubmit={handleSubmit} />
               {addUserLoading && <LinearProgress />}
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
@@ -179,6 +179,6 @@ const ShareDashboard = props => {
   );
 };
 
-const WithMobileDialog = withMobileDialog({ breakpoint: "xs" })(ShareDashboard);
+const WithMobileDialog = withMobileDialog({ breakpoint: "xs" })(ManageAccess);
 const WIthSnackbar = withSnackbar(WithMobileDialog);
 export default withRouter(WIthSnackbar);

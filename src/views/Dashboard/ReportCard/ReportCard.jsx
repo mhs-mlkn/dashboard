@@ -102,6 +102,8 @@ class ReportCard extends Component {
         return this.toggleInterval(data);
       case "CONFIG_REPORT":
         return this.configReport();
+      case "MANAGE_ACCESS":
+        return this.configAccess();
       default:
         break;
     }
@@ -120,6 +122,10 @@ class ReportCard extends Component {
     if (["Table"].indexOf(this.state.userReport.report.type) < 0) {
       MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
     }
+  };
+
+  configAccess = () => {
+    MyCustomEvent.emit("MANAGE_ACCESS", this.state.userReport);
   };
 
   toggleInterval = isRunning => {

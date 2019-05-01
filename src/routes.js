@@ -49,7 +49,7 @@ export default [
     invisible: true
   },
   {
-    title: "تنظیم داشبورد",
+    title: "تنظیمات داشبورد",
     path: "/user/dashboard/layout",
     url: "/user/dashboard/layout/0",
     matchTest: path => path.startsWith("/user/dashboard/layout"),
@@ -57,7 +57,7 @@ export default [
     icon: AspectRatioIcon
   },
   {
-    title: "تنظیم داشبورد",
+    title: "تنظیمات داشبورد",
     path: "/user/dashboard/layout/:index(\\d+)",
     matchTest: path => RegExp("/user/dashboard/layout/\\d+", "g").test(path),
     component: DashboardLayout,

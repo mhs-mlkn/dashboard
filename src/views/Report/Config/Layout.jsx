@@ -10,6 +10,7 @@ import Error from "../../../components/Error/Error";
 import LayoutContainer from "../../../containers/Layout.container";
 import ReportCard from "../../Dashboard/ReportCard/ReportCard";
 import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
+import ManageAccessDialog from "./ManageAccess/ManageAccess";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -155,6 +156,7 @@ class DashboardLayout extends Component {
           dashboardIndex={index}
           onSettingsChange={this.onSettingsChange}
         />
+        <ManageAccessDialog />
       </>
     );
   };

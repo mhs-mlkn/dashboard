@@ -14,6 +14,7 @@ import DeleteForever from "@material-ui/icons/DeleteForever";
 import Settings from "@material-ui/icons/Settings";
 import PlayArrow from "@material-ui/icons/PlayArrow";
 import Pause from "@material-ui/icons/Pause";
+import GroupAdd from "@material-ui/icons/GroupAdd";
 import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
@@ -98,6 +99,10 @@ const ReportCardActions = props => {
     actionHandler("BACK");
   };
 
+  const addUserActionHandler = () => {
+    actionHandler("MANAGE_ACCESS");
+  };
+
   useEffect(() => {
     actionHandler("TOGGLE_INTERVAL", isRunning);
   }, [isRunning]);
@@ -112,6 +117,9 @@ const ReportCardActions = props => {
       />
       {editEnabled && (
         <div className="draggableCancel">
+          <IconButton title="دسترسی" onClick={addUserActionHandler}>
+            <GroupAdd color="secondary" fontSize="small" />
+          </IconButton>
           <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>
