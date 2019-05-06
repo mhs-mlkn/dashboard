@@ -95,6 +95,7 @@ class ReportCard extends Component {
       case "REFRESH":
         return this.refreshReport();
       case "BACK":
+        clearInterval(this.refreshInterval);
         return this.initial(+this.props.layout.i);
       case "SHARE":
         return this.shareReport();
