@@ -27,7 +27,7 @@ const CustomTableHead = props => {
           >
             <TableSortLabel
               active={orderBy === col.key}
-              direction={order}
+              direction={order || "desc"}
               onClick={sortHandler(col.key)}
             >
               {col.key}

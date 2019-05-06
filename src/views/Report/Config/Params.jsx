@@ -91,7 +91,7 @@ class ReportParams extends Component {
 
   createInstance = async (reportId, userReportName, params, dashboardIndex) => {
     const dashboardId = LayoutContainer.getDashboard(dashboardIndex).id;
-    const instanceId = await ReportContainer.getReportInstance(
+    const instanceId = await ReportContainer.createReportInstance(
       reportId,
       userReportName,
       params,

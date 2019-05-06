@@ -68,10 +68,11 @@ const ReportCardActions = props => {
   };
 
   const deleteReport = async () => {
-    const { index } = props.match.params;
+    const { index: dashboardIndex } = props.match.params;
     try {
       await ReportContainer.removeInstance(instanceId);
-      await LayoutContainer.removeFromLayout(index, instanceId);
+      await LayoutContainer.removeFromLayout(dashboardIndex, instanceId);
+      actionHandler("REPORT_DELETED");
       props.enqueueSnackbar("با موفقیت حذف شد", {
         variant: "success"
       });
@@ -100,7 +101,7 @@ const ReportCardActions = props => {
   };
 
   const addUserActionHandler = () => {
-    actionHandler("MANAGE_ACCESS");
+    actionHandler("SHARE_REPORT");
   };
 
   useEffect(() => {
@@ -117,9 +118,11 @@ const ReportCardActions = props => {
       />
       {editEnabled && (
         <div className="draggableCancel">
-          <IconButton title="دسترسی" onClick={addUserActionHandler}>
-            <GroupAdd color="secondary" fontSize="small" />
-          </IconButton>
+          {!userReport.report.publicized && (
+            <IconButton title="دسترسی" onClick={addUserActionHandler}>
+              <GroupAdd color="secondary" fontSize="small" />
+            </IconButton>
+          )}
           <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>

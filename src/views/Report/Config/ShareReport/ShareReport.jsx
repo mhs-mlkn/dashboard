@@ -11,13 +11,11 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import Typography from "@material-ui/core/Typography";
 import Slide from "@material-ui/core/Slide";
 import MuiChip from "@material-ui/core/Chip";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import withMobileDialog from "@material-ui/core/withMobileDialog";
 import Loading from "../../../../components/Loading/Loading";
 import MyCustomEvent from "../../../../util/customEvent";
-import LayoutContainer from "../../../../containers/Layout.container";
-import ManageAccessForm from "./ManageAccessForm";
-import Api from "../../../../api/report.api";
+import ReportApi from "../../../../api/report.api";
+import ShareReportForm from "./ShareReportForm";
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -59,76 +57,79 @@ const Chip = withStyles(theme => ({
   }
 }))(MuiChip);
 
-const ManageAccess = props => {
+const ShareReport = props => {
   const { fullScreen } = props;
 
   const [open, setOpen] = useState(false);
-  const [sharedItems, setSharedItems] = useState([]);
+  const [reportId, setReportId] = useState(-1);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [addUserLoading, setUserLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { index } = props.match.params;
-  const dashboard = LayoutContainer.getDashboard(index);
-
   useEffect(() => {
-    MyCustomEvent.on("MANAGE_ACCESS", handleToggleOpen);
+    MyCustomEvent.on("SHARE_REPORT", handleToggleOpen);
 
     return function cleanup() {
-      MyCustomEvent.removeEventListener("MANAGE_ACCESS", handleToggleOpen);
+      MyCustomEvent.removeEventListener("SHARE_REPORT", handleToggleOpen);
     };
   }, []);
 
   useEffect(() => {
+    fetchUsers();
+  }, [reportId, open]);
+
+  const handleToggleOpen = reportId => {
+    setOpen(!open, setReportId(reportId));
+  };
+
+  const fetchUsers = async () => {
+    if (!reportId || reportId < 0 || !open) return;
+
     try {
       setLoading(true);
-      fetchUsers();
+      const users = await ReportApi.getReportUsers(reportId);
+      setUsers(users);
     } catch (error) {
       setError("دریافت لیست کاربران با خطا مواجه شد");
     } finally {
       setLoading(false);
     }
-  }, [open]);
-
-  const handleToggleOpen = () => setOpen(!open);
-
-  const fetchUsers = async () => {
-    if (!open) return;
-
-    const sharedItems = await Api.getDashboardUsers(dashboard.id);
-    setSharedItems(sharedItems);
   };
 
-  const handleDelete = sharedItem => async () => {
+  const handleDelete = user => async () => {
     try {
-      await Api.deleteDashboardUser(sharedItem.id);
-      const items = sharedItems.filter(item => +item.id !== +sharedItem.id);
-      setSharedItems(items);
+      setLoading(true);
+      await ReportApi.removeReportUser(reportId, user.id);
+      const filteredUsers = users.filter(u => u.id !== user.id);
+      setUsers(filteredUsers);
+      setLoading(false);
       props.enqueueSnackbar("با موفقیت حذف شد", {
         variant: "success"
       });
     } catch (error) {
-      props.enqueueSnackbar("حذف کاربر با خطا مواجه شد", {
+      setLoading(false);
+      props.enqueueSnackbar("درخواست با خطا مواجه شد", {
         variant: "error"
       });
     }
   };
 
-  const handleSubmit = async ({ identity, expire }) => {
-    try {
-      setUserLoading(true);
-      await Api.addDashboardUser(dashboard.id, {
-        identity,
-        expire: expire.format("YYYY-MM-DD"),
-        editable: true
+  const handleSubmit = async identity => {
+    if (!identity) {
+      return props.enqueueSnackbar("مشخصات کاربر را وارد کنید", {
+        variant: "error"
       });
-      await fetchUsers();
+    }
+    try {
+      setLoading(true);
+      const user = await ReportApi.addReportUser(reportId, identity);
+      setUsers([...users, user]);
     } catch (error) {
       props.enqueueSnackbar(error.message, {
         variant: "error"
       });
     } finally {
-      setUserLoading(false);
+      setLoading(false);
     }
   };
 
@@ -137,11 +138,10 @@ const ManageAccess = props => {
       fullScreen={fullScreen}
       open={open}
       TransitionComponent={Transition}
-      keepMounted
       fullWidth
       onClose={handleToggleOpen}
     >
-      <DialogTitle>اشتراک گذاری داشبورد</DialogTitle>
+      <DialogTitle>اشتراک گذاری گزارش</DialogTitle>
       <DialogContent>
         {error ? (
           <Typography color="error" variant="h5" gutterBottom>
@@ -152,20 +152,17 @@ const ManageAccess = props => {
         ) : (
           <Grid container justify="center" alignItems="center">
             <Grid item xs={12} sm={12} lg={12}>
-              <ManageAccessForm onSubmit={handleSubmit} />
-              {addUserLoading && <LinearProgress />}
+              <ShareReportForm onSubmit={handleSubmit} />
             </Grid>
             <Grid item xs={12} sm={12} lg={12}>
-              <div style={{ marginTop: "16px" }}>
-                {sharedItems.map(item => (
-                  <Chip
-                    key={item.id}
-                    label={item.user.username}
-                    onDelete={handleDelete(item)}
-                    variant="outlined"
-                  />
-                ))}
-              </div>
+              {users.map(user => (
+                <Chip
+                  key={user.id}
+                  label={user.username}
+                  onDelete={handleDelete(user)}
+                  variant="outlined"
+                />
+              ))}
             </Grid>
           </Grid>
         )}
@@ -179,6 +176,6 @@ const ManageAccess = props => {
   );
 };
 
-const WithMobileDialog = withMobileDialog({ breakpoint: "xs" })(ManageAccess);
-const WIthSnackbar = withSnackbar(WithMobileDialog);
-export default withRouter(WIthSnackbar);
+const WithMobileDialog = withMobileDialog({ breakpoint: "xs" })(ShareReport);
+const WithRouter = withRouter(WithMobileDialog);
+export default withSnackbar(WithRouter);

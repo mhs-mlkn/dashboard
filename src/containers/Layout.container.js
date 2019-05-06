@@ -25,10 +25,9 @@ export class LayoutContainer extends Container {
   addDashboard = async () => {
     const order = this.state.dashboards.length;
     const id = await Api.addDashboard(order);
-    const dashboards = [
-      ...this.state.dashboards,
-      { id, config: { layout: [], settings: {} } }
-    ];
+    const config = JSON.parse(DEFAULT_CONFIG_STRING);
+    config.layouts = setMinSize(config.layouts);
+    const dashboards = [...this.state.dashboards, { id, config }];
     return this.setState({ dashboards });
   };
 

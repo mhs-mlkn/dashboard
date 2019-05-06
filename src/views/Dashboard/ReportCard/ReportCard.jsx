@@ -102,11 +102,17 @@ class ReportCard extends Component {
         return this.toggleInterval(data);
       case "CONFIG_REPORT":
         return this.configReport();
-      case "MANAGE_ACCESS":
+      case "SHARE_REPORT":
         return this.configAccess();
+      case "REPORT_DELETED":
+        return this.onReportDeleted();
       default:
         break;
     }
+  };
+
+  onReportDeleted = () => {
+    MyCustomEvent.emit("REPORT_DELETED");
   };
 
   toggleFilters = () => {
@@ -125,7 +131,7 @@ class ReportCard extends Component {
   };
 
   configAccess = () => {
-    MyCustomEvent.emit("MANAGE_ACCESS", this.state.userReport);
+    MyCustomEvent.emit("SHARE_REPORT", this.state.userReport.report.id);
   };
 
   toggleInterval = isRunning => {

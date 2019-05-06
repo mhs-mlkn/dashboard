@@ -10,7 +10,8 @@ import Error from "../../../components/Error/Error";
 import LayoutContainer from "../../../containers/Layout.container";
 import ReportCard from "../../Dashboard/ReportCard/ReportCard";
 import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
-import ManageAccessDialog from "./ManageAccess/ManageAccess";
+import ShareReportDialog from "./ShareReport/ShareReport";
+import MyCustomEvent from "../../../util/customEvent";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -48,6 +49,7 @@ class DashboardLayout extends Component {
 
   componentDidMount = async () => {
     const { index } = this.props.match.params;
+    MyCustomEvent.on("REPORT_DELETED", this.refresh);
     this.initialize(index);
   };
 
@@ -59,12 +61,20 @@ class DashboardLayout extends Component {
     }
   };
 
+  componentWillUnmount = () => {
+    MyCustomEvent.removeEventListener("REPORT_DELETED", this.refresh);
+  };
+
   initialize = index => {
     const dashboardsCount = LayoutContainer.state.dashboards.length;
     if (index === undefined || index >= dashboardsCount) {
       return this.props.history.replace(`/user/dashboard/layout/0`);
     }
     this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+  };
+
+  refresh = () => {
+    this.setState({ layouts: LayoutContainer.getLayouts(this.state.index) });
   };
 
   onBreakpointChange = breakpoint => {
@@ -156,7 +166,7 @@ class DashboardLayout extends Component {
           dashboardIndex={index}
           onSettingsChange={this.onSettingsChange}
         />
-        <ManageAccessDialog />
+        <ShareReportDialog />
       </>
     );
   };

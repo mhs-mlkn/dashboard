@@ -10,7 +10,7 @@ const LoadMore = props => {
   ) : (
     count < totalCount && (
       <IconButton
-        color="secodary"
+        color="secondary"
         size="small"
         className={"load-more"}
         onClick={onLoadMore}

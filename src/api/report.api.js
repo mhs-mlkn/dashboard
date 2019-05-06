@@ -39,7 +39,7 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
-  static getReportInstance = async (
+  static createReportInstance = async (
     reportId,
     userReportName,
     params,
@@ -95,6 +95,30 @@ export default class ReportApi {
     return axios
       .delete(`${baseUrl}/dashboard/shared/${sharedId}`)
       .then(res => res.data.result.data);
+  };
+
+  static getReportUsers = async reportId => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${reportUrl}/${reportId}/users`)
+      .then(res => res.data.result.userVOList);
+  };
+
+  static addReportUser = async (reportId, identity) => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${reportUrl}/${reportId}/addUser?identity=${identity}`)
+      .then(res => res.data.result)
+      .catch(err => {
+        throw new Error(err.response.data.message || "درخواست با خطا مواجه شد");
+      });
+  };
+
+  static removeReportUser = async (reportId, userId) => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${reportUrl}/${reportId}/removeUser?id=${userId}`)
+      .then(res => res.data.result.userVOList);
   };
 
   static saveDashboard = async ({ id, config }) => {

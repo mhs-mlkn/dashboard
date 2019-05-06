@@ -43,8 +43,18 @@ export class ReportContainer extends Container {
     return item;
   };
 
-  getReportInstance = async (reportId, userReportName, params, dashboardId) => {
-    return Api.getReportInstance(reportId, userReportName, params, dashboardId);
+  createReportInstance = async (
+    reportId,
+    userReportName,
+    params,
+    dashboardId
+  ) => {
+    return Api.createReportInstance(
+      reportId,
+      userReportName,
+      params,
+      dashboardId
+    );
   };
 
   getDrilldownInstance = async (reportId, instanceId, params) => {
