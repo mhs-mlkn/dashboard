@@ -56,13 +56,20 @@ class ReportCard extends Component {
 
   initial = async instanceId => {
     this.setState({ loading: true });
-    const userReport = await ReportContainer.getUserReport(instanceId);
-    const { refreshInterval } = this.extractReportConfig(userReport.report);
-    this.setState({
-      userReport,
-      refreshInterval,
-      loading: false
-    });
+    try {
+      const userReport = await ReportContainer.getUserReport(instanceId);
+      const { refreshInterval } = this.extractReportConfig(userReport.report);
+      this.setState({
+        userReport,
+        refreshInterval,
+        loading: false
+      });
+    } catch (error) {
+      this.setState({
+        error: error.message,
+        loading: false
+      });
+    }
   };
 
   extractReportConfig = report => {
@@ -201,11 +208,6 @@ class ReportCard extends Component {
 
   render = () => {
     const { expanded, filters, userReport, loading, error } = this.state;
-
-    if (!userReport) {
-      return null;
-    }
-
     const { layout, editEnabled, classes } = this.props;
 
     if (loading) {
@@ -214,6 +216,10 @@ class ReportCard extends Component {
 
     if (error) {
       return <Error message={error} />;
+    }
+
+    if (!userReport) {
+      return null;
     }
 
     return (

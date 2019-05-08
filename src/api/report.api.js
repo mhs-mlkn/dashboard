@@ -36,7 +36,10 @@ export default class ReportApi {
     await Auth.refreshToken();
     return axios
       .get(`${baseUrl}/userreport/${id}`)
-      .then(res => res.data.result);
+      .then(res => res.data.result)
+      .catch(err => {
+        throw new Error(err.response.data.message || "درخواست با خطا مواجه شد");
+      });
   };
 
   static createReportInstance = async (
