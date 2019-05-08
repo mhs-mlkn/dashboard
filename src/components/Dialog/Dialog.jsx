@@ -53,6 +53,7 @@ const CustomDialog = props => {
     title,
     onClose,
     onSave,
+    saveText = "ذخیره",
     children
   } = props;
 
@@ -82,9 +83,11 @@ const CustomDialog = props => {
         <Button onClick={onClose} color="secondary" autoFocus>
           بستن
         </Button>
-        <Button onClick={onSave} color="primary" autoFocus>
-          ذخیره
-        </Button>
+        {onSave && (
+          <Button onClick={onSave} color="primary" autoFocus>
+            {saveText}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

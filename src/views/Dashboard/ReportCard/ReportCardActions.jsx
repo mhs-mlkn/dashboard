@@ -15,9 +15,12 @@ import Settings from "@material-ui/icons/Settings";
 import PlayArrow from "@material-ui/icons/PlayArrow";
 import Pause from "@material-ui/icons/Pause";
 import GroupAdd from "@material-ui/icons/GroupAdd";
+import Code from "@material-ui/icons/Code";
 import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
+import Dialog from "../../../components/Dialog/Dialog";
 import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
+import EmbedReport from "./Embed";
 
 const extractReportConfig = report => {
   try {
@@ -37,6 +40,7 @@ const ReportCardActions = props => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [embedModal, setEmbedModal] = useState(false);
   const [isRunning, setIsRunning] = useState(true);
 
   const handleMenuClick = event => {
@@ -104,6 +108,10 @@ const ReportCardActions = props => {
     actionHandler("SHARE_REPORT");
   };
 
+  const embedReportHandler = () => {
+    setEmbedModal(!embedModal);
+  };
+
   useEffect(() => {
     actionHandler("TOGGLE_INTERVAL", isRunning);
   }, [isRunning]);
@@ -116,6 +124,13 @@ const ReportCardActions = props => {
         handleClose={toggleConfirm}
         open={open}
       />
+      <Dialog
+        title="گزارش را در صفحه خود ببینید"
+        open={embedModal}
+        onClose={embedReportHandler}
+      >
+        <EmbedReport instanceId={instanceId} />
+      </Dialog>
       {editEnabled && (
         <div className="draggableCancel">
           {!userReport.report.publicized && (
@@ -157,6 +172,25 @@ const ReportCardActions = props => {
         <>
           <IconButton title="ذخیره" color="primary" onClick={handleMenuClick}>
             <Save fontSize="small" />
+          </IconButton>
+          <Menu
+            id="export-report-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={exportActionHandler}>PNG</MenuItem>
+          </Menu>
+        </>
+      )}
+      {!editEnabled && userReport.report.type !== "Table" && (
+        <>
+          <IconButton
+            title="کد گزارش"
+            color="primary"
+            onClick={embedReportHandler}
+          >
+            <Code fontSize="small" />
           </IconButton>
           <Menu
             id="export-report-menu"
