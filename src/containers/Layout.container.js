@@ -27,7 +27,17 @@ export class LayoutContainer extends Container {
     const id = await Api.addDashboard(order);
     const config = JSON.parse(DEFAULT_CONFIG_STRING);
     config.layouts = setMinSize(config.layouts);
-    const dashboards = [...this.state.dashboards, { id, config }];
+    let dashboards = [...this.state.dashboards, { id, config }];
+    dashboards = [
+      ...dashboards.filter(d => !d.shared),
+      ...dashboards.filter(d => d.shared)
+    ];
+    return this.setState({ dashboards });
+  };
+
+  deleteDashboard = async id => {
+    await Api.deleteDashboard(id);
+    const dashboards = this.state.dashboards.filter(d => d.id !== id);
     return this.setState({ dashboards });
   };
 

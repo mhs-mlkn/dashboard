@@ -152,12 +152,14 @@ class ReportThumbCard extends Component {
                     open={Boolean(anchorEl)}
                     onClose={this.handleMenuClose}
                   >
-                    {Layout.state.dashboards.map((_, index) => (
-                      <MenuItem
-                        key={index}
-                        onClick={this.handleSelectDashboard(index)}
-                      >{`داشبورد ${index}`}</MenuItem>
-                    ))}
+                    {Layout.state.dashboards
+                      .filter(d => !d.shared)
+                      .map((_, index) => (
+                        <MenuItem
+                          key={index}
+                          onClick={this.handleSelectDashboard(index)}
+                        >{`داشبورد ${index}`}</MenuItem>
+                      ))}
                     <MenuItem onClick={this.handleCreateDashboard}>
                       {loading ? <CircularProgress /> : "داشبورد جدید"}
                     </MenuItem>

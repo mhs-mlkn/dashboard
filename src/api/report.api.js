@@ -66,7 +66,9 @@ export default class ReportApi {
 
   static fetchDashboards = async () => {
     await Auth.refreshToken();
-    return axios.get(`${baseUrl}/dashboard`).then(res => res.data.result.data);
+    return axios
+      .get(`${baseUrl}/dashboard/all`)
+      .then(res => res.data.result.data);
   };
 
   static addDashboard = async order => {
@@ -128,6 +130,13 @@ export default class ReportApi {
     await Auth.refreshToken();
     return axios
       .put(`${baseUrl}/dashboard/${id}`, { config: JSON.stringify(config) })
+      .then(res => res.data.result.data);
+  };
+
+  static deleteDashboard = async id => {
+    await Auth.refreshToken();
+    return axios
+      .delete(`${baseUrl}/dashboard/${id}`)
       .then(res => res.data.result.data);
   };
 

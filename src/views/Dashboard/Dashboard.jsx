@@ -5,6 +5,7 @@ import Error from "../../components/Error/Error";
 import ReportCard from "./ReportCard/ReportCard";
 import ShareDashboard from "./ShareDashboard/ShareDashboard";
 import LayoutContainer from "../../containers/Layout.container";
+import MyCustomEvent from "../../util/customEvent";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -19,6 +20,7 @@ class Dashboard extends Component {
 
   componentDidMount = () => {
     const { index } = this.props.match.params;
+    MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
     this.initialize(index);
   };
 
@@ -30,12 +32,30 @@ class Dashboard extends Component {
     }
   };
 
+  componentWillUnmount = () => {
+    MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
+  };
+
   initialize = index => {
     const dashboardsCount = LayoutContainer.state.dashboards.length;
     if (index === undefined || index >= dashboardsCount) {
       return this.props.history.replace(`/user/dashboard/0`);
     }
     this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+  };
+
+  onDeleteDashboard = async () => {
+    const dashboard = LayoutContainer.getDashboard(this.state.index);
+    if (dashboard.shared) {
+      return alert(
+        "داشبورد با شما به اشتراک گذاشته شده است\nنمیتوانید آن را حذف کنید"
+      );
+    }
+    try {
+      await LayoutContainer.deleteDashboard(dashboard.id);
+    } catch (error) {
+      this.setState({ error: "درخواست با خطا مواجه شد" });
+    }
   };
 
   onBreakpointChange = breakpoint => {

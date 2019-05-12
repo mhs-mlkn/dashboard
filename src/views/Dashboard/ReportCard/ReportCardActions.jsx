@@ -22,7 +22,11 @@ import ReportContainer from "../../../containers/Report.container";
 import LayoutContainer from "../../../containers/Layout.container";
 import EmbedReport from "./Embed";
 
-const extractReportConfig = report => {
+const extractReportConfig = userReport => {
+  if (!userReport) {
+    return;
+  }
+  const { report } = userReport;
   try {
     const config = JSON.parse(report.config || '{"refreshInterval":0}');
     return config;
@@ -32,11 +36,12 @@ const extractReportConfig = report => {
 };
 
 const ReportCardActions = props => {
-  const { editEnabled, userReport, actionHandler } = props;
+  const { editEnabled, instanceId, userReport, actionHandler } = props;
 
-  const instanceId = userReport.id;
-  const hasFilters = userReport.report.query.queryFilters.length > 0;
-  const config = extractReportConfig(userReport.report);
+  const hasFilters = userReport
+    ? userReport.report.query.queryFilters.length > 0
+    : false;
+  const config = extractReportConfig(userReport);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -133,7 +138,7 @@ const ReportCardActions = props => {
       </Dialog>
       {editEnabled && (
         <div className="draggableCancel">
-          {!userReport.report.publicized && (
+          {userReport && !userReport.report.publicized && (
             <IconButton title="دسترسی" onClick={addUserActionHandler}>
               <GroupAdd color="secondary" fontSize="small" />
             </IconButton>
@@ -141,12 +146,14 @@ const ReportCardActions = props => {
           <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>
-          <IconButton title="تنظیم" onClick={configReport}>
-            <Settings color="primary" fontSize="small" />
-          </IconButton>
+          {userReport && (
+            <IconButton title="تنظیم" onClick={configReport}>
+              <Settings color="primary" fontSize="small" />
+            </IconButton>
+          )}
         </div>
       )}
-      {!editEnabled && config.refreshInterval > 0 && (
+      {userReport && !editEnabled && config.refreshInterval > 0 && (
         <IconButton
           color="primary"
           onClick={toggleIntervalHandler}
@@ -159,7 +166,7 @@ const ReportCardActions = props => {
           )}
         </IconButton>
       )}
-      {!editEnabled && (
+      {userReport && !editEnabled && (
         <IconButton
           color="primary"
           onClick={refreshActionHandler}
@@ -168,7 +175,7 @@ const ReportCardActions = props => {
           <Refresh fontSize="small" />
         </IconButton>
       )}
-      {!editEnabled && (
+      {userReport && !editEnabled && (
         <>
           <IconButton title="ذخیره" color="primary" onClick={handleMenuClick}>
             <Save fontSize="small" />
@@ -183,7 +190,7 @@ const ReportCardActions = props => {
           </Menu>
         </>
       )}
-      {!editEnabled && userReport.report.type !== "Table" && (
+      {userReport && !editEnabled && userReport.report.type !== "Table" && (
         <>
           <IconButton
             title="کد گزارش"
@@ -202,12 +209,15 @@ const ReportCardActions = props => {
           </Menu>
         </>
       )}
-      {!editEnabled && hasFilters && userReport.report.type === "Table" && (
-        <IconButton onClick={filterActionHandler}>
-          <FilterList color="primary" fontSize="small" />
-        </IconButton>
-      )}
-      {!editEnabled && ReportContainer.isDrillDown(instanceId) && (
+      {userReport &&
+        !editEnabled &&
+        hasFilters &&
+        userReport.report.type === "Table" && (
+          <IconButton onClick={filterActionHandler}>
+            <FilterList color="primary" fontSize="small" />
+          </IconButton>
+        )}
+      {userReport && !editEnabled && ReportContainer.isDrillDown(instanceId) && (
         <IconButton onClick={backActionHandler} title="بازگشت">
           <ArrowUpward color="primary" fontSize="small" />
         </IconButton>

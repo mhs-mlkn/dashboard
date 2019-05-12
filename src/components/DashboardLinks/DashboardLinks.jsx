@@ -26,14 +26,14 @@ const DashboardLinks = props => {
       {Layout => (
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
           {props.location.pathname.startsWith("/user/dashboard")
-            ? Layout.state.dashboards.map((_, index) => (
+            ? Layout.state.dashboards.map((d, index) => (
                 <Tooltip title={`داشبورد ${index}`} placement="top" key={index}>
                   <Radio
                     name="dashboard-links"
                     value={index}
                     checked={+selectedIndex === index}
                     onChange={handleChange}
-                    color="default"
+                    color={d.shared ? "secondary" : "default"}
                     icon={<RadioButtonUncheckedIcon fontSize="small" />}
                     checkedIcon={<RadioButtonCheckedIcon fontSize="small" />}
                   />

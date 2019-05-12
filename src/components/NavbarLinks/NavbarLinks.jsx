@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Share from "@material-ui/icons/Share";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
@@ -23,6 +24,10 @@ const NavbarLinks = props => {
     MyCustomEvent.emit("SHARE_DASHBOARD");
   };
 
+  const handleDeleteDashboard = () => {
+    MyCustomEvent.emit("DELETE_DASHBOARD");
+  };
+
   const handleClose = async e => {
     setAnchorEl(null);
     if (e.target.id === "logout") {
@@ -31,19 +36,33 @@ const NavbarLinks = props => {
     }
   };
 
+  const isVisible = () =>
+    RegExp("/user/dashboard/\\d+", "g").test(props.location.pathname);
+
   return (
     <Subscribe to={[AuthContainer]}>
       {Auth =>
         Auth.isLoggedIn() ? (
           <div>
-            <Button
-              onClick={handleShareDashboard}
-              color="primary"
-              variant="outlined"
-            >
-              <Share fontSize="small" />
-              اشتراک گذاری
-            </Button>
+            {isVisible() && (
+              <>
+                <IconButton
+                  onClick={handleDeleteDashboard}
+                  color="secondary"
+                  title="حذف داشبورد"
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <Button
+                  onClick={handleShareDashboard}
+                  color="primary"
+                  variant="outlined"
+                >
+                  <Share fontSize="small" />
+                  اشتراک گذاری
+                </Button>
+              </>
+            )}
             <IconButton onClick={handleMenu} color="primary">
               <AccountCircle />
             </IconButton>

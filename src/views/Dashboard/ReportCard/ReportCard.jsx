@@ -214,11 +214,11 @@ class ReportCard extends Component {
       return <Loading />;
     }
 
-    if (error) {
-      return <Error message={error} />;
-    }
+    // if (error) {
+    //   return <Error message={error} />;
+    // }
 
-    if (!userReport) {
+    if (!error && !userReport) {
       return null;
     }
 
@@ -228,24 +228,31 @@ class ReportCard extends Component {
           action={
             <ReportCardActions
               userReport={userReport}
+              instanceId={+layout.i}
               editEnabled={editEnabled}
               actionHandler={this.actionHandler}
             />
           }
-          title={userReport.name || userReport.report.name}
+          title={userReport && (userReport.name || userReport.report.name)}
           classes={{ root: classes.headerRoot, title: classes.title }}
         />
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Filters
-              report={userReport.report}
-              values={filters}
-              onSubmit={this.changeFilters}
-            />
-          </CardContent>
-        </Collapse>
+        {userReport && (
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <Filters
+                report={userReport.report}
+                values={filters}
+                onSubmit={this.changeFilters}
+              />
+            </CardContent>
+          </Collapse>
+        )}
         <CardContent className={classes.content} id={`report-${layout.i}`}>
-          {this.getReport(userReport.report.type, layout)}
+          {error ? (
+            <Error message={error} />
+          ) : (
+            this.getReport(userReport.report.type, layout)
+          )}
         </CardContent>
       </Card>
     );
