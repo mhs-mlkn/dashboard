@@ -104,7 +104,7 @@ export default class ReportApi {
     await Auth.refreshToken();
     return axios
       .get(`${reportUrl}/${reportId}/users`)
-      .then(res => res.data.result.userVOList);
+      .then(res => res.data.result.data);
   };
 
   static addReportUser = async (reportId, identity) => {
