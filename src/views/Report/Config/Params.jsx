@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withSnackbar } from "notistack";
 import { Formik, Form, FieldArray } from "formik";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -51,29 +52,34 @@ class ReportParams extends Component {
   };
 
   submit = async ({ userReportName, params }) => {
-    this.setState({ loading: true });
-    const { id: reportId, index = 0 } = this.props.match.params;
-    await this.createInstance(reportId, userReportName, params, index);
-    if (this.hasDrillDown(this.state.report)) {
-      if (this.hasParams(this.state.drillDownReport)) {
-        const params = this.state.drillDownReport
-          ? this.state.drillDownReport.query.queryParams.filter(
-              p => ["BY_BUSINESS"].indexOf(p.fill) > -1
-            )
-          : [];
-        this.setState({ params, showDrillDownForm: true, loading: false });
-        return;
-      } else {
-        await ReportContainer.getDrilldownInstance(
-          this.state.report.drillDownId,
-          this.state.instanceId,
-          []
-        );
+    try {
+      this.setState({ loading: true });
+      const { id: reportId, index = 0 } = this.props.match.params;
+      await this.createInstance(reportId, userReportName, params, index);
+      if (this.hasDrillDown(this.state.report)) {
+        if (this.hasParams(this.state.drillDownReport)) {
+          const params = this.state.drillDownReport
+            ? this.state.drillDownReport.query.queryParams.filter(
+                p => ["BY_BUSINESS"].indexOf(p.fill) > -1
+              )
+            : [];
+          this.setState({ params, showDrillDownForm: true, loading: false });
+          return;
+        } else {
+          await ReportContainer.getDrilldownInstance(
+            this.state.report.drillDownId,
+            this.state.instanceId,
+            []
+          );
+        }
       }
+      await LayoutContainer.addToLayout(index, this.state.instanceId);
+      this.props.history.replace(`/user/dashboard/layout/${index}`);
+    } catch (error) {
+      this.props.enqueueSnackbar(error.message, { variant: "error" });
+    } finally {
+      this.setState({ loading: false });
     }
-    await LayoutContainer.addToLayout(index, this.state.instanceId);
-    this.setState({ loading: false });
-    this.props.history.replace(`/user/dashboard/layout/${index}`);
   };
 
   submitDrillDown = async ({ params }) => {
@@ -254,4 +260,5 @@ class ReportParams extends Component {
   }
 }
 
-export default ReportParams;
+const WIthSnackbar = withSnackbar(ReportParams);
+export default WIthSnackbar;

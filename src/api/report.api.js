@@ -54,7 +54,10 @@ export default class ReportApi {
         `${reportUrl}/${reportId}/param?dashboardId=${dashboardId}&name=${userReportName}`,
         params
       )
-      .then(res => res.data.result);
+      .then(res => res.data.result)
+      .catch(err => {
+        throw new Error(err.response.data.message || "درخواست با خطا مواجه شد");
+      });
   };
 
   static getDrilldownInstance = async (reportId, instanceId, params) => {

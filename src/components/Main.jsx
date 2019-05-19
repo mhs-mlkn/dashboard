@@ -20,7 +20,6 @@ class Main extends Component {
 
   loadInitilData = async () => {
     try {
-      console.log("Main.loadInitialData...");
       this.setState({ loading: true });
       await AuthContainer.refreshToken();
       await Promise.all([

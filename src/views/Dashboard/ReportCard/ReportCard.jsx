@@ -186,7 +186,7 @@ class ReportCard extends Component {
             dashboardIndex={this.props.dashboardIndex}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
-            height={height * 10}
+            height={height * 1.1}
           />
         );
 
