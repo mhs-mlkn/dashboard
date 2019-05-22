@@ -36,7 +36,13 @@ const extractReportConfig = userReport => {
 };
 
 const ReportCardActions = props => {
-  const { editEnabled, instanceId, userReport, actionHandler } = props;
+  const {
+    editEnabled,
+    instanceId,
+    userReport,
+    reportHeight,
+    actionHandler
+  } = props;
 
   const hasFilters = userReport
     ? userReport.report.query.queryFilters.length > 0
@@ -146,7 +152,7 @@ const ReportCardActions = props => {
           <IconButton title="حذف" onClick={toggleConfirm}>
             <DeleteForever color="error" fontSize="small" />
           </IconButton>
-          {userReport && (
+          {userReport && userReport.report.type !== "Table" && (
             <IconButton title="تنظیم" onClick={configReport}>
               <Settings color="primary" fontSize="small" />
             </IconButton>
@@ -177,7 +183,12 @@ const ReportCardActions = props => {
       )}
       {userReport && !editEnabled && (
         <>
-          <IconButton title="ذخیره" color="primary" onClick={handleMenuClick}>
+          <IconButton
+            title={reportHeight > 150 ? "ارتفاع گزارش کم است" : "ذخیره"}
+            color="primary"
+            onClick={handleMenuClick}
+            disabled={reportHeight < 150}
+          >
             <Save fontSize="small" />
           </IconButton>
           <Menu
@@ -191,23 +202,13 @@ const ReportCardActions = props => {
         </>
       )}
       {userReport && !editEnabled && userReport.report.type !== "Table" && (
-        <>
-          <IconButton
-            title="کد گزارش"
-            color="primary"
-            onClick={embedReportHandler}
-          >
-            <Code fontSize="small" />
-          </IconButton>
-          <Menu
-            id="export-report-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={exportActionHandler}>PNG</MenuItem>
-          </Menu>
-        </>
+        <IconButton
+          title="کد گزارش"
+          color="primary"
+          onClick={embedReportHandler}
+        >
+          <Code fontSize="small" />
+        </IconButton>
       )}
       {userReport &&
         !editEnabled &&

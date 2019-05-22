@@ -89,7 +89,7 @@ class ReportCard extends Component {
       const { id: instanceId } = this.state.userReport;
       this.refreshInterval = setInterval(
         () =>
-          MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: true }),
+          MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: false }),
         refreshInterval * 1000
       );
     }
@@ -209,6 +209,7 @@ class ReportCard extends Component {
   render = () => {
     const { expanded, filters, userReport, loading, error } = this.state;
     const { layout, editEnabled, classes } = this.props;
+    const reportHeight = layout.h * 19.5 - 72;
 
     if (loading) {
       return <Loading />;
@@ -229,6 +230,11 @@ class ReportCard extends Component {
             <ReportCardActions
               userReport={userReport}
               instanceId={+layout.i}
+              reportHeight={
+                userReport.report.type === "Scalar"
+                  ? reportHeight * 1.1
+                  : reportHeight
+              }
               editEnabled={editEnabled}
               actionHandler={this.actionHandler}
             />
