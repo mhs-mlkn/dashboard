@@ -50,3 +50,5 @@ export const CHART_CONFIG = {
   Radar: RADAR_CHART_CONFIG,
   Scalar: SCALAR_CONFIG
 };
+
+export const CHANGE_DASHBOARD_INTERVAL = 60;

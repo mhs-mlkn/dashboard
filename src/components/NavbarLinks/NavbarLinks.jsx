@@ -10,7 +10,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AuthContainer from "../../containers/Auth.container";
 import { loginRoute } from "../../routes";
+import Timer from "../Timer";
 import MyCustomEvent from "../../util/customEvent";
+import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 
 const NavbarLinks = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,9 +45,10 @@ const NavbarLinks = props => {
     <Subscribe to={[AuthContainer]}>
       {Auth =>
         Auth.isLoggedIn() ? (
-          <div>
+          <div style={{ display: "flex", alignItems: "center" }}>
             {isVisible() && (
               <>
+                <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
                 <IconButton
                   onClick={handleDeleteDashboard}
                   color="secondary"

@@ -6,6 +6,7 @@ import ReportCard from "./ReportCard/ReportCard";
 import ShareDashboard from "./ShareDashboard/ShareDashboard";
 import LayoutContainer from "../../containers/Layout.container";
 import MyCustomEvent from "../../util/customEvent";
+import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -21,12 +22,18 @@ class Dashboard extends Component {
   componentDidMount = () => {
     const { index } = this.props.match.params;
     MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
+    MyCustomEvent.on("TOGGLE_DASHBOARD_INTERVAL", this.toggleInterval);
     this.initialize(index);
+    this.startInterval();
   };
 
   componentDidUpdate = async prevProps => {
     const { index: prevIndex } = prevProps.match.params;
     const { index } = this.props.match.params;
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.stopInterval();
+      this.startInterval();
+    }
     if (prevIndex !== index) {
       this.initialize(index);
     }
@@ -34,6 +41,8 @@ class Dashboard extends Component {
 
   componentWillUnmount = () => {
     MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
+    MyCustomEvent.on("TOGGLE_DASHBOARD_INTERVAL", this.toggleInterval);
+    this.stopInterval();
   };
 
   initialize = index => {
@@ -42,6 +51,28 @@ class Dashboard extends Component {
       return this.props.history.replace(`/user/dashboard/0`);
     }
     this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+  };
+
+  toggleInterval = isPaused => {
+    if (isPaused) {
+      this.stopInterval();
+    } else {
+      this.startInterval();
+    }
+  };
+
+  startInterval = () =>
+    (this.interval = setInterval(
+      this.goToNext,
+      CHANGE_DASHBOARD_INTERVAL * 1000
+    ));
+  stopInterval = () => clearInterval(this.interval);
+
+  goToNext = () => {
+    const dashboardsCount = LayoutContainer.state.dashboards.length;
+    const { index } = this.state;
+    const next = (+index + 1) % dashboardsCount;
+    return this.props.history.replace(`/user/dashboard/${next}`);
   };
 
   onDeleteDashboard = async () => {
