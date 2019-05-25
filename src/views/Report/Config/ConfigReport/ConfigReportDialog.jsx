@@ -42,7 +42,7 @@ const ConfigReportDialog = props => {
       userReport,
       config: {
         ...CHART_CONFIG[userReport.report.type],
-        ...LayoutContainer.getSettings(props.dashboardIndex, userReport.id)
+        ...LayoutContainer.getSettings(props.dashboardId, userReport.id)
       },
       open: true
     });
@@ -55,7 +55,7 @@ const ConfigReportDialog = props => {
   const handleOnSave = async () => {
     const settings = {
       ...CHART_CONFIG[state.userReport.report.type],
-      ...LayoutContainer.getSettings(props.dashboardIndex, state.userReport.id)
+      ...LayoutContainer.getSettings(props.dashboardId, state.userReport.id)
     };
 
     if (isEqual(state.config, settings) === false) {

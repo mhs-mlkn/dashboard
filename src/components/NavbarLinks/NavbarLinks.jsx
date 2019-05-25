@@ -9,6 +9,7 @@ import Share from "@material-ui/icons/Share";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AuthContainer from "../../containers/Auth.container";
+import LayoutContainer from "../../containers/Layout.container";
 import { loginRoute } from "../../routes";
 import Timer from "../Timer";
 import MyCustomEvent from "../../util/customEvent";
@@ -48,7 +49,9 @@ const NavbarLinks = props => {
           <div style={{ display: "flex", alignItems: "center" }}>
             {isVisible() && (
               <>
-                <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                {LayoutContainer.state.dashboards.length > 1 && (
+                  <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                )}
                 <IconButton
                   onClick={handleDeleteDashboard}
                   color="secondary"

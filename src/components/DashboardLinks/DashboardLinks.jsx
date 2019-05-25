@@ -8,7 +8,7 @@ import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
 import LayoutContainer from "../../containers/Layout.container";
 
 const DashboardLinks = props => {
-  const getIndex = () => {
+  const getSelectedDashboardId = () => {
     const urlParts = props.location.pathname.split("/");
     return urlParts[urlParts.length - 1];
   };
@@ -19,19 +19,19 @@ const DashboardLinks = props => {
     return props.history.push(`${newPath}/${e.target.value}`);
   };
 
-  const selectedIndex = getIndex();
+  const selectedDashboardId = getSelectedDashboardId();
 
   return (
     <Subscribe to={[LayoutContainer]}>
       {Layout => (
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
           {props.location.pathname.startsWith("/user/dashboard")
-            ? Layout.state.dashboards.map((d, index) => (
-                <Tooltip title={`داشبورد ${index}`} placement="top" key={index}>
+            ? Layout.state.dashboards.map(d => (
+                <Tooltip title={`داشبورد ${d.id}`} placement="top" key={d.id}>
                   <Radio
                     name="dashboard-links"
-                    value={index}
-                    checked={+selectedIndex === index}
+                    value={d.id}
+                    checked={+selectedDashboardId === d.id}
                     onChange={handleChange}
                     color={d.shared ? "secondary" : "default"}
                     icon={<RadioButtonUncheckedIcon fontSize="small" />}

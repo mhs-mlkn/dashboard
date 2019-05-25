@@ -126,7 +126,7 @@ class ChartWrapper extends Component {
 
   render = () => {
     const { loading, error } = this.state;
-    const { type, height, dashboardIndex, instanceId } = this.props;
+    const { type, height, dashboardId, instanceId } = this.props;
 
     if (loading) {
       return <Loading />;
@@ -142,7 +142,7 @@ class ChartWrapper extends Component {
         type={type}
         height={height}
         onClick={this.chartClickHandler}
-        config={LayoutContainer.getSettings(dashboardIndex, instanceId)}
+        config={LayoutContainer.getSettings(dashboardId, instanceId)}
       />
     );
   };

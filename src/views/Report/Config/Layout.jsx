@@ -42,22 +42,22 @@ class DashboardLayout extends Component {
     layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
     reRender: 0,
     isDirty: false,
-    index: 0,
+    dashboardId: 0,
     loading: false,
     error: ""
   };
 
   componentDidMount = async () => {
-    const { index } = this.props.match.params;
+    const { dashboardId } = this.props.match.params;
+    this.initialize(dashboardId);
     MyCustomEvent.on("REPORT_DELETED", this.refresh);
-    this.initialize(index);
   };
 
   componentDidUpdate = async prevProps => {
-    const { index: prevIndex } = prevProps.match.params;
-    const { index } = this.props.match.params;
-    if (prevIndex !== index) {
-      this.initialize(index);
+    const { dashboardId: prevDashboardId } = prevProps.match.params;
+    const { dashboardId } = this.props.match.params;
+    if (prevDashboardId !== dashboardId) {
+      this.initialize(dashboardId);
     }
   };
 
@@ -65,16 +65,26 @@ class DashboardLayout extends Component {
     MyCustomEvent.removeEventListener("REPORT_DELETED", this.refresh);
   };
 
-  initialize = index => {
-    const dashboardsCount = LayoutContainer.state.dashboards.length;
-    if (index === undefined || index >= dashboardsCount) {
-      return this.props.history.replace(`/user/dashboard/layout/0`);
+  initialize = dashboardId => {
+    if (
+      dashboardId === undefined ||
+      !LayoutContainer.isValidDashboardId(dashboardId)
+    ) {
+      const dashboard = LayoutContainer.state.dashboards[0];
+      return this.props.history.replace(
+        `/user/dashboard/layout/${dashboard.id}`
+      );
     }
-    this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+    this.setState({
+      dashboardId,
+      layouts: LayoutContainer.getLayouts(dashboardId)
+    });
   };
 
   refresh = () => {
-    this.setState({ layouts: LayoutContainer.getLayouts(this.state.index) });
+    this.setState({
+      layouts: LayoutContainer.getLayouts(this.state.dashboardId)
+    });
   };
 
   onBreakpointChange = breakpoint => {
@@ -91,7 +101,7 @@ class DashboardLayout extends Component {
 
   onSettingsChange = async (userReportId, settings) => {
     await LayoutContainer.onSettingsChange(
-      this.state.index,
+      this.state.dashboardId,
       userReportId,
       settings
     );
@@ -103,10 +113,10 @@ class DashboardLayout extends Component {
 
   save = async () => {
     try {
-      const { index, layouts } = this.state;
+      const { dashboardId, layouts } = this.state;
       this.setState({ loading: true });
-      await LayoutContainer.setLayouts(index, layouts);
-      await LayoutContainer.saveDashboard(index);
+      await LayoutContainer.setLayouts(dashboardId, layouts);
+      await LayoutContainer.saveDashboard(dashboardId);
       this.setState({ loading: false, isDirty: false });
       this.props.enqueueSnackbar("با موفقیت ذخیره شد", { variant: "success" });
     } catch (error) {
@@ -117,7 +127,14 @@ class DashboardLayout extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { layouts, breakpoint, isDirty, index, error, loading } = this.state;
+    const {
+      layouts,
+      breakpoint,
+      isDirty,
+      dashboardId,
+      error,
+      loading
+    } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -145,7 +162,7 @@ class DashboardLayout extends Component {
             return (
               <div key={l.i} style={{ direction: "rtl" }}>
                 <ReportCard
-                  dashboardIndex={index}
+                  dashboardId={dashboardId}
                   layout={l}
                   editEnabled={true}
                 />
@@ -163,7 +180,7 @@ class DashboardLayout extends Component {
           {loading ? <CircularProgress color="secondary" /> : <SaveIcon />}
         </Fab>
         <ConfigReportDialog
-          dashboardIndex={index}
+          dashboardId={dashboardId}
           onSettingsChange={this.onSettingsChange}
         />
         <ShareReportDialog />

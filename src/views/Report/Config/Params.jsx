@@ -54,8 +54,8 @@ class ReportParams extends Component {
   submit = async ({ userReportName, params }) => {
     try {
       this.setState({ loading: true });
-      const { id: reportId, index = 0 } = this.props.match.params;
-      await this.createInstance(reportId, userReportName, params, index);
+      const { id: reportId, dashboardId } = this.props.match.params;
+      await this.createInstance(reportId, userReportName, params, dashboardId);
       if (this.hasDrillDown(this.state.report)) {
         if (this.hasParams(this.state.drillDownReport)) {
           const params = this.state.drillDownReport
@@ -73,8 +73,8 @@ class ReportParams extends Component {
           );
         }
       }
-      await LayoutContainer.addToLayout(index, this.state.instanceId);
-      this.props.history.replace(`/user/dashboard/layout/${index}`);
+      await LayoutContainer.addToLayout(dashboardId, this.state.instanceId);
+      this.props.history.replace(`/user/dashboard/layout/${dashboardId}`);
     } catch (error) {
       this.props.enqueueSnackbar(error.message, { variant: "error" });
     } finally {
@@ -83,20 +83,19 @@ class ReportParams extends Component {
   };
 
   submitDrillDown = async ({ params }) => {
-    const { index = 0 } = this.props.match.params;
+    const { dashboardId } = this.props.match.params;
     this.setState({ loading: true });
     await ReportContainer.getDrilldownInstance(
       this.state.report.drillDownId,
       this.state.instanceId,
       params
     );
-    await LayoutContainer.addToLayout(index, this.state.instanceId);
+    await LayoutContainer.addToLayout(dashboardId, this.state.instanceId);
     this.setState({ loading: false });
-    this.props.history.replace(`/user/dashboard/layout/${index}`);
+    this.props.history.replace(`/user/dashboard/layout/${dashboardId}`);
   };
 
-  createInstance = async (reportId, userReportName, params, dashboardIndex) => {
-    const dashboardId = LayoutContainer.getDashboard(dashboardIndex).id;
+  createInstance = async (reportId, userReportName, params, dashboardId) => {
     const instanceId = await ReportContainer.createReportInstance(
       reportId,
       userReportName,

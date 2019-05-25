@@ -41,54 +41,58 @@ export class LayoutContainer extends Container {
     return this.setState({ dashboards });
   };
 
-  getDashboard = dashboardIndex => {
-    return this.state.dashboards[dashboardIndex];
+  getDashboard = dashboardId => {
+    return this.state.dashboards.find(d => +d.id === +dashboardId);
   };
 
-  getLayouts = dashboardIndex => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  getDashboardIndex = dashboardId => {
+    return this.state.dashboards.findIndex(d => +d.id === +dashboardId);
+  };
+
+  getLayouts = dashboardId => {
+    const dashboard = this.getDashboard(dashboardId);
     return dashboard.config.layouts;
   };
 
-  getSettings = (dashboardIndex, instanceId) => {
-    const { config = {} } = this.getDashboard(dashboardIndex);
+  getSettings = (dashboardId, instanceId) => {
+    const { config = {} } = this.getDashboard(dashboardId);
     const { settings = {} } = config;
     return settings[instanceId] || {};
   };
 
-  addToLayout = async (dashboardIndex, instanceId) => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  addToLayout = async (dashboardId, instanceId) => {
+    const dashboard = this.getDashboard(dashboardId);
     dashboard.config.layouts = pushItem(
       dashboard.config.layouts,
       `${instanceId}`
     );
-    await this.saveDashboard(dashboardIndex);
+    await this.saveDashboard(dashboardId);
     return Promise.resolve(instanceId);
   };
 
-  removeFromLayout = async (dashboardIndex, instanceId) => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  removeFromLayout = async (dashboardId, instanceId) => {
+    const dashboard = this.getDashboard(dashboardId);
     let { layouts } = dashboard.config;
     layouts = removeItem(layouts, `${instanceId}`);
     Reflect.deleteProperty(dashboard.config.settings || {}, instanceId);
-    await this.setLayouts(dashboardIndex, layouts);
-    return this.saveDashboard(dashboardIndex);
+    await this.setLayouts(dashboardId, layouts);
+    return this.saveDashboard(dashboardId);
   };
 
-  setLayouts = async (dashboardIndex, layouts) => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  setLayouts = async (dashboardId, layouts) => {
+    const dashboard = this.getDashboard(dashboardId);
     const updatedDashboard = {
       ...dashboard,
       config: { ...dashboard.config, layouts }
     };
-    const dashboards = this.state.dashboards.map((d, i) =>
-      i === +dashboardIndex ? updatedDashboard : d
+    const dashboards = this.state.dashboards.map(d =>
+      +d.id === +dashboardId ? updatedDashboard : d
     );
     return this.setState({ dashboards });
   };
 
-  onSettingsChange = async (dashboardIndex, instanceId, reportSettings) => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  onSettingsChange = async (dashboardId, instanceId, reportSettings) => {
+    const dashboard = this.getDashboard(dashboardId);
     const updatedDashboard = {
       ...dashboard,
       config: {
@@ -96,16 +100,19 @@ export class LayoutContainer extends Container {
         settings: { ...dashboard.config.settings, [instanceId]: reportSettings }
       }
     };
-    const dashboards = this.state.dashboards.map((d, i) =>
-      i === +dashboardIndex ? updatedDashboard : d
+    const dashboards = this.state.dashboards.map(d =>
+      +d.id === +dashboardId ? updatedDashboard : d
     );
     return this.setState({ dashboards });
   };
 
-  saveDashboard = async dashboardIndex => {
-    const dashboard = this.getDashboard(dashboardIndex);
+  saveDashboard = async dashboardId => {
+    const dashboard = this.getDashboard(dashboardId);
     return Api.saveDashboard(dashboard);
   };
+
+  isValidDashboardId = dashboardId =>
+    this.state.dashboards.some(d => +d.id === +dashboardId);
 }
 
 function setMinSize(layouts) {
