@@ -183,7 +183,7 @@ class ReportCard extends Component {
         return (
           <ScalarWrapper
             instanceId={instanceId}
-            dashboardIndex={this.props.dashboardIndex}
+            dashboardId={this.props.dashboardId}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}
             height={height * 1.1}
@@ -194,7 +194,7 @@ class ReportCard extends Component {
         return (
           <ChartWrapper
             instanceId={instanceId}
-            dashboardIndex={this.props.dashboardIndex}
+            dashboardId={this.props.dashboardId}
             type={reportType}
             filters={this.state.filters}
             editEnabled={this.props.editEnabled}

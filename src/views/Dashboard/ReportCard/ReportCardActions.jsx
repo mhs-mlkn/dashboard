@@ -83,10 +83,10 @@ const ReportCardActions = props => {
   };
 
   const deleteReport = async () => {
-    const { index: dashboardIndex } = props.match.params;
+    const { dashboardId } = props.match.params;
     try {
       await ReportContainer.removeInstance(instanceId);
-      await LayoutContainer.removeFromLayout(dashboardIndex, instanceId);
+      await LayoutContainer.removeFromLayout(dashboardId, instanceId);
       actionHandler("REPORT_DELETED");
       props.enqueueSnackbar("با موفقیت حذف شد", {
         variant: "success"

@@ -15,27 +15,27 @@ class Dashboard extends Component {
   state = {
     breakpoint: "lg",
     layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
-    index: 0,
+    dashboardId: undefined,
     error: ""
   };
 
   componentDidMount = () => {
-    const { index } = this.props.match.params;
+    const { dashboardId } = this.props.match.params;
+    this.initialize(dashboardId);
     MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
     MyCustomEvent.on("TOGGLE_DASHBOARD_INTERVAL", this.toggleInterval);
-    this.initialize(index);
     this.startInterval();
   };
 
   componentDidUpdate = async prevProps => {
-    const { index: prevIndex } = prevProps.match.params;
-    const { index } = this.props.match.params;
+    const { dashboardId: prevDashboardId } = prevProps.match.params;
+    const { dashboardId } = this.props.match.params;
     if (prevProps.location.pathname !== this.props.location.pathname) {
       this.stopInterval();
       this.startInterval();
     }
-    if (prevIndex !== index) {
-      this.initialize(index);
+    if (prevDashboardId !== dashboardId) {
+      this.initialize(dashboardId);
     }
   };
 
@@ -45,12 +45,18 @@ class Dashboard extends Component {
     this.stopInterval();
   };
 
-  initialize = index => {
-    const dashboardsCount = LayoutContainer.state.dashboards.length;
-    if (index === undefined || index >= dashboardsCount) {
-      return this.props.history.replace(`/user/dashboard/0`);
+  initialize = dashboardId => {
+    if (
+      dashboardId === undefined ||
+      !LayoutContainer.isValidDashboardId(dashboardId)
+    ) {
+      const dashboard = LayoutContainer.state.dashboards[0];
+      return this.props.history.replace(`/user/dashboard/${dashboard.id}`);
     }
-    this.setState({ index, layouts: LayoutContainer.getLayouts(index) });
+    this.setState({
+      dashboardId,
+      layouts: LayoutContainer.getLayouts(dashboardId)
+    });
   };
 
   toggleInterval = isPaused => {
@@ -61,29 +67,44 @@ class Dashboard extends Component {
     }
   };
 
-  startInterval = () =>
-    (this.interval = setInterval(
-      this.goToNext,
-      CHANGE_DASHBOARD_INTERVAL * 1000
-    ));
+  startInterval = () => {
+    if (LayoutContainer.state.dashboards.length > 1) {
+      this.interval = setInterval(
+        this.goToNext,
+        CHANGE_DASHBOARD_INTERVAL * 1000
+      );
+    }
+  };
+
   stopInterval = () => clearInterval(this.interval);
 
   goToNext = () => {
+    const { dashboardId } = this.state;
     const dashboardsCount = LayoutContainer.state.dashboards.length;
-    const { index } = this.state;
-    const next = (+index + 1) % dashboardsCount;
-    return this.props.history.replace(`/user/dashboard/${next}`);
+    const dashboardIndex = LayoutContainer.getDashboardIndex(dashboardId);
+    const nextIndex = (dashboardIndex + 1) % dashboardsCount;
+    const nextId = LayoutContainer.state.dashboards[nextIndex].id;
+    return this.props.history.replace(`/user/dashboard/${nextId}`);
   };
 
   onDeleteDashboard = async () => {
-    const dashboard = LayoutContainer.getDashboard(this.state.index);
+    const { dashboardId } = this.props.match.params;
+    if (+dashboardId !== +this.state.dashboardId) {
+      return;
+    }
+    const dashboard = LayoutContainer.getDashboard(this.state.dashboardId);
     if (dashboard.shared) {
       return alert(
         "داشبورد با شما به اشتراک گذاشته شده است\nنمیتوانید آن را حذف کنید"
       );
     }
+    if (LayoutContainer.state.dashboards.length === 1) {
+      return alert("آخرین داشبورد قابل حذف نیست");
+    }
     try {
       await LayoutContainer.deleteDashboard(dashboard.id);
+      const nextDashboard = LayoutContainer.state.dashboards[0];
+      return this.props.history.replace(`/user/dashboard/${nextDashboard.id}`);
     } catch (error) {
       this.setState({ error: "درخواست با خطا مواجه شد" });
     }
@@ -95,7 +116,7 @@ class Dashboard extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { layouts, breakpoint, index, error } = this.state;
+    const { layouts, breakpoint, dashboardId, error } = this.state;
 
     if (error) {
       return <Error message={error} />;
@@ -119,7 +140,7 @@ class Dashboard extends Component {
             return (
               <div key={l.i} style={{ direction: "rtl" }}>
                 <ReportCard
-                  dashboardIndex={index}
+                  dashboardId={dashboardId}
                   layout={l}
                   editEnabled={false}
                 />

@@ -77,9 +77,9 @@ class ReportThumbCard extends Component {
     this.setState({ anchorEl: null });
   };
 
-  handleSelectDashboard = index => async () => {
+  handleSelectDashboard = dashboardId => async () => {
     this.handleMenuClose();
-    await this.addToDashboard(index);
+    await this.addToDashboard(dashboardId);
   };
 
   handleCreateDashboard = async () => {
@@ -95,10 +95,10 @@ class ReportThumbCard extends Component {
     }
   };
 
-  addToDashboard = async dashboardIndex => {
+  addToDashboard = async dashboardId => {
     const { report } = this.props;
     return this.props.navigate(
-      `/user/reports/${report.id}/config/params/${dashboardIndex}`
+      `/user/reports/${report.id}/config/params/${dashboardId}`
     );
   };
 
@@ -154,11 +154,11 @@ class ReportThumbCard extends Component {
                   >
                     {Layout.state.dashboards
                       .filter(d => !d.shared)
-                      .map((_, index) => (
+                      .map(d => (
                         <MenuItem
-                          key={index}
-                          onClick={this.handleSelectDashboard(index)}
-                        >{`داشبورد ${index}`}</MenuItem>
+                          key={d.id}
+                          onClick={this.handleSelectDashboard(d.id)}
+                        >{`داشبورد ${d.id}`}</MenuItem>
                       ))}
                     <MenuItem onClick={this.handleCreateDashboard}>
                       {loading ? <CircularProgress /> : "داشبورد جدید"}

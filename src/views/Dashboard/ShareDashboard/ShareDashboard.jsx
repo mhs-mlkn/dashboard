@@ -68,8 +68,8 @@ const ShareDashboard = props => {
   const [addUserLoading, setUserLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { index } = props.match.params;
-  const dashboard = LayoutContainer.getDashboard(index);
+  const { dashboardId } = props.match.params;
+  const dashboard = LayoutContainer.getDashboard(dashboardId);
 
   useEffect(() => {
     MyCustomEvent.on("SHARE_DASHBOARD", handleToggleOpen);
@@ -88,7 +88,7 @@ const ShareDashboard = props => {
     } finally {
       setLoading(false);
     }
-  }, [props.match.params.index, open]);
+  }, [props.match.params.dashboardId, open]);
 
   const handleToggleOpen = () => setOpen(!open);
 

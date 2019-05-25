@@ -98,7 +98,7 @@ class ScalarWrapper extends Component {
 
   render = () => {
     const { loading, error } = this.state;
-    const { instanceId, dashboardIndex, height } = this.props;
+    const { instanceId, dashboardId, height } = this.props;
 
     if (loading) {
       return <Loading />;
@@ -112,7 +112,7 @@ class ScalarWrapper extends Component {
       <Scalar
         data={this.data}
         height={height}
-        config={LayoutContainer.getSettings(dashboardIndex, instanceId)}
+        config={LayoutContainer.getSettings(dashboardId, instanceId)}
       />
     );
   };

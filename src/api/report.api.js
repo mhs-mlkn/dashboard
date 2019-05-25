@@ -77,7 +77,7 @@ export default class ReportApi {
   static addDashboard = async order => {
     await Auth.refreshToken();
     return axios
-      .post(`${baseUrl}/dashboard`, { config: "[]", order })
+      .post(`${baseUrl}/dashboard`, { config: "", order })
       .then(res => res.data.result);
   };
 
