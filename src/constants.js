@@ -39,7 +39,7 @@ export const RADAR_CHART_CONFIG = {
 export const SCALAR_CONFIG = {
   mainBackground: "#424951",
   infoBackground: "#3a4047",
-  textColor: "#a1a1a1"
+  textColor: "#fff"
 };
 
 export const CHART_CONFIG = {

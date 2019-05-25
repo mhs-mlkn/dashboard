@@ -1,6 +1,6 @@
 body {
   /* background-color: #3a4047; */
-  color: #a1a1a1 !important;
+  color: #fff !important;
   margin: 0;
   font-family: "IRANSans";
   font-weight: 200;
@@ -31,7 +31,7 @@ select:-webkit-autofill:focus {
   padding-right: 4px;
 }
 .recharts-polar-radius-axis-tick-value > tspan {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .react-grid-item > .react-resizable-handle::after {

@@ -39,12 +39,15 @@ const theme = createMuiTheme({
     type: "dark",
     primary: { main: cyan["700"] },
     secondary: { main: green["600"] },
-    error: { main: red["400"] }
+    error: { main: red["400"] },
+    text: {
+      primary: "#fff"
+    }
   },
   direction: "rtl",
   typography: {
     useNextVariants: true,
-    fontSize: 13,
+    fontSize: 11,
     fontFamily: "IRANSans"
   },
   overrides: {
@@ -166,7 +169,7 @@ class RTL extends Component {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" color="textSecondary" noWrap>
+                <Typography variant="h6" color="textPrimary" noWrap>
                   {title}
                 </Typography>
                 <DashboardLinks />

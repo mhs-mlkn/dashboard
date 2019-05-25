@@ -42,7 +42,7 @@ class DashboardLayout extends Component {
     layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
     reRender: 0,
     isDirty: false,
-    dashboardId: 0,
+    dashboardId: undefined,
     loading: false,
     error: ""
   };
@@ -138,6 +138,10 @@ class DashboardLayout extends Component {
 
     if (error) {
       return <Error message={error} />;
+    }
+
+    if (!dashboardId) {
+      return <Error message={`داشبورد با شناسه ${dashboardId} وجود ندارد`} />;
     }
 
     return (

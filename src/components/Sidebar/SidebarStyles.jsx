@@ -13,12 +13,12 @@ const styles = theme => ({
     padding: "0 8px",
     ...theme.mixins.toolbar,
     justifyContent: "center",
-    color: "#a1a1a1!important"
+    color: "#fff!important"
   },
   item: {
     position: "relative",
     display: "block",
-    color: "#a1a1a1!important",
+    color: "#fff!important",
     textDecoration: "none",
     "&:hover,&:focus,&:visited": {
       color: "#FFFFFF!important"
@@ -37,7 +37,7 @@ const styles = theme => ({
     marginRight: "0px",
     textAlign: "center",
     verticalAlign: "middle",
-    color: "#a1a1a1!important"
+    color: "#fff!important"
   },
   activeItemIcon: {
     color: "#fff!important"
