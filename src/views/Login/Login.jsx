@@ -38,28 +38,42 @@ class Login extends Component {
       } finally {
         this.props.history.push("/");
       }
+    } else {
+      setTimeout(this.login, 2000);
     }
   };
 
-  login = e => {
-    e.preventDefault();
+  login = () => {
     Auth.generateVerifier();
     const CHALLENGE_CODE = Auth.getChallenegeCode();
     const LOGIN_URL = `${SSO}&client_id=${CLIENT_ID}&code_challenge=${CHALLENGE_CODE}&redirect_uri=${REDIRECT_URI}`;
     window.location.href = LOGIN_URL;
   };
 
+  handleLoginClick = e => {
+    e.preventDefault();
+    this.login();
+  };
+
   render = () => {
     const { loading } = this.state;
     return (
       <Page loading={loading}>
-        <Typography component="p" variant="h6" color="textSecondary">
-          برای ادامه باید{"  "}
-          <Link href={""} color="secondary" onClick={this.login}>
-            وارد
+        <Typography
+          component="p"
+          variant="title"
+          color="textSecondary"
+          gutterBottom
+        >
+          درحال انتقال به صفحه ورود
+        </Typography>
+        <Typography component="p" variant="subheading" color="textSecondary">
+          درصورت عدم انتقال خودکار{"  "}
+          <Link href={""} color="secondary" onClick={this.handleLoginClick}>
+            اینجا
           </Link>
           {"  "}
-          شوید
+          کلیک کنید
         </Typography>
       </Page>
     );
