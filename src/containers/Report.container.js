@@ -91,8 +91,12 @@ export class ReportContainer extends Container {
     );
   };
 
-  isDrillDown = instanceId =>
-    this.state.userReports.some(ur => +ur.drillDownId === +instanceId);
+  isDrillDown = instanceId => {
+    const temp = this.state.userReports.some(
+      ur => +ur.drillDownId === +instanceId
+    );
+    return temp;
+  };
 }
 
 const container = new ReportContainer();

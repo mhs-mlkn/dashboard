@@ -229,7 +229,7 @@ class ReportCard extends Component {
           action={
             <ReportCardActions
               userReport={userReport}
-              instanceId={+layout.i}
+              instanceId={+userReport.id}
               reportHeight={
                 userReport.report.type === "Scalar"
                   ? reportHeight * 1.1
