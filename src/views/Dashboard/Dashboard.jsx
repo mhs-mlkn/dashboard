@@ -103,9 +103,8 @@ class Dashboard extends Component {
       return alert("آخرین داشبورد قابل حذف نیست");
     }
     try {
+      this.goToNext();
       await LayoutContainer.deleteDashboard(dashboard.id);
-      const nextDashboard = LayoutContainer.state.dashboards[0];
-      return this.props.history.replace(`/user/dashboard/${nextDashboard.id}`);
     } catch (error) {
       this.setState({ error: "درخواست با خطا مواجه شد" });
     }

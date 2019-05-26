@@ -48,13 +48,13 @@ const NavbarLinks = props => {
     RegExp("/user/dashboard/\\d+", "g").test(props.location.pathname);
 
   return (
-    <Subscribe to={[AuthContainer]}>
-      {Auth =>
+    <Subscribe to={[AuthContainer, LayoutContainer]}>
+      {(Auth, Layout) =>
         Auth.isLoggedIn() ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             {isVisible() && (
               <>
-                {LayoutContainer.state.dashboards.length > 1 && (
+                {Layout.state.dashboards.length > 1 && (
                   <>
                     <ConfirmDialog
                       title="آیا اطمینان دارید؟"

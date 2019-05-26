@@ -33,7 +33,6 @@ class Login extends Component {
         await Auth.checkToken(qs.code);
         // await Auth.fetchUser();
       } catch (error) {
-        console.log("Login Error>>> ", error);
         this.setState({ error });
       } finally {
         this.props.history.push("/");

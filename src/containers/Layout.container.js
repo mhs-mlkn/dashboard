@@ -55,7 +55,8 @@ export class LayoutContainer extends Container {
   };
 
   getSettings = (dashboardId, instanceId) => {
-    const { config = {} } = this.getDashboard(dashboardId);
+    const dashboard = this.getDashboard(dashboardId);
+    const { config = {} } = dashboard;
     const { settings = {} } = config;
     return settings[instanceId] || {};
   };
