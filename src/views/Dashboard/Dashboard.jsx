@@ -28,20 +28,21 @@ class Dashboard extends Component {
   };
 
   componentDidUpdate = async prevProps => {
-    const { dashboardId: prevDashboardId } = prevProps.match.params;
-    const { dashboardId } = this.props.match.params;
     if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.stopInterval();
-      this.startInterval();
-    }
-    if (prevDashboardId !== dashboardId) {
-      this.initialize(dashboardId);
+      this.componentWillUnmount();
+      this.componentDidMount();
     }
   };
 
   componentWillUnmount = () => {
-    MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
-    MyCustomEvent.on("TOGGLE_DASHBOARD_INTERVAL", this.toggleInterval);
+    MyCustomEvent.removeEventListener(
+      "DELETE_DASHBOARD",
+      this.onDeleteDashboard
+    );
+    MyCustomEvent.removeEventListener(
+      "TOGGLE_DASHBOARD_INTERVAL",
+      this.toggleInterval
+    );
     this.stopInterval();
   };
 

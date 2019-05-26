@@ -12,11 +12,13 @@ import AuthContainer from "../../containers/Auth.container";
 import LayoutContainer from "../../containers/Layout.container";
 import { loginRoute } from "../../routes";
 import Timer from "../Timer";
+import ConfirmDialog from "../Dialog/ConfirmDialog";
 import MyCustomEvent from "../../util/customEvent";
 import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 
 const NavbarLinks = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openConfirm, toggleConfirm] = React.useState(false);
   const open = Boolean(anchorEl);
 
   const handleMenu = event => {
@@ -28,6 +30,7 @@ const NavbarLinks = props => {
   };
 
   const handleDeleteDashboard = () => {
+    toggleConfirm(false);
     MyCustomEvent.emit("DELETE_DASHBOARD");
   };
 
@@ -38,6 +41,8 @@ const NavbarLinks = props => {
       props.history.push(loginRoute.path);
     }
   };
+
+  const handleToggleConfirm = () => toggleConfirm(!openConfirm);
 
   const isVisible = () =>
     RegExp("/user/dashboard/\\d+", "g").test(props.location.pathname);
@@ -50,15 +55,23 @@ const NavbarLinks = props => {
             {isVisible() && (
               <>
                 {LayoutContainer.state.dashboards.length > 1 && (
-                  <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                  <>
+                    <ConfirmDialog
+                      title="آیا اطمینان دارید؟"
+                      handleConfirm={handleDeleteDashboard}
+                      handleClose={handleToggleConfirm}
+                      open={openConfirm}
+                    />
+                    <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                    <IconButton
+                      onClick={handleToggleConfirm}
+                      color="secondary"
+                      title="حذف داشبورد"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
                 )}
-                <IconButton
-                  onClick={handleDeleteDashboard}
-                  color="secondary"
-                  title="حذف داشبورد"
-                >
-                  <DeleteIcon />
-                </IconButton>
                 <Button
                   onClick={handleShareDashboard}
                   color="primary"
