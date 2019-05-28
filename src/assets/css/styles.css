@@ -39,6 +39,17 @@ select:-webkit-autofill:focus {
   border-bottom: 2px solid #e4e4e4;
 }
 
+.recharts-cartesian-axis-tick-value {
+  fill: #e5e5e5;
+  font-size: 13px;
+}
+
+.recharts-label {
+  fill: #e5e5e5;
+  font-size: 15px;
+  font-weight: bolder;
+}
+
 .load-more {
   display: block !important;
   bottom: -25px !important;

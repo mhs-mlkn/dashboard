@@ -51,6 +51,7 @@ const CustomDialog = props => {
     loading,
     error,
     title,
+    maxWidth = "md",
     onClose,
     onSave,
     saveText = "ذخیره",
@@ -63,7 +64,7 @@ const CustomDialog = props => {
       open={open}
       TransitionComponent={Transition}
       fullWidth={true}
-      maxWidth="md"
+      maxWidth={maxWidth}
       scroll="body"
       onClose={onClose}
     >

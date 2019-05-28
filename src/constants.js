@@ -5,25 +5,37 @@ export const LEGEND_CONFIG = {
   iconType: "rect"
 };
 
+export const AXIS_CONFIG = {
+  width: 60,
+  height: 30,
+  unit: "",
+  label: "",
+  divideBy: 0
+};
+
 export const BAR_CHART_CONFIG = {
   layout: "horizontal",
   stacked: false,
   brush: false,
-  legend: LEGEND_CONFIG
+  legend: LEGEND_CONFIG,
+  yAxis: AXIS_CONFIG,
+  xAxis: AXIS_CONFIG
 };
 
 export const AREA_CHART_CONFIG = {
   layout: "horizontal",
   stacked: false,
   brush: false,
-  legend: LEGEND_CONFIG
+  legend: LEGEND_CONFIG,
+  yAxis: AXIS_CONFIG
 };
 
 export const Line_CHART_CONFIG = {
   layout: "horizontal",
   stacked: false,
   brush: false,
-  legend: LEGEND_CONFIG
+  legend: LEGEND_CONFIG,
+  yAxis: AXIS_CONFIG
 };
 
 export const PIE_CHART_CONFIG = {

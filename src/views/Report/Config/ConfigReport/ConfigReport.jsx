@@ -2,8 +2,8 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Chart from "../../../../components/Chart/Chart";
 import Scalar from "../../../../components/Scalar/Scalar";
-import BarCharConfigt from "./BarCharConfigt";
-import PieCharConfig from "./PieCharConfig";
+import BarChartConfigt from "./BarChartConfigt";
+import PieChartConfig from "./PieChartConfig";
 import ScalarConfig from "./ScalarConfig";
 
 import {
@@ -24,13 +24,13 @@ const ConfigReport = props => {
       case "Area":
       case "Line":
         return (
-          <BarCharConfigt config={config} onConfigChange={onConfigChange} />
+          <BarChartConfigt config={config} onConfigChange={onConfigChange} />
         );
 
       case "Pie":
       case "Radar":
         return (
-          <PieCharConfig config={config} onConfigChange={onConfigChange} />
+          <PieChartConfig config={config} onConfigChange={onConfigChange} />
         );
 
       case "Scalar":

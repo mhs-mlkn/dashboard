@@ -3,11 +3,13 @@ import Grid from "@material-ui/core/Grid";
 import ChartLayoutConfig from "./ChartLayoutConfig";
 import Switch from "./Switch";
 import ChartLegendConfig from "./ChartLegendConfig";
+import ChartYAxisConfig from "./ChartYAxisConfig";
+import ChartXAxisConfig from "./ChartXAxisConfig";
 
 const BarCharConfigt = props => {
   const { config, onConfigChange } = props;
 
-  const { layout, stacked, brush, legend } = config;
+  const { layout, stacked, brush, legend, yAxis, xAxis } = config;
 
   const handleChange = override => {
     onConfigChange({ ...config, ...override });
@@ -15,7 +17,7 @@ const BarCharConfigt = props => {
 
   return (
     <Grid container>
-      <Grid item xs={12} sm={5} md={5} lg={5} style={{ marginBottom: "20px" }}>
+      <Grid item xs={12} sm={6} md={6} lg={6} style={{ marginBottom: "20px" }}>
         <Grid container>
           <Grid item xs={12} sm={12} md={12}>
             <ChartLayoutConfig layout={layout} onChange={handleChange} />
@@ -36,9 +38,25 @@ const BarCharConfigt = props => {
               onChange={handleChange}
             />
           </Grid>
+          <Grid container>
+            <Grid item xs={6} sm={6} md={6}>
+              <ChartYAxisConfig
+                axisConfig={yAxis}
+                layout={layout}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item xs={6} sm={6} md={6}>
+              <ChartXAxisConfig
+                axisConfig={xAxis}
+                layout={layout}
+                onChange={handleChange}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
-      <Grid item xs={12} sm={7} md={7} lg={7}>
+      <Grid item xs={12} sm={6} md={6} lg={6}>
         <ChartLegendConfig legendConfig={legend} onChange={handleChange} />
       </Grid>
     </Grid>
