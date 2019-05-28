@@ -63,7 +63,7 @@ const Chart = props => {
           dataKey={keys[0]}
           label={renderCustomizedLabel}
           labelLine={false}
-          paddingAngle={3}
+          paddingAngle={0}
           fill={green["500"]}
           innerRadius={config.innerRadius}
         >
