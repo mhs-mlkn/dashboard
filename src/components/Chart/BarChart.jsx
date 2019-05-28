@@ -28,7 +28,7 @@ const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 const Chart = props => {
   const [opacity, setOpacity] = useState({});
   const { data, width, height, onClick } = props;
-  let { config = CONFIG } = props;
+  let config = { ...CONFIG, ...props.config };
   const keys = getDataKeys(data[0] || {});
 
   useEffect(() => {
@@ -84,14 +84,50 @@ const Chart = props => {
         fillOpacity={0.2}
       />
       {config.layout === "vertical" ? (
-        <XAxis type="number" />
+        <XAxis
+          type="number"
+          unit={config.xAxis.unit}
+          height={+config.xAxis.height}
+          label={{
+            value: config.xAxis.label,
+            angle: 0,
+            position: "insideBottomRight"
+          }}
+          tickFormatter={d => d / Math.pow(10, +config.xAxis.divideBy)}
+        />
       ) : (
-        <XAxis dataKey="name" />
+        <XAxis
+          dataKey="name"
+          height={+config.xAxis.height}
+          label={{
+            value: config.xAxis.label,
+            angle: 0,
+            position: "insideBottomRight"
+          }}
+        />
       )}
       {config.layout === "vertical" ? (
-        <YAxis dataKey="name" type="category" />
+        <YAxis
+          dataKey="name"
+          type="category"
+          width={+config.yAxis.width}
+          label={{
+            value: config.yAxis.label,
+            angle: -90,
+            position: "insideLeft"
+          }}
+        />
       ) : (
-        <YAxis />
+        <YAxis
+          unit={config.yAxis.unit}
+          width={+config.yAxis.width}
+          label={{
+            value: config.yAxis.label,
+            angle: -90,
+            position: "insideLeft"
+          }}
+          tickFormatter={d => d / Math.pow(10, +config.yAxis.divideBy)}
+        />
       )}
       <Tooltip wrapperStyle={{ left: "0" }} cursor={{ fill: "#FFF1" }} />
       <Legend

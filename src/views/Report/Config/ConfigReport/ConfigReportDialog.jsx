@@ -73,6 +73,7 @@ const ConfigReportDialog = props => {
       title={`تنظیم گزارش: ${state.userReport.report.name}`}
       open={state.open}
       loading={state.loading}
+      maxWidth="lg"
       error={state.error}
       onSave={handleOnSave}
       onClose={handleClose}
