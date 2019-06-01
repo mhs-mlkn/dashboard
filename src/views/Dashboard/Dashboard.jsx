@@ -13,6 +13,7 @@ import "react-resizable/css/styles.css";
 
 class Dashboard extends Component {
   state = {
+    noDashboards: true,
     breakpoint: "lg",
     layouts: { lg: [], md: [], sm: [], xs: [], xxs: [] },
     dashboardId: undefined,
@@ -48,16 +49,30 @@ class Dashboard extends Component {
 
   initialize = dashboardId => {
     if (
-      dashboardId === undefined ||
-      !LayoutContainer.isValidDashboardId(dashboardId)
+      LayoutContainer.state.dashboards &&
+      LayoutContainer.state.dashboards.length > 0
+    ) {
+      this.setState({ noDashboards: false });
+    }
+
+    if (dashboardId && LayoutContainer.state.dashboards.length === 0) {
+      return this.props.history.replace(`/user/dashboard`);
+    }
+
+    if (
+      LayoutContainer.state.dashboards.length > 0 &&
+      (dashboardId === undefined ||
+        !LayoutContainer.isValidDashboardId(dashboardId))
     ) {
       const dashboard = LayoutContainer.state.dashboards[0];
       return this.props.history.replace(`/user/dashboard/${dashboard.id}`);
     }
-    this.setState({
-      dashboardId,
-      layouts: LayoutContainer.getLayouts(dashboardId)
-    });
+    if (LayoutContainer.state.dashboards.length > 0) {
+      this.setState({
+        dashboardId,
+        layouts: LayoutContainer.getLayouts(dashboardId)
+      });
+    }
   };
 
   toggleInterval = isPaused => {
@@ -79,9 +94,12 @@ class Dashboard extends Component {
 
   stopInterval = () => clearInterval(this.interval);
 
-  goToNext = () => {
+  goToNext = (dashboardDeleted = false) => {
     const { dashboardId } = this.state;
     const dashboardsCount = LayoutContainer.state.dashboards.length;
+    if (dashboardsCount <= 1 && dashboardDeleted) {
+      return this.props.history.replace(`/user/dashboard`);
+    }
     const dashboardIndex = LayoutContainer.getDashboardIndex(dashboardId);
     const nextIndex = (dashboardIndex + 1) % dashboardsCount;
     const nextId = LayoutContainer.state.dashboards[nextIndex].id;
@@ -99,12 +117,9 @@ class Dashboard extends Component {
         "داشبورد با شما به اشتراک گذاشته شده است\nنمیتوانید آن را حذف کنید"
       );
     }
-    if (LayoutContainer.state.dashboards.length === 1) {
-      return alert("آخرین داشبورد قابل حذف نیست");
-    }
     try {
-      this.goToNext();
       await LayoutContainer.deleteDashboard(dashboard.id);
+      this.goToNext(true);
     } catch (error) {
       this.setState({ error: "درخواست با خطا مواجه شد" });
     }
@@ -116,10 +131,20 @@ class Dashboard extends Component {
 
   render = () => {
     const { width } = this.props.size;
-    const { layouts, breakpoint, dashboardId, error } = this.state;
+    const {
+      layouts,
+      breakpoint,
+      dashboardId,
+      noDashboards,
+      error
+    } = this.state;
 
     if (error) {
       return <Error message={error} />;
+    }
+
+    if (noDashboards) {
+      return <Error message="هیچ داشبوردی برای شما وجود ندارد" />;
     }
 
     return (

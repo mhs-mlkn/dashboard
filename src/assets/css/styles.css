@@ -50,6 +50,10 @@ select:-webkit-autofill:focus {
   font-weight: bolder;
 }
 
+.recharts-legend-item {
+  text-align: start;
+}
+
 .load-more {
   display: block !important;
   bottom: -25px !important;

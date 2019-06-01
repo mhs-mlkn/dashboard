@@ -224,7 +224,7 @@ class ReportCard extends Component {
     }
 
     return (
-      <Card className={classes.card} raised>
+      <Card className={classes.card}>
         <CardHeader
           action={
             <ReportCardActions

@@ -54,24 +54,22 @@ const NavbarLinks = props => {
           <div style={{ display: "flex", alignItems: "center" }}>
             {isVisible() && (
               <>
-                {Layout.state.dashboards.length > 1 && (
-                  <>
-                    <ConfirmDialog
-                      title="آیا اطمینان دارید؟"
-                      handleConfirm={handleDeleteDashboard}
-                      handleClose={handleToggleConfirm}
-                      open={openConfirm}
-                    />
-                    <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
-                    <IconButton
-                      onClick={handleToggleConfirm}
-                      color="secondary"
-                      title="حذف داشبورد"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                )}
+                <>
+                  <ConfirmDialog
+                    title="آیا اطمینان دارید؟"
+                    handleConfirm={handleDeleteDashboard}
+                    handleClose={handleToggleConfirm}
+                    open={openConfirm}
+                  />
+                  <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                  <IconButton
+                    onClick={handleToggleConfirm}
+                    color="secondary"
+                    title="حذف داشبورد"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
                 <Button
                   onClick={handleShareDashboard}
                   color="primary"

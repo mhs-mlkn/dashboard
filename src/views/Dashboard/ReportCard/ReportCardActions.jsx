@@ -184,10 +184,10 @@ const ReportCardActions = props => {
       {userReport && !editEnabled && (
         <>
           <IconButton
-            title={reportHeight > 150 ? "ارتفاع گزارش کم است" : "ذخیره"}
+            title={reportHeight > 150 ? "ذخیره" : "ارتفاع گزارش کم است"}
             color="primary"
             onClick={handleMenuClick}
-            disabled={reportHeight < 150}
+            disabled={reportHeight <= 150}
           >
             <Save fontSize="small" />
           </IconButton>
