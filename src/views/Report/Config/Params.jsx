@@ -76,7 +76,9 @@ class ReportParams extends Component {
       await LayoutContainer.addToLayout(dashboardId, this.state.instanceId);
       this.props.history.replace(`/user/dashboard/layout/${dashboardId}`);
     } catch (error) {
-      this.props.enqueueSnackbar(error.message, { variant: "error" });
+      this.props.enqueueSnackbar("خطا در برقراری ارتباط با سرور", {
+        variant: "error"
+      });
     } finally {
       this.setState({ loading: false });
     }

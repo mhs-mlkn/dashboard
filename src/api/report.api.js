@@ -42,6 +42,13 @@ export default class ReportApi {
       });
   };
 
+  static getHashCode = async instanceId => {
+    await Auth.refreshToken();
+    return axios
+      .get(`${baseUrl}/userreport/${instanceId}/hash`)
+      .then(res => res.data.result);
+  };
+
   static createReportInstance = async (
     reportId,
     userReportName,
@@ -74,10 +81,10 @@ export default class ReportApi {
       .then(res => res.data.result.data);
   };
 
-  static addDashboard = async order => {
+  static addDashboard = async (order, name) => {
     await Auth.refreshToken();
     return axios
-      .post(`${baseUrl}/dashboard`, { config: "", order })
+      .post(`${baseUrl}/dashboard`, { config: "", order, name })
       .then(res => res.data.result);
   };
 

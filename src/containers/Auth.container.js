@@ -109,7 +109,7 @@ export class AuthContainer extends Container {
     if (!this.user || this.user === "undefined") {
       this.fetchUser();
     }
-    return this.user;
+    return this.user || "";
   };
 
   saveToLS = () => {

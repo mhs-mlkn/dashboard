@@ -25,9 +25,18 @@ const DashboardLinks = props => {
     <Subscribe to={[LayoutContainer]}>
       {Layout => (
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
-          {props.location.pathname.startsWith("/user/dashboard")
-            ? Layout.state.dashboards.map(d => (
-                <Tooltip title={`داشبورد ${d.id}`} placement="top" key={d.id}>
+          {props.location.pathname.startsWith("/user/dashboard") ? (
+            <>
+              <span>
+                {Layout.state.dashboards.length > 0 &&
+                  Layout.getDashboardName(selectedDashboardId)}
+              </span>
+              {Layout.state.dashboards.map(d => (
+                <Tooltip
+                  title={`داشبورد ${d.name || d.id}`}
+                  placement="top"
+                  key={d.id}
+                >
                   <Radio
                     name="dashboard-links"
                     value={d.id}
@@ -38,8 +47,9 @@ const DashboardLinks = props => {
                     checkedIcon={<RadioButtonCheckedIcon fontSize="small" />}
                   />
                 </Tooltip>
-              ))
-            : null}
+              ))}
+            </>
+          ) : null}
         </div>
       )}
     </Subscribe>

@@ -4,10 +4,11 @@ import Api from "../api/report.api";
 const DEFAULT_CONFIG_STRING =
   '{"layouts": {"lg": [], "md": [], "sm": [], "xs": [], "xxs": []}, "settings": {}}';
 
-const MIN_W = { lg: 4, md: 6, sm: 5, xs: 4, xxs: 2 };
-const MIN_H = { lg: 7, md: 7, sm: 5, xs: 5, xxs: 5 };
+const MIN_W = { lg: 6, md: 6, sm: 5, xs: 7, xxs: 7 };
+const MIN_H = { lg: 14, md: 14, sm: 14, xs: 14, xxs: 14 };
 
 export class LayoutContainer extends Container {
+  newDashboardName = "";
   state = {
     dashboards: []
   };
@@ -22,12 +23,12 @@ export class LayoutContainer extends Container {
     return this.setState({ dashboards });
   };
 
-  addDashboard = async () => {
+  addDashboard = async name => {
     const order = this.state.dashboards.length;
-    const id = await Api.addDashboard(order);
+    const id = await Api.addDashboard(order, name);
     const config = JSON.parse(DEFAULT_CONFIG_STRING);
     config.layouts = setMinSize(config.layouts);
-    let dashboards = [...this.state.dashboards, { id, config }];
+    let dashboards = [...this.state.dashboards, { id, config, name }];
     dashboards = [
       ...dashboards.filter(d => !d.shared),
       ...dashboards.filter(d => d.shared)
@@ -43,6 +44,11 @@ export class LayoutContainer extends Container {
 
   getDashboard = dashboardId => {
     return this.state.dashboards.find(d => +d.id === +dashboardId);
+  };
+
+  getDashboardName = dashboardId => {
+    const item = this.state.dashboards.find(d => +d.id === +dashboardId);
+    return item ? item.name : "";
   };
 
   getDashboardIndex = dashboardId => {
@@ -111,6 +117,8 @@ export class LayoutContainer extends Container {
     const dashboard = this.getDashboard(dashboardId);
     return Api.saveDashboard(dashboard);
   };
+
+  setNewDashboardName = name => (this.newDashboardName = name);
 
   isValidDashboardId = dashboardId =>
     this.state.dashboards.some(d => +d.id === +dashboardId);

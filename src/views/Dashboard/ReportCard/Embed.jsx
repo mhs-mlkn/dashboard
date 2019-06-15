@@ -1,9 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import Loading from "../../../components/Loading/Loading";
+import Error from "../../../components/Error/Error";
+import ReportContainer from "../../../containers/Report.container";
 
 const SERVER_URL = process.env.REACT_APP_EMBED_SERVER_URL;
 
@@ -12,8 +15,30 @@ const EmbedDialog = ({ instanceId }) => {
   const [state, setState] = useState({
     width: 800,
     height: 450,
-    responsive: false
+    responsive: false,
+    hash: "",
+    loading: false,
+    error: ""
   });
+
+  useEffect(() => {
+    async function fetchHashCode(instanceId) {
+      setState({ ...state, loading: true, error: "" });
+      try {
+        const hash = await ReportContainer.getHashCode(instanceId);
+        console.log("hash2> ", hash);
+        setState({ ...state, hash, loading: false });
+      } catch (error) {
+        setState({
+          ...state,
+          error: "خطا در براقراری ارتباط با سرور",
+          loading: false
+        });
+      }
+    }
+
+    fetchHashCode(instanceId);
+  }, []);
 
   const copyToClipboard = e => {
     textAreaRef.current.select();
@@ -36,11 +61,19 @@ const EmbedDialog = ({ instanceId }) => {
   };
 
   const embedText = `
-<iframe src="${SERVER_URL}?id=${instanceId}&width=${state.width}&height=${
-    state.height
-  }&responsive=${
+<iframe src="${SERVER_URL}?id=${instanceId}&hash=${state.hash}&width=${
+    state.width
+  }&height=${state.height}&responsive=${
     state.responsive
   }" style="width: 100%; height: 100%; display: block;"></iframe>`;
+
+  if (state.loading) {
+    return <Loading />;
+  }
+
+  if (state.error) {
+    return <Error message={state.error} />;
+  }
 
   return (
     <Grid container spacing={8}>
@@ -71,7 +104,7 @@ const EmbedDialog = ({ instanceId }) => {
               name="responsive"
               checked={state.responsive}
               onChange={toggleResponsive}
-              value={state.responsive}
+              value={`${state.responsive}`}
             />
           }
           label="واکنش گرا"

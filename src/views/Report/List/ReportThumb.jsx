@@ -15,10 +15,11 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddIcon from "@material-ui/icons/Add";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Chart from "../../../components/Chart/Chart";
 import Table from "../../../components/Table/Table";
 import Scalar from "../../../components/Scalar/Scalar";
+import Dialog from "../../../components/Dialog/Dialog";
+import NewDashboardForm from "./NewDashboard";
 import LayoutContainer from "../../../containers/Layout.container";
 import * as mockData from "../../../mockdata";
 
@@ -63,7 +64,7 @@ const styles = theme => ({
 const ASPECT_RATIO = 16 / 9;
 
 class ReportThumbCard extends Component {
-  state = { anchorEl: null, expanded: false, loading: false };
+  state = { anchorEl: null, expanded: false, loading: false, open: false };
 
   handleExpandClick = () => {
     this.setState(({ expanded }) => ({ expanded: !expanded }));
@@ -82,15 +83,21 @@ class ReportThumbCard extends Component {
     await this.addToDashboard(dashboardId);
   };
 
-  handleCreateDashboard = async () => {
+  toggleNewDashboardModal = () => {
+    return this.setState(({ open }) => ({ open: !open }));
+  };
+
+  handleSaveNewDashboard = async () => {
     try {
       this.setState({ loading: true });
-      await LayoutContainer.addDashboard();
+      await LayoutContainer.addDashboard(LayoutContainer.newDashboardName);
     } catch (error) {
       this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
         variant: "error"
       });
     } finally {
+      LayoutContainer.setNewDashboardName("");
+      this.toggleNewDashboardModal();
       this.setState({ loading: false });
     }
   };
@@ -124,7 +131,7 @@ class ReportThumbCard extends Component {
 
   render = () => {
     const { classes, report } = this.props;
-    const { anchorEl, expanded, loading } = this.state;
+    const { anchorEl, expanded, loading, open } = this.state;
     const { name, type, created, description = "" } = report;
     const date = created.slice(0, created.length - 6);
     const data =
@@ -135,68 +142,81 @@ class ReportThumbCard extends Component {
     return (
       <Subscribe to={[LayoutContainer]}>
         {Layout => (
-          <Card className={classes.card}>
-            <CardHeader
-              action={
-                <>
-                  <IconButton
-                    title="انتخاب"
-                    color="primary"
-                    onClick={this.handleMenuClick}
-                  >
-                    <AddIcon fontSize="small" />
-                  </IconButton>
-                  <Menu
-                    id="dashboards-menu"
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={this.handleMenuClose}
-                  >
-                    {Layout.state.dashboards
-                      .filter(d => !d.shared)
-                      .map(d => (
-                        <MenuItem
-                          key={d.id}
-                          onClick={this.handleSelectDashboard(d.id)}
-                        >{`داشبورد ${d.id}`}</MenuItem>
-                      ))}
-                    <MenuItem onClick={this.handleCreateDashboard}>
-                      {loading ? <CircularProgress /> : "داشبورد جدید"}
-                    </MenuItem>
-                  </Menu>
-                </>
-              }
-              title={name}
-              subheader={moment(date).format("LL")}
-              classes={{ title: classes.title, subheader: classes.subheader }}
-            />
-            <CardContent className={classes.Content}>
-              {this.getReport(type, data)}
-            </CardContent>
-            <CardActions className={classes.actions} disableActionSpacing>
-              {!expanded && (
-                <Typography component="p" className={classes.description}>
-                  {description.slice(0, 50)} {description.length > 50 && "..."}
-                </Typography>
-              )}
-              <IconButton
-                className={classnames(classes.expand, {
-                  [classes.expandOpen]: expanded,
-                  [classes.hidden]: description.length <= 50
-                })}
-                onClick={this.handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="نمایش توضیحات"
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <Typography>{description}</Typography>
+          <>
+            <Dialog
+              title="نام داشبورد جدید"
+              open={open}
+              loading={loading}
+              maxWidth="sm"
+              onSave={this.handleSaveNewDashboard}
+              onClose={this.toggleNewDashboardModal}
+            >
+              <NewDashboardForm />
+            </Dialog>
+            <Card className={classes.card}>
+              <CardHeader
+                action={
+                  <>
+                    <IconButton
+                      title="انتخاب"
+                      color="primary"
+                      onClick={this.handleMenuClick}
+                    >
+                      <AddIcon fontSize="small" />
+                    </IconButton>
+                    <Menu
+                      id="dashboards-menu"
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={this.handleMenuClose}
+                    >
+                      {Layout.state.dashboards
+                        .filter(d => !d.shared)
+                        .map(d => (
+                          <MenuItem
+                            key={d.id}
+                            onClick={this.handleSelectDashboard(d.id)}
+                          >{`داشبورد ${d.name || d.id}`}</MenuItem>
+                        ))}
+                      <MenuItem onClick={this.toggleNewDashboardModal}>
+                        داشبورد جدید
+                      </MenuItem>
+                    </Menu>
+                  </>
+                }
+                title={name}
+                subheader={moment(date).format("LL")}
+                classes={{ title: classes.title, subheader: classes.subheader }}
+              />
+              <CardContent className={classes.Content}>
+                {this.getReport(type, data)}
               </CardContent>
-            </Collapse>
-          </Card>
+              <CardActions className={classes.actions} disableActionSpacing>
+                {!expanded && (
+                  <Typography component="p" className={classes.description}>
+                    {description.slice(0, 50)}{" "}
+                    {description.length > 50 && "..."}
+                  </Typography>
+                )}
+                <IconButton
+                  className={classnames(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                    [classes.hidden]: description.length <= 50
+                  })}
+                  onClick={this.handleExpandClick}
+                  aria-expanded={expanded}
+                  aria-label="نمایش توضیحات"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography>{description}</Typography>
+                </CardContent>
+              </Collapse>
+            </Card>
+          </>
         )}
       </Subscribe>
     );

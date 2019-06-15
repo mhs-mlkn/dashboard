@@ -61,7 +61,9 @@ const NavbarLinks = props => {
                     handleClose={handleToggleConfirm}
                     open={openConfirm}
                   />
-                  {Layout.state.dashboards.length > 1 && <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />}
+                  {Layout.state.dashboards.length > 1 && (
+                    <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+                  )}
                   <IconButton
                     onClick={handleToggleConfirm}
                     color="secondary"

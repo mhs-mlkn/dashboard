@@ -43,6 +43,12 @@ export class ReportContainer extends Container {
     return item;
   };
 
+  getHashCode = async instanceId => {
+    const hash = await Api.getHashCode(instanceId);
+    console.log("hash> ", hash);
+    return hash;
+  };
+
   createReportInstance = async (
     reportId,
     userReportName,
