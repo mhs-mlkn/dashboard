@@ -16,7 +16,9 @@ const MyAppBar = props => {
 
   const handleChangeTitle = () => {
     if (path.startsWith("/user/dashboard/")) {
-      setTitle(LayoutContainer.getDashboardName2(path));
+      const t = LayoutContainer.getDashboardName2(path);
+      console.log(t);
+      setTitle(t);
     }
     const route = find(routes, r =>
       r.matchTest ? r.matchTest(path) : r.path === path
