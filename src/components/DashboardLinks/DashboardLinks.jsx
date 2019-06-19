@@ -27,10 +27,6 @@ const DashboardLinks = props => {
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
           {props.location.pathname.startsWith("/user/dashboard") ? (
             <>
-              <span>
-                {Layout.state.dashboards.length > 0 &&
-                  Layout.getDashboardName(selectedDashboardId)}
-              </span>
               {Layout.state.dashboards.map(d => (
                 <Tooltip
                   title={`داشبورد ${d.name || d.id}`}

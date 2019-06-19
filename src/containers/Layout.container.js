@@ -9,6 +9,7 @@ const MIN_H = { lg: 14, md: 14, sm: 14, xs: 14, xxs: 14 };
 
 export class LayoutContainer extends Container {
   newDashboardName = "";
+  dashboardName = "";
   state = {
     dashboards: []
   };
@@ -20,6 +21,7 @@ export class LayoutContainer extends Container {
       dashboard.config.layouts = setMinSize(dashboard.config.layouts);
       return dashboard;
     });
+    this.setDashboardName(dashboards);
     return this.setState({ dashboards });
   };
 
@@ -46,9 +48,9 @@ export class LayoutContainer extends Container {
     return this.state.dashboards.find(d => +d.id === +dashboardId);
   };
 
-  getDashboardName = dashboardId => {
-    const item = this.state.dashboards.find(d => +d.id === +dashboardId);
-    return item ? item.name : "";
+  setDashboardName = dashboards => {
+    const dashboard = dashboards[0];
+    this.dashboardName = dashboard ? dashboard.name || "داشبورد" : "";
   };
 
   getDashboardIndex = dashboardId => {
@@ -124,8 +126,8 @@ export class LayoutContainer extends Container {
     const urlParts = path.split("/");
     const id = urlParts[urlParts.length - 1];
     const item = this.state.dashboards.find(d => +d.id === +id);
-    return item ? item.name : "داشبورد";
-  }
+    return item ? item.name : "";
+  };
 
   isValidDashboardId = dashboardId =>
     this.state.dashboards.some(d => +d.id === +dashboardId);

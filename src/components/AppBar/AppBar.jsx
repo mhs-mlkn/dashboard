@@ -9,6 +9,7 @@ import NavbarLinks from "../NavbarLinks/NavbarLinks";
 import DashboardLinks from "../DashboardLinks/DashboardLinks";
 import LayoutContainer from "../../containers/Layout.container";
 import routes from "../../routes";
+import { Subscribe } from "unstated";
 
 const MyAppBar = props => {
   const { open, isSmallScreen, path, handleDrawerToggle } = props;
@@ -17,8 +18,7 @@ const MyAppBar = props => {
   const handleChangeTitle = () => {
     if (path.startsWith("/user/dashboard/")) {
       const t = LayoutContainer.getDashboardName2(path);
-      console.log(t);
-      setTitle(t);
+      return setTitle(t);
     }
     const route = find(routes, r =>
       r.matchTest ? r.matchTest(path) : r.path === path
@@ -26,30 +26,36 @@ const MyAppBar = props => {
     setTitle(route ? route.title : "");
   };
 
-  useEffect(handleChangeTitle, []);
-  useEffect(handleChangeTitle, [path]);
+  // useEffect(handleChangeTitle, []);
+  useEffect(handleChangeTitle);
 
   return (
-    <AppBar
-      position="fixed"
-      className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
-    >
-      <Toolbar disableGutters={true}>
-        <IconButton
-          onClick={handleDrawerToggle}
-          className={
-            open && !isSmallScreen ? "menuButton menuButtonOpen" : "menuButton"
-          }
+    <Subscribe to={[LayoutContainer]}>
+      {Layout => (
+        <AppBar
+          position="fixed"
+          className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
         >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" color="textPrimary" noWrap>
-          {title}
-        </Typography>
-        <DashboardLinks />
-        <NavbarLinks />
-      </Toolbar>
-    </AppBar>
+          <Toolbar disableGutters={true}>
+            <IconButton
+              onClick={handleDrawerToggle}
+              className={
+                open && !isSmallScreen
+                  ? "menuButton menuButtonOpen"
+                  : "menuButton"
+              }
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="textPrimary" noWrap>
+              {title || Layout.dashboardName}
+            </Typography>
+            <DashboardLinks />
+            <NavbarLinks />
+          </Toolbar>
+        </AppBar>
+      )}
+    </Subscribe>
   );
 };
 
