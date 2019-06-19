@@ -59,8 +59,8 @@ class Main extends Component {
             خطا
           </Typography>
           <Typography color="error" variant="h5" gutterBottom>
-            {/* {error.message || error || "خطا"} */}
-            {error.message || error || "خطا در برقراری ارتباط با سرور"}
+            {/* {error.message || error || "خطا در برقراری ارتباط با سرور"} */}
+            خطا در برقراری ارتباط با سرور
           </Typography>
           <Button color="primary" variant="outlined" onClick={this.reset}>
             تلاش مجدد

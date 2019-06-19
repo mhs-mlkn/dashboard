@@ -17,23 +17,15 @@ import PrivateRoute from "../hoc/PrivateRoute";
 import routes, { loginRoute } from "../routes";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 
 import cyan from "@material-ui/core/colors/cyan";
 import green from "@material-ui/core/colors/green";
 import red from "@material-ui/core/colors/red";
 
+import AppBar from "../components/AppBar/AppBar";
 import Sidebar from "../components/Sidebar/Sidebar";
-import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
-import DashboardLinks from "../components/DashboardLinks/DashboardLinks";
 import Main from "../components/Main";
-import { find } from "lodash";
 import "./RTLStyles.css";
-import LayoutContainer from "../containers/Layout.container";
 
 const theme = createMuiTheme({
   palette: {
@@ -80,12 +72,11 @@ const getRoutes = () => {
 class RTL extends Component {
   state = {
     open: true,
-    title: ""
+    isSmallScreen: false
   };
 
   componentDidMount = () => {
     this.resizeListener();
-    this.setTitle(this.props.history.location.pathname);
     this.configAxios();
     this.configMoment();
     this.ps = new PerfectScrollbar(this.refs.mainPanel);
@@ -96,7 +87,6 @@ class RTL extends Component {
     const path = prevProps.history.location.pathname;
     const oldPath = prevProps.location.pathname;
     if (oldPath !== path) {
-      this.setTitle(path);
       this.ps.update();
     }
     this.refs.mainPanel.scrollTop = 0;
@@ -105,18 +95,6 @@ class RTL extends Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeListener);
   }
-
-  setTitle = path => {
-    if (path.startsWith("/user/dashboard/")) {
-      return this.setState({
-        title: LayoutContainer.getDashboardName2(path)
-      });
-    }
-    const route = find(routes, r =>
-      r.matchTest ? r.matchTest(path) : r.path === path
-    );
-    this.setState({ title: route ? route.title : "" });
-  };
 
   configAxios = () => {
     axios.interceptors.response.use(
@@ -141,17 +119,15 @@ class RTL extends Component {
   resizeListener = () => {
     const sm = this.props.theme.breakpoints.width("md");
     if (window.innerWidth >= sm) {
-      this.isSmallScreen = false;
-      !this.state.open && this.setState({ open: true });
+      !this.state.open && this.setState({ open: true, isSmallScreen: false });
     } else {
-      this.isSmallScreen = true;
-      this.state.open && this.setState({ open: false });
+      this.state.open && this.setState({ open: false, isSmallScreen: true });
     }
   };
 
   render = () => {
     const { location } = this.props;
-    const { open, title } = this.state;
+    const { open, isSmallScreen } = this.state;
 
     return (
       <MuiThemeProvider theme={theme}>
@@ -159,29 +135,11 @@ class RTL extends Component {
           <div className={"root"}>
             <CssBaseline />
             <AppBar
-              position="fixed"
-              className={
-                open && !this.isSmallScreen ? "appBar appBarShift" : "appBar"
-              }
-            >
-              <Toolbar disableGutters={true}>
-                <IconButton
-                  onClick={this.handleDrawerToggle}
-                  className={
-                    open && !this.isSmallScreen
-                      ? "menuButton menuButtonOpen"
-                      : "menuButton"
-                  }
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" color="textPrimary" noWrap>
-                  {title}
-                </Typography>
-                <DashboardLinks />
-                <NavbarLinks />
-              </Toolbar>
-            </AppBar>
+              open={open}
+              isSmallScreen={isSmallScreen}
+              path={this.props.history.location.pathname}
+              handleDrawerToggle={this.handleDrawerToggle}
+            />
             <Sidebar
               open={open}
               location={location}
@@ -189,7 +147,7 @@ class RTL extends Component {
             />
             <main
               className={
-                open && !this.isSmallScreen ? "content contentShift" : "content"
+                open && !isSmallScreen ? "content contentShift" : "content"
               }
               ref="mainPanel"
             >

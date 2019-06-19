@@ -1,28 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { find } from "lodash";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import NavbarLinks from "../components/NavbarLinks/NavbarLinks";
-import DashboardLinks from "../components/DashboardLinks/DashboardLinks";
+import NavbarLinks from "../NavbarLinks/NavbarLinks";
+import DashboardLinks from "../DashboardLinks/DashboardLinks";
+import LayoutContainer from "../../containers/Layout.container";
+import routes from "../../routes";
 
 const MyAppBar = props => {
-  const [open, setOpen] = useState(false);
-  const title = "";
+  const { open, isSmallScreen, path, handleDrawerToggle } = props;
+  const [title, setTitle] = useState("داشبورد");
+
+  const handleChangeTitle = () => {
+    if (path.startsWith("/user/dashboard/")) {
+      setTitle(LayoutContainer.getDashboardName2(path));
+    }
+    const route = find(routes, r =>
+      r.matchTest ? r.matchTest(path) : r.path === path
+    );
+    setTitle(route ? route.title : "");
+  };
+
+  useEffect(handleChangeTitle, []);
+  useEffect(handleChangeTitle, [path]);
 
   return (
     <AppBar
       position="fixed"
-      className={open && !this.isSmallScreen ? "appBar appBarShift" : "appBar"}
+      className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
     >
       <Toolbar disableGutters={true}>
         <IconButton
-          onClick={this.handleDrawerToggle}
+          onClick={handleDrawerToggle}
           className={
-            open && !this.isSmallScreen
-              ? "menuButton menuButtonOpen"
-              : "menuButton"
+            open && !isSmallScreen ? "menuButton menuButtonOpen" : "menuButton"
           }
         >
           <MenuIcon />
