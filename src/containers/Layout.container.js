@@ -120,6 +120,13 @@ export class LayoutContainer extends Container {
 
   setNewDashboardName = name => (this.newDashboardName = name);
 
+  getDashboardName2 = path => {
+    const urlParts = path.split("/");
+    const id = urlParts[urlParts.length - 1];
+    const item = this.state.dashboards.find(d => +d.id === +id);
+    return item ? item.name : "داشبورد";
+  }
+
   isValidDashboardId = dashboardId =>
     this.state.dashboards.some(d => +d.id === +dashboardId);
 }

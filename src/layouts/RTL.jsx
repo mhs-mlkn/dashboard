@@ -33,6 +33,7 @@ import DashboardLinks from "../components/DashboardLinks/DashboardLinks";
 import Main from "../components/Main";
 import { find } from "lodash";
 import "./RTLStyles.css";
+import LayoutContainer from "../containers/Layout.container";
 
 const theme = createMuiTheme({
   palette: {
@@ -106,6 +107,11 @@ class RTL extends Component {
   }
 
   setTitle = path => {
+    if (path.startsWith("/user/dashboard/")) {
+      return this.setState({
+        title: LayoutContainer.getDashboardName2(path)
+      });
+    }
     const route = find(routes, r =>
       r.matchTest ? r.matchTest(path) : r.path === path
     );
