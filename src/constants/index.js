@@ -33,7 +33,8 @@ export const AREA_CHART_CONFIG = {
   stacked: false,
   brush: false,
   legend: LEGEND_CONFIG,
-  yAxis: AXIS_CONFIG
+  yAxis: AXIS_CONFIG,
+  xAxis: AXIS_CONFIG
 };
 
 export const Line_CHART_CONFIG = {
@@ -41,7 +42,8 @@ export const Line_CHART_CONFIG = {
   stacked: false,
   brush: false,
   legend: LEGEND_CONFIG,
-  yAxis: AXIS_CONFIG
+  yAxis: AXIS_CONFIG,
+  xAxis: AXIS_CONFIG
 };
 
 export const PIE_CHART_CONFIG = {
