@@ -18,7 +18,13 @@ const styles = theme => ({
 const ChartYAxisConfig = props => {
   const { classes, axisConfig, layout, onChange } = props;
 
-  const { height = 30, unit = "", label = "", divideBy = 0 } = axisConfig;
+  const {
+    height = 30,
+    angle = 0,
+    unit = "",
+    label = "",
+    divideBy = 0
+  } = axisConfig;
 
   const handleChange = ({ target }) => {
     // console.log(target.name, target.value);
@@ -33,6 +39,16 @@ const ChartYAxisConfig = props => {
         label="ارتفاع"
         type="number"
         value={height}
+        onChange={handleChange}
+        margin="dense"
+        variant="outlined"
+        className={classes.textField}
+      />
+      <TextField
+        name="angle"
+        label="چرخش"
+        type="number"
+        value={angle}
         onChange={handleChange}
         margin="dense"
         variant="outlined"

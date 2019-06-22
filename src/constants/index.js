@@ -1,3 +1,8 @@
+export const PIE_LABEL_RENDER_TYPE = {
+  SIMPLE: 0,
+  LINE: 1
+};
+
 export const LEGEND_CONFIG = {
   layout: "horizontal",
   align: "center",
@@ -10,7 +15,8 @@ export const AXIS_CONFIG = {
   height: 30,
   unit: "",
   label: "",
-  divideBy: 0
+  divideBy: 0,
+  angle: 0
 };
 
 export const BAR_CHART_CONFIG = {
@@ -40,7 +46,9 @@ export const Line_CHART_CONFIG = {
 
 export const PIE_CHART_CONFIG = {
   innerRadius: 0,
-  legend: LEGEND_CONFIG
+  outerRadius: 80,
+  legend: LEGEND_CONFIG,
+  labelRenderType: PIE_LABEL_RENDER_TYPE.SIMPLE
 };
 
 export const RADAR_CHART_CONFIG = {

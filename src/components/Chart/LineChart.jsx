@@ -9,19 +9,9 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import purple from "@material-ui/core/colors/purple";
-import orange from "@material-ui/core/colors/orange";
-import red from "@material-ui/core/colors/red";
-import yellow from "@material-ui/core/colors/yellow";
-import blue from "@material-ui/core/colors/blue";
-import green from "@material-ui/core/colors/green";
-import pink from "@material-ui/core/colors/pink";
-import grey from "@material-ui/core/colors/grey";
-import brown from "@material-ui/core/colors/brown";
+import COLORS from "../../constants/colors";
 
 import { Line_CHART_CONFIG as CONFIG } from "../../constants";
-
-const colors = [purple, orange, red, yellow, blue, green, pink, grey, brown];
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
@@ -64,7 +54,7 @@ const Chart = props => {
           type="monotone"
           dataKey={key}
           key={key}
-          stroke={colors[i % 9]["500"]}
+          stroke={COLORS[i % 19]["500"]}
           opacity={opacity[key]}
           stackId={config.stacked ? "" : i}
         />

@@ -34,11 +34,6 @@ select:-webkit-autofill:focus {
   font-size: 10px;
 }
 
-.react-grid-item > .react-resizable-handle::after {
-  border-right: 2px solid #e4e4e4;
-  border-bottom: 2px solid #e4e4e4;
-}
-
 .recharts-cartesian-axis-tick-value {
   fill: #e5e5e5;
   font-size: 13px;
@@ -52,6 +47,11 @@ select:-webkit-autofill:focus {
 
 .recharts-legend-item {
   text-align: start;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-right: 2px solid #e4e4e4;
+  border-bottom: 2px solid #e4e4e4;
 }
 
 .load-more {
