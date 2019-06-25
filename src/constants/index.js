@@ -1,3 +1,20 @@
+export const AXIS_SCALES = [
+  "auto",
+  "linear",
+  "pow",
+  "sqrt",
+  "log",
+  "identity",
+  "time",
+  "band",
+  "point",
+  "ordinal",
+  "quantile",
+  "quantize",
+  "utc",
+  "threshold"
+];
+
 export const PIE_LABEL_RENDER_TYPE = {
   SIMPLE: 0,
   LINE: 1
@@ -16,7 +33,14 @@ export const AXIS_CONFIG = {
   unit: "",
   label: "",
   divideBy: 0,
-  angle: 0
+  angle: 0,
+  scale: "auto",
+  tick: {
+    fill: "#e5e5e5",
+    fontSize: "13px",
+    textAnchor: "start",
+    fontFamily: "arial"
+  }
 };
 
 export const BAR_CHART_CONFIG = {

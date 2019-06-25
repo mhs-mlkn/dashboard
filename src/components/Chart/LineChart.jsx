@@ -10,7 +10,7 @@ import {
   Legend
 } from "recharts";
 import COLORS from "../../constants/colors";
-
+import { getDataMin } from "../../util";
 import { Line_CHART_CONFIG as CONFIG } from "../../constants";
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
@@ -20,9 +20,14 @@ const Chart = props => {
   const { data, width, height } = props;
   let config = { ...CONFIG, ...props.config };
   const keys = getDataKeys(data[0] || {});
+  const [min, setMin] = useState(Number.MIN_SAFE_INTEGER);
 
   useEffect(() => {
-    config = { ...CONFIG, ...config };
+    setMin(getDataMin(data, keys));
+  }, [props.data]);
+
+  useEffect(() => {
+    config = { ...CONFIG, ...props.config };
   }, [props.config]);
 
   const handleMouseEnter = o => {
@@ -41,6 +46,11 @@ const Chart = props => {
     });
   };
 
+  const getDomain = scale => {
+    const minValue = min === 0 ? min + 0.1 : min;
+    return ["log"].indexOf(scale) > -1 ? [minValue, "dataMax"] : undefined;
+  };
+
   return (
     <LineChart
       data={data}
@@ -54,6 +64,7 @@ const Chart = props => {
           type="monotone"
           dataKey={key}
           key={key}
+          connectNulls
           stroke={COLORS[i % 19]["500"]}
           opacity={opacity[key]}
           stackId={config.stacked ? "" : i}
@@ -73,6 +84,10 @@ const Chart = props => {
           unit={config.xAxis.unit}
           height={+config.xAxis.height}
           angle={+config.xAxis.angle}
+          tick={config.xAxis.tick}
+          scale={config.xAxis.scale}
+          domain={getDomain(config.xAxis.scale)}
+          allowDataOverflow
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -85,6 +100,8 @@ const Chart = props => {
           dataKey="name"
           height={+config.xAxis.height}
           angle={+config.xAxis.angle}
+          tick={config.xAxis.tick}
+          allowDataOverflow
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -98,6 +115,8 @@ const Chart = props => {
           type="category"
           width={+config.yAxis.width}
           angle={+config.yAxis.angle}
+          tick={config.yAxis.tick}
+          allowDataOverflow
           label={{
             value: config.yAxis.label,
             angle: -90,
@@ -109,6 +128,10 @@ const Chart = props => {
           unit={config.yAxis.unit}
           width={+config.yAxis.width}
           angle={+config.yAxis.angle}
+          tick={config.yAxis.tick}
+          scale={config.yAxis.scale}
+          domain={getDomain(config.yAxis.scale)}
+          allowDataOverflow
           label={{
             value: config.yAxis.label,
             angle: -90,

@@ -4,6 +4,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import { AXIS_SCALES } from "../../../../constants/index";
 
 const styles = theme => ({
   formControl: {
@@ -23,6 +24,7 @@ const ChartYAxisConfig = props => {
     angle = 0,
     unit = "",
     label = "",
+    scale = "auto",
     divideBy = 0
   } = axisConfig;
 
@@ -72,6 +74,23 @@ const ChartYAxisConfig = props => {
         variant="outlined"
         className={classes.textField}
       />
+      <TextField
+        select
+        name="scale"
+        label="مقیاس"
+        className={classes.textField}
+        value={scale}
+        onChange={handleChange}
+        margin="dense"
+        variant="outlined"
+        disabled={layout === "vertical"}
+      >
+        {AXIS_SCALES.map(sc => (
+          <MenuItem key={sc} value={sc}>
+            {sc}
+          </MenuItem>
+        ))}
+      </TextField>
       <TextField
         select
         name="divideBy"

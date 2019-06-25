@@ -34,10 +34,10 @@ select:-webkit-autofill:focus {
   font-size: 10px;
 }
 
-.recharts-cartesian-axis-tick-value {
+/* .recharts-cartesian-axis-tick-value {
   fill: #e5e5e5;
   font-size: 13px;
-}
+} */
 
 .recharts-label {
   fill: #e5e5e5;

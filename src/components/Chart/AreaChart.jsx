@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import { getDataMin } from "../../util";
 import COLORS from "../../constants/colors";
 
 import { AREA_CHART_CONFIG as CONFIG } from "../../constants";
@@ -20,6 +21,11 @@ const Chart = props => {
   const { data, width, height } = props;
   let config = { ...CONFIG, ...props.config };
   const keys = getDataKeys(data[0] || {});
+  const [min, setMin] = useState(Number.MIN_SAFE_INTEGER);
+
+  useEffect(() => {
+    setMin(getDataMin(data, keys));
+  }, [props.data]);
 
   useEffect(() => {
     config = { ...CONFIG, ...config };
@@ -39,6 +45,11 @@ const Chart = props => {
       ...opacity,
       [dataKey]: 1
     });
+  };
+
+  const getDomain = scale => {
+    const minValue = min === 0 ? min + 0.1 : min;
+    return ["log"].indexOf(scale) > -1 ? [minValue, "dataMax"] : undefined;
   };
 
   return (
@@ -68,6 +79,10 @@ const Chart = props => {
           unit={config.xAxis.unit}
           height={+config.xAxis.height}
           angle={+config.xAxis.angle}
+          tick={config.xAxis.tick}
+          scale={config.xAxis.scale}
+          domain={getDomain(config.xAxis.scale)}
+          allowDataOverflow
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -80,6 +95,8 @@ const Chart = props => {
           dataKey="name"
           height={+config.xAxis.height}
           angle={+config.xAxis.angle}
+          tick={config.xAxis.tick}
+          allowDataOverflow
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -93,6 +110,8 @@ const Chart = props => {
           type="category"
           width={+config.yAxis.width}
           angle={+config.yAxis.angle}
+          tick={config.yAxis.tick}
+          allowDataOverflow
           label={{
             value: config.yAxis.label,
             angle: -90,
@@ -104,6 +123,10 @@ const Chart = props => {
           unit={config.yAxis.unit}
           width={+config.yAxis.width}
           angle={+config.yAxis.angle}
+          tick={config.yAxis.tick}
+          scale={config.yAxis.scale}
+          domain={getDomain(config.yAxis.scale)}
+          allowDataOverflow
           label={{
             value: config.yAxis.label,
             angle: -90,
