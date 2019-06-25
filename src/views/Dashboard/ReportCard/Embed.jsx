@@ -26,7 +26,6 @@ const EmbedDialog = ({ instanceId }) => {
       setState({ ...state, loading: true, error: "" });
       try {
         const hash = await ReportContainer.getHashCode(instanceId);
-        console.log("hash2> ", hash);
         setState({ ...state, hash, loading: false });
       } catch (error) {
         setState({

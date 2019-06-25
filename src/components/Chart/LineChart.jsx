@@ -72,7 +72,7 @@ const Chart = props => {
           type="number"
           unit={config.xAxis.unit}
           height={+config.xAxis.height}
-          angle={config.xAxis.angle}
+          angle={+config.xAxis.angle}
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -84,7 +84,7 @@ const Chart = props => {
         <XAxis
           dataKey="name"
           height={+config.xAxis.height}
-          angle={config.xAxis.angle}
+          angle={+config.xAxis.angle}
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -97,7 +97,7 @@ const Chart = props => {
           dataKey="name"
           type="category"
           width={+config.yAxis.width}
-          angle={config.yAxis.angle}
+          angle={+config.yAxis.angle}
           label={{
             value: config.yAxis.label,
             angle: -90,
@@ -108,7 +108,7 @@ const Chart = props => {
         <YAxis
           unit={config.yAxis.unit}
           width={+config.yAxis.width}
-          angle={config.yAxis.angle}
+          angle={+config.yAxis.angle}
           label={{
             value: config.yAxis.label,
             angle: -90,

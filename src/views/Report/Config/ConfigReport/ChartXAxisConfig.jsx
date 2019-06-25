@@ -27,7 +27,6 @@ const ChartYAxisConfig = props => {
   } = axisConfig;
 
   const handleChange = ({ target }) => {
-    // console.log(target.name, target.value);
     onChange({ xAxis: { ...axisConfig, [target.name]: target.value } });
   };
 

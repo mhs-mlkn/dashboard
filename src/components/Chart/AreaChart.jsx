@@ -12,7 +12,6 @@ import {
 import COLORS from "../../constants/colors";
 
 import { AREA_CHART_CONFIG as CONFIG } from "../../constants";
-console.log(">>><<< ", CONFIG);
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
@@ -22,11 +21,8 @@ const Chart = props => {
   let config = { ...CONFIG, ...props.config };
   const keys = getDataKeys(data[0] || {});
 
-  console.log(">>> ", config);
-
   useEffect(() => {
     config = { ...CONFIG, ...config };
-    console.log("::: ", config);
   }, [props.config]);
 
   const handleMouseEnter = o => {
@@ -71,7 +67,7 @@ const Chart = props => {
           type="number"
           unit={config.xAxis.unit}
           height={+config.xAxis.height}
-          angle={config.xAxis.angle}
+          angle={+config.xAxis.angle}
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -83,7 +79,7 @@ const Chart = props => {
         <XAxis
           dataKey="name"
           height={+config.xAxis.height}
-          angle={config.xAxis.angle}
+          angle={+config.xAxis.angle}
           label={{
             value: config.xAxis.label,
             angle: 0,
@@ -96,7 +92,7 @@ const Chart = props => {
           dataKey="name"
           type="category"
           width={+config.yAxis.width}
-          angle={config.yAxis.angle}
+          angle={+config.yAxis.angle}
           label={{
             value: config.yAxis.label,
             angle: -90,
@@ -107,7 +103,7 @@ const Chart = props => {
         <YAxis
           unit={config.yAxis.unit}
           width={+config.yAxis.width}
-          angle={config.yAxis.angle}
+          angle={+config.yAxis.angle}
           label={{
             value: config.yAxis.label,
             angle: -90,
