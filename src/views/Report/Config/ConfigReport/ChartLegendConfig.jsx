@@ -10,7 +10,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const styles = theme => ({
   formControl: {
-    marginBottom: theme.spacing.unit * 2
+    marginBottom: 0 //theme.spacing.unit * 2
   },
   group: {
     display: "block"

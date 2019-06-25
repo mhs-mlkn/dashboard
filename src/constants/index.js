@@ -37,7 +37,7 @@ export const AXIS_CONFIG = {
   scale: "auto",
   tick: {
     fill: "#e5e5e5",
-    fontSize: "13px",
+    fontSize: "13",
     textAnchor: "start",
     fontFamily: "arial"
   }

@@ -71,6 +71,7 @@ const ConfigReportDialog = props => {
   return (
     <Dialog
       title={`تنظیم گزارش: ${state.userReport.report.name}`}
+      fullScreen
       open={state.open}
       loading={state.loading}
       maxWidth="lg"
