@@ -71,7 +71,7 @@ export class AuthContainer extends Container {
     Axios.defaults.headers.common["token"] = access_token;
     this.token = access_token;
     this.refresh = refresh_token;
-    this.expires = expires_in * 1000 + Date.now() - 10;
+    this.expires = expires_in * 1000 + Date.now() - 2000;
     this.saveToLS();
   };
 
