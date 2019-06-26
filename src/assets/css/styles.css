@@ -23,9 +23,9 @@ select:-webkit-autofill:focus {
   caret-color: #fff;
 }
 
-.recharts-text {
+/* .recharts-text {
   text-anchor: start;
-}
+} */
 
 .recharts-legend-item-text {
   padding-right: 4px;

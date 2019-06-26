@@ -104,7 +104,7 @@ const ChartYAxisConfig = props => {
           <ColorPicker
             color={fill}
             onChangeComplete={({ hex }) =>
-              handleChange({ target: { name: fill, value: hex } })
+              handleChange({ target: { name: "fill", value: hex } })
             }
           />
         </div>

@@ -16,6 +16,13 @@ const BarCharConfigt = props => {
     onConfigChange({ ...config, ...override });
   };
 
+  const handleTickChange = axis => override => {
+    onConfigChange({
+      ...config,
+      [axis]: { ...config[axis], tick: { ...config[axis].tick, ...override } }
+    });
+  };
+
   return (
     <Grid container>
       <Grid container>
@@ -81,7 +88,7 @@ const BarCharConfigt = props => {
           <ChartTickConfig
             title="محمور افقی"
             tickConfig={xAxis.tick || {}}
-            onChange={config => console.log(config)}
+            onChange={handleTickChange("xAxis")}
           />
         </Grid>
         <Grid
@@ -95,7 +102,7 @@ const BarCharConfigt = props => {
           <ChartTickConfig
             title="محمور عمودی"
             tickConfig={yAxis.tick || {}}
-            onChange={config => console.log(config)}
+            onChange={handleTickChange("yAxis")}
           />
         </Grid>
       </Grid>
