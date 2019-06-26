@@ -36,6 +36,13 @@ export class AuthContainer extends Container {
     this.refresh = localStorage.getItem(REFRESH) || "";
     this.expires = localStorage.getItem(EXPIRES) || undefined;
     this.user = localStorage.getItem(USER) || "";
+
+    this.token = this.token === "undefined" ? "" : this.token;
+    this.verifier = this.verifier === "undefined" ? "" : this.verifier;
+    this.refresh = this.refresh === "undefined" ? "" : this.refresh;
+    this.expires = this.expires === "NaN" ? "" : this.expires;
+    this.user = this.user === "undefined" ? "" : this.user;
+
     this.hasTokenIssued = false;
     this.token && (Axios.defaults.headers.common["token"] = this.token);
   };

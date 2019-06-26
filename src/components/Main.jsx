@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router";
 import { SnackbarProvider } from "notistack";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -30,6 +31,9 @@ class Main extends Component {
       ]);
       this.setState({ loading: false });
     } catch (error) {
+      if (error && error.response && error.response.status === 401) {
+        return this.props.history.push("/user/login");
+      }
       this.setState({ loading: false, error });
     }
   };
@@ -39,6 +43,7 @@ class Main extends Component {
   // }
 
   componentDidCatch(error, info) {
+    console.log(JSON.stringify(error));
     this.setState({ error });
   }
 
@@ -84,4 +89,4 @@ class Main extends Component {
   };
 }
 
-export default Main;
+export default withRouter(Main);
