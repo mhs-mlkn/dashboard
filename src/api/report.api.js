@@ -5,9 +5,9 @@ const baseUrl = `${process.env.REACT_APP_BASE_URL}`;
 const reportUrl = `${process.env.REACT_APP_BASE_URL}/report`;
 
 export default class ReportApi {
-  static getAll = async (page = 0, size = 12) => {
+  static getAll = async (page = 0, size = 12, query = "") => {
     await Auth.refreshToken();
-    const params = { page, size };
+    const params = { page, size, name: query };
     return axios
       .get(`${reportUrl}/CollaboratorReports`, { params })
       .then(res => res.data.result);

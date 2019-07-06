@@ -1,6 +1,6 @@
 import React from "react";
 import IconButton from "@material-ui/core/IconButton";
-import MoreHoriz from "@material-ui/icons/MoreHoriz";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 import Loading from "../../../components/Loading/Loading";
 
 const LoadMore = props => {
@@ -15,7 +15,7 @@ const LoadMore = props => {
         className={"load-more"}
         onClick={onLoadMore}
       >
-        <MoreHoriz fontSize="small" />
+        <ExpandMore fontSize="small" />
       </IconButton>
     )
   );

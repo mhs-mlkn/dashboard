@@ -5,7 +5,7 @@ const DEFAULT_CONFIG_STRING =
   '{"layouts": {"lg": [], "md": [], "sm": [], "xs": [], "xxs": []}, "settings": {}}';
 
 const MIN_W = { lg: 6, md: 6, sm: 5, xs: 7, xxs: 7 };
-const MIN_H = { lg: 14, md: 14, sm: 14, xs: 14, xxs: 14 };
+const MIN_H = { lg: 14, md: 14, sm: 20, xs: 20, xxs: 20 };
 
 export class LayoutContainer extends Container {
   newDashboardName = "";

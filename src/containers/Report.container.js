@@ -8,10 +8,10 @@ export class ReportContainer extends Container {
     totalCount: 0
   };
 
-  getAll = async (page, size) => {
-    const data = await Api.getAll(page, size);
+  getAll = async (page, size, query) => {
+    const data = await Api.getAll(page, size, query);
     await this.setState({
-      reports: data.data,
+      reports: page === 0 ? data.data : this.state.reports.concat(data.data),
       totalCount: data.totalSize
     });
     return data;
@@ -101,6 +101,10 @@ export class ReportContainer extends Container {
       ur => +ur.drillDownId === +instanceId
     );
     return temp;
+  };
+
+  retrieveState = ({ reports, totalCount }) => {
+    this.setState({ reports, totalCount });
   };
 }
 

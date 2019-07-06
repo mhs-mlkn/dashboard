@@ -12,7 +12,6 @@ import {
 import COLORS from "../../constants/colors";
 import { getDataMin } from "../../util";
 import { Line_CHART_CONFIG as CONFIG } from "../../constants";
-import { object } from "prop-types";
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
