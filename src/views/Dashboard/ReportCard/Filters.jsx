@@ -81,6 +81,7 @@ class Filters extends Component {
     const name = id + "";
     switch (type) {
       case "DATE":
+      case "DATE_STRING":
         return <Field name={name} label={title} component={DatePicker} />;
 
       case "BOOLEAN":

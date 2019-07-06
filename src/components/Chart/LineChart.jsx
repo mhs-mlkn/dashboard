@@ -12,6 +12,7 @@ import {
 import COLORS from "../../constants/colors";
 import { getDataMin } from "../../util";
 import { Line_CHART_CONFIG as CONFIG } from "../../constants";
+import { object } from "prop-types";
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
@@ -100,7 +101,10 @@ const Chart = props => {
           dataKey="name"
           height={+config.xAxis.height}
           angle={+config.xAxis.angle}
-          tick={config.xAxis.tick}
+          tick={{
+            ...config.xAxis.tick,
+            fontSize: `${config.xAxis.tick.fontSize}px`
+          }}
           allowDataOverflow
           label={{
             value: config.xAxis.label,
@@ -128,7 +132,7 @@ const Chart = props => {
           unit={config.yAxis.unit}
           width={+config.yAxis.width}
           angle={+config.yAxis.angle}
-          tick={config.yAxis.tick}
+          tick={{ ...config.yAxis.tick }}
           scale={config.yAxis.scale}
           domain={getDomain(config.yAxis.scale)}
           allowDataOverflow
@@ -140,12 +144,12 @@ const Chart = props => {
           tickFormatter={d => d / Math.pow(10, +config.yAxis.divideBy)}
         />
       )}
-      <Tooltip wrapperStyle={{ left: "0" }} />
       <Legend
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         {...config.legend}
       />
+      <Tooltip wrapperStyle={{ left: "0" }} />
     </LineChart>
   );
 };
