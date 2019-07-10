@@ -37,7 +37,7 @@ const ChartYAxisConfig = props => {
       <FormLabel component="legend">محمور عمودی</FormLabel>
       <TextField
         name="width"
-        label="عرض"
+        label="عرض محور"
         type="number"
         value={width}
         onChange={handleChange}
@@ -47,7 +47,7 @@ const ChartYAxisConfig = props => {
       />
       <TextField
         name="angle"
-        label="چرخش"
+        label="زاویه برچسب ها"
         type="number"
         value={angle}
         onChange={handleChange}
@@ -67,7 +67,7 @@ const ChartYAxisConfig = props => {
       />
       <TextField
         name="label"
-        label="برچسب"
+        label="عنوان"
         value={label}
         onChange={handleChange}
         margin="dense"

@@ -51,7 +51,7 @@ class Filters extends Component {
       filters.push({
         id: p,
         value:
-          filter.type === "DATE" ? values[p].format("YYYY-MM-DD") : values[p]
+        ["DATE", "DATE_STRING"].indexOf(filter.type) > -1 ? values[p].format("YYYY-MM-DD") : values[p]
       });
     }
     return filters;
@@ -64,7 +64,7 @@ class Filters extends Component {
       for (const val of values) {
         const filter = filters.find(f => f.id === +val.id);
         initials[val.id] =
-          filter.type === "DATE" ? moment(val.value) : val.value;
+          ["DATE", "DATE_STRING"].indexOf(filter.type) > -1 ? moment(val.value) : val.value;
       }
       return initials;
     }

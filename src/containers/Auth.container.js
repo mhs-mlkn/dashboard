@@ -4,7 +4,7 @@ import Axios from "axios";
 import AuthApi from "../api/auth.api";
 
 const TOKEN = "DASH_USER_TOKEN";
-const VERIFIER = "DASH_ADMIN_VERIFIER";
+const VERIFIER = "DASH_USER_VERIFIER";
 const REFRESH = "DASH_USER_REFRESH";
 const EXPIRES = "DASH_USER_EXPIRES";
 const USER = "DASH_USER_USER";

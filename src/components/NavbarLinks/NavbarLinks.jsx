@@ -44,8 +44,18 @@ const NavbarLinks = props => {
 
   const handleToggleConfirm = () => toggleConfirm(!openConfirm);
 
-  const isVisible = () =>
+  const isDashboardRoute = () =>
     RegExp("/user/dashboard/\\d+", "g").test(props.location.pathname);
+
+  const isVisible = () => {
+    if (isDashboardRoute()) {
+      const urlParts = props.location.pathname.split("/");
+      const dashboardId = urlParts[urlParts.length - 1];
+      const dashboard = LayoutContainer.getDashboard(dashboardId);
+      return !!dashboard && !dashboard.shared;
+    }
+    return false;
+  };
 
   return (
     <Subscribe to={[AuthContainer, LayoutContainer]}>

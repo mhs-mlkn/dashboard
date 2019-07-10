@@ -64,7 +64,7 @@ const EmbedDialog = ({ instanceId }) => {
     state.width
   }&height=${state.height}&responsive=${
     state.responsive
-  }" style="width: 100%; height: 100%; display: block;"></iframe>`;
+  }" style="width: 100%; height: 100%; display: block; border: none"></iframe>`;
 
   if (state.loading) {
     return <Loading />;

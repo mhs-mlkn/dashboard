@@ -37,7 +37,7 @@ const ChartYAxisConfig = props => {
       <FormLabel component="legend">محمور افقی</FormLabel>
       <TextField
         name="height"
-        label="ارتفاع"
+        label="ارتفاع محور"
         type="number"
         value={height}
         onChange={handleChange}
@@ -47,7 +47,7 @@ const ChartYAxisConfig = props => {
       />
       <TextField
         name="angle"
-        label="چرخش"
+        label="زاویه برچسب ها"
         type="number"
         value={angle}
         onChange={handleChange}
@@ -67,7 +67,7 @@ const ChartYAxisConfig = props => {
       />
       <TextField
         name="label"
-        label="برچسب"
+        label="عنوان"
         value={label}
         onChange={handleChange}
         margin="dense"

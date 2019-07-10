@@ -86,7 +86,7 @@ const BarCharConfigt = props => {
           style={{ marginBottom: "20px" }}
         >
           <ChartTickConfig
-            title="محمور افقی"
+            title="تنظیمات فونت محمور افقی"
             tickConfig={xAxis.tick || {}}
             onChange={handleTickChange("xAxis")}
           />
@@ -100,7 +100,7 @@ const BarCharConfigt = props => {
           style={{ marginBottom: "20px" }}
         >
           <ChartTickConfig
-            title="محمور عمودی"
+            title="تنظیمات فونت محمور عمودی"
             tickConfig={yAxis.tick || {}}
             onChange={handleTickChange("yAxis")}
           />
