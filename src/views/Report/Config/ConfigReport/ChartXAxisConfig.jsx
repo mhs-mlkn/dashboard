@@ -34,10 +34,10 @@ const ChartYAxisConfig = props => {
 
   return (
     <FormControl component="fieldset" className={classes.formControl}>
-      <FormLabel component="legend">محمور افقی</FormLabel>
+      <FormLabel component="legend">محور افقی</FormLabel>
       <TextField
         name="height"
-        label="ارتفاع محور"
+        label="فاصله از پایین"
         type="number"
         value={height}
         onChange={handleChange}
