@@ -6,10 +6,12 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import MyCustomEvent from "../util/customEvent";
 
+let _isPaused = false;
+
 class CircularDeterminate extends React.Component {
   state = {
     completed: 0,
-    isPaused: false
+    isPaused: _isPaused
   };
 
   componentDidMount() {
@@ -18,11 +20,13 @@ class CircularDeterminate extends React.Component {
 
   componentDidUpdate = prevProps => {
     if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setState({ completed: 0, isPaused: false }, () => {
+      this.setState({ completed: 0, isPaused: _isPaused }, () => {
         if (this.timer) {
           clearInterval(this.timer);
         }
-        this.timer = setInterval(this.progress, 1000);
+        if (!this.state.isPaused) {
+          this.timer = setInterval(this.progress, 1000);
+        }
       });
     }
   };
@@ -41,6 +45,7 @@ class CircularDeterminate extends React.Component {
     this.setState(
       ({ isPaused }) => ({ isPaused: !isPaused, completed: 0 }),
       () => {
+        _isPaused = this.state.isPaused;
         MyCustomEvent.emit("TOGGLE_DASHBOARD_INTERVAL", this.state.isPaused);
         if (this.state.isPaused) {
           clearInterval(this.timer);

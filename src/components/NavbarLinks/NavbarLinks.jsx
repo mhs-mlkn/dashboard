@@ -62,6 +62,9 @@ const NavbarLinks = props => {
       {(Auth, Layout) =>
         Auth.isLoggedIn() ? (
           <div style={{ display: "flex", alignItems: "center" }}>
+            {Layout.state.dashboards.length > 1 && (
+              <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+            )}
             {isVisible() && (
               <>
                 <>
@@ -71,9 +74,6 @@ const NavbarLinks = props => {
                     handleClose={handleToggleConfirm}
                     open={openConfirm}
                   />
-                  {Layout.state.dashboards.length > 1 && (
-                    <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
-                  )}
                   <IconButton
                     onClick={handleToggleConfirm}
                     color="secondary"
