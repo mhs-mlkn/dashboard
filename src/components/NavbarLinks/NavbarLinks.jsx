@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import DeleteIcon from "@material-ui/icons/Delete";
 import Share from "@material-ui/icons/Share";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
@@ -12,13 +11,12 @@ import AuthContainer from "../../containers/Auth.container";
 import LayoutContainer from "../../containers/Layout.container";
 import { loginRoute } from "../../routes";
 import Timer from "../Timer";
-import ConfirmDialog from "../Dialog/ConfirmDialog";
 import MyCustomEvent from "../../util/customEvent";
+import DeleteDashboard from "./DeleteDashboard";
 import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 
 const NavbarLinks = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openConfirm, toggleConfirm] = React.useState(false);
   const open = Boolean(anchorEl);
 
   const handleMenu = event => {
@@ -29,11 +27,6 @@ const NavbarLinks = props => {
     MyCustomEvent.emit("SHARE_DASHBOARD");
   };
 
-  const handleDeleteDashboard = () => {
-    toggleConfirm(false);
-    MyCustomEvent.emit("DELETE_DASHBOARD");
-  };
-
   const handleClose = async e => {
     setAnchorEl(null);
     if (e.target.id === "logout") {
@@ -41,8 +34,6 @@ const NavbarLinks = props => {
       props.history.push(loginRoute.path);
     }
   };
-
-  const handleToggleConfirm = () => toggleConfirm(!openConfirm);
 
   const isDashboardRoute = () =>
     RegExp("/user/dashboard/\\d+", "g").test(props.location.pathname);
@@ -67,21 +58,7 @@ const NavbarLinks = props => {
             )}
             {isVisible() && (
               <>
-                <>
-                  <ConfirmDialog
-                    title="آیا اطمینان دارید؟"
-                    handleConfirm={handleDeleteDashboard}
-                    handleClose={handleToggleConfirm}
-                    open={openConfirm}
-                  />
-                  <IconButton
-                    onClick={handleToggleConfirm}
-                    color="secondary"
-                    title="حذف داشبورد"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </>
+                <DeleteDashboard />
                 <Button
                   onClick={handleShareDashboard}
                   color="primary"

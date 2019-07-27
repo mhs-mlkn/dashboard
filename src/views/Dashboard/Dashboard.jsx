@@ -1,12 +1,17 @@
 import React, { Component } from "react";
+import { Subscribe } from "unstated";
+import { withSnackbar } from "notistack";
 import { withSize } from "react-sizeme";
 import { Responsive as ResponsiveGridLayout } from "react-grid-layout";
 import Error from "../../components/Error/Error";
 import ReportCard from "./ReportCard/ReportCard";
 import ShareDashboard from "./ShareDashboard/ShareDashboard";
 import LayoutContainer from "../../containers/Layout.container";
+import TimerContainer from "../../containers/Timer.container";
+import DeleteDashboardContainer from "../../containers/DeleteDashboard.container";
 import MyCustomEvent from "../../util/customEvent";
 import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
+import { get } from "lodash";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -24,8 +29,7 @@ class Dashboard extends Component {
     const { dashboardId } = this.props.match.params;
     this.initialize(dashboardId);
     MyCustomEvent.on("DELETE_DASHBOARD", this.onDeleteDashboard);
-    MyCustomEvent.on("TOGGLE_DASHBOARD_INTERVAL", this.toggleInterval);
-    this.startInterval();
+    this.toggleInterval();
   };
 
   componentDidUpdate = async prevProps => {
@@ -39,10 +43,6 @@ class Dashboard extends Component {
     MyCustomEvent.removeEventListener(
       "DELETE_DASHBOARD",
       this.onDeleteDashboard
-    );
-    MyCustomEvent.removeEventListener(
-      "TOGGLE_DASHBOARD_INTERVAL",
-      this.toggleInterval
     );
     this.stopInterval();
   };
@@ -75,12 +75,13 @@ class Dashboard extends Component {
     }
   };
 
-  toggleInterval = isPaused => {
-    if (isPaused) {
+  toggleInterval = () => {
+    if (TimerContainer.state.paused) {
       this.stopInterval();
     } else {
       this.startInterval();
     }
+    TimerContainer.reset();
   };
 
   startInterval = () => {
@@ -121,7 +122,16 @@ class Dashboard extends Component {
       await LayoutContainer.deleteDashboard(dashboard.id);
       this.goToNext(true);
     } catch (error) {
-      this.setState({ error: "درخواست با خطا مواجه شد" });
+      const msg = get(
+        error,
+        "response.data.message",
+        "حذف داشبورد با خطا مواجه شد"
+      );
+      this.props.enqueueSnackbar(msg, {
+        variant: "error"
+      });
+    } finally {
+      DeleteDashboardContainer.setLoading(false);
     }
   };
 
@@ -148,35 +158,45 @@ class Dashboard extends Component {
     }
 
     return (
-      <>
-        <ResponsiveGridLayout
-          layouts={layouts}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
-          rowHeight={10}
-          width={width}
-          className="layout"
-          onBreakpointChange={this.onBreakpointChange}
-          isDraggable={false}
-          isResizable={false}
-          style={{ direction: "ltr" }}
-        >
-          {layouts[breakpoint].map(l => {
-            return (
-              <div key={l.i} style={{ direction: "rtl" }}>
-                <ReportCard
-                  dashboardId={dashboardId}
-                  layout={l}
-                  editEnabled={false}
-                />
-              </div>
-            );
-          })}
-        </ResponsiveGridLayout>
-        <ShareDashboard />
-      </>
+      <Subscribe to={[TimerContainer]}>
+        {Timer => {
+          if (Timer.state.hasSwitched) {
+            this.toggleInterval();
+          }
+          return (
+            <>
+              <ResponsiveGridLayout
+                layouts={layouts}
+                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
+                rowHeight={10}
+                width={width}
+                className="layout"
+                onBreakpointChange={this.onBreakpointChange}
+                isDraggable={false}
+                isResizable={false}
+                style={{ direction: "ltr" }}
+              >
+                {layouts[breakpoint].map(l => {
+                  return (
+                    <div key={l.i} style={{ direction: "rtl" }}>
+                      <ReportCard
+                        dashboardId={dashboardId}
+                        layout={l}
+                        editEnabled={false}
+                      />
+                    </div>
+                  );
+                })}
+              </ResponsiveGridLayout>
+              <ShareDashboard />
+            </>
+          );
+        }}
+      </Subscribe>
     );
   };
 }
 
-export default withSize()(Dashboard);
+const WIthSnackbar = withSnackbar(Dashboard);
+export default withSize()(WIthSnackbar);

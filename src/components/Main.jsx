@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { SnackbarProvider } from "notistack";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Page from "./Page/Page";
@@ -60,16 +61,18 @@ class Main extends Component {
     if (error) {
       return (
         <Page>
-          <Typography color="error" variant="h3" gutterBottom>
-            خطا
-          </Typography>
-          <Typography color="error" variant="h5" gutterBottom>
-            {/* {error.message || error || "خطا در برقراری ارتباط با سرور"} */}
-            خطا در برقراری ارتباط با سرور
-          </Typography>
-          <Button color="primary" variant="outlined" onClick={this.reset}>
-            تلاش مجدد
-          </Button>
+          <Grid container direction="column" alignItems="center">
+            <Typography color="error" variant="h3" gutterBottom>
+              خطا
+            </Typography>
+            <Typography color="error" variant="h5" gutterBottom>
+              {/* {error.message || error || "خطا در برقراری ارتباط با سرور"} */}
+              خطا در برقراری ارتباط با سرور
+            </Typography>
+            <Button color="primary" variant="outlined" onClick={this.reset}>
+              تلاش مجدد
+            </Button>
+          </Grid>
         </Page>
       );
     }

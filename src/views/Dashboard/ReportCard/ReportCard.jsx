@@ -215,9 +215,16 @@ class ReportCard extends Component {
       return <Loading />;
     }
 
-    // if (error) {
-    //   return <Error message={error} />;
-    // }
+    if (error) {
+      return (
+        <Card className={classes.card}>
+          <CardHeader />
+          <CardContent>
+            <Error message={error} />
+          </CardContent>
+        </Card>
+      );
+    }
 
     if (!error && !userReport) {
       return null;

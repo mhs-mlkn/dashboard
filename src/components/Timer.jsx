@@ -4,14 +4,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Fab from "@material-ui/core/Fab";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
-import MyCustomEvent from "../util/customEvent";
+import { Subscribe } from "unstated";
+import TimerContainer from "../containers/Timer.container";
 
-let _isPaused = false;
+// let _isPaused = false;
 
 class CircularDeterminate extends React.Component {
   state = {
-    completed: 0,
-    isPaused: _isPaused
+    completed: 0
   };
 
   componentDidMount() {
@@ -20,11 +20,11 @@ class CircularDeterminate extends React.Component {
 
   componentDidUpdate = prevProps => {
     if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setState({ completed: 0, isPaused: _isPaused }, () => {
+      this.setState({ completed: 0 }, () => {
         if (this.timer) {
           clearInterval(this.timer);
         }
-        if (!this.state.isPaused) {
+        if (!TimerContainer.state.paused) {
           this.timer = setInterval(this.progress, 1000);
         }
       });
@@ -32,7 +32,9 @@ class CircularDeterminate extends React.Component {
   };
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 
   progress = () => {
@@ -41,44 +43,40 @@ class CircularDeterminate extends React.Component {
     this.setState({ completed: completed + 100 / changeInterval });
   };
 
-  handleButtonClick = () => {
-    this.setState(
-      ({ isPaused }) => ({ isPaused: !isPaused, completed: 0 }),
-      () => {
-        _isPaused = this.state.isPaused;
-        MyCustomEvent.emit("TOGGLE_DASHBOARD_INTERVAL", this.state.isPaused);
-        if (this.state.isPaused) {
-          clearInterval(this.timer);
-        } else {
-          this.timer = setInterval(this.progress, 1000);
-        }
+  handleButtonClick = async () => {
+    this.setState({ completed: 0 });
+    TimerContainer.toggle().then(() => {
+      if (TimerContainer.state.paused) {
+        clearInterval(this.timer);
+      } else {
+        this.timer = setInterval(this.progress, 1000);
       }
-    );
+    });
   };
 
   render() {
     return (
-      <div style={{ position: "relative" }}>
-        <Fab
-          color="primary"
-          onClick={this.handleButtonClick}
-          size="small"
-          style={{ zIndex: "100" }}
-        >
-          {/* {(this.props.changeInterval - this.state.completed * 0.6).toFixed()} */}
-          {this.state.isPaused ? <PlayArrowIcon /> : <PauseIcon />}
-        </Fab>
-        <CircularProgress
-          variant="static"
-          value={this.state.completed}
-          color="primary"
-          size={52}
-          style={{ position: "absolute", top: -6, left: -6, zIndex: 1 }}
-        />
-        {/* {loading && (
-          <CircularProgress size={68} className={classes.fabProgress} />
-        )} */}
-      </div>
+      <Subscribe to={[TimerContainer]}>
+        {Timer => (
+          <div style={{ position: "relative" }}>
+            <Fab
+              color="primary"
+              onClick={this.handleButtonClick}
+              size="small"
+              style={{ zIndex: "100" }}
+            >
+              {Timer.state.paused ? <PlayArrowIcon /> : <PauseIcon />}
+            </Fab>
+            <CircularProgress
+              variant="static"
+              value={this.state.completed}
+              color="primary"
+              size={52}
+              style={{ position: "absolute", top: -6, left: -6, zIndex: 1 }}
+            />
+          </div>
+        )}
+      </Subscribe>
     );
   }
 }
