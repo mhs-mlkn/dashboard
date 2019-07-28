@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { saveAs } from "file-saver";
+import { withSnackbar } from "notistack";
+import moment from "moment-jalaali";
 import Scalar from "../../../components/Scalar/Scalar";
 import Loading from "../../../components/Loading/Loading";
 import Error from "../../../components/Error/Error";
@@ -21,10 +24,14 @@ class ScalarWrapper extends Component {
 
   componentWillMount = () => {
     MyCustomEvent.on("REFRESH_REPORT", this.reload);
+    MyCustomEvent.on("SAVE_AS_CSV", this.saveAsCSV);
+    MyCustomEvent.on("SAVE_AS_Exlx", this.saveAsExlx);
   };
 
   componentWillUnmount = () => {
     MyCustomEvent.removeEventListener("REFRESH_REPORT", this.reload);
+    MyCustomEvent.removeEventListener("SAVE_AS_CSV", this.saveAsCSV);
+    MyCustomEvent.removeEventListener("SAVE_AS_Exlx", this.saveAsExlx);
   };
 
   componentDidMount = async () => {
@@ -83,6 +90,51 @@ class ScalarWrapper extends Component {
     }
   };
 
+  saveAsCSV = async data => {
+    const { instanceId, filters } = this.props;
+    if (data !== instanceId) return;
+    try {
+      const res = await ReportContainer.saveAsCSV(
+        instanceId,
+        filters || [],
+        []
+      );
+      const blob = new Blob([res], { type: "text/csv" });
+      saveAs(
+        blob,
+        `report-${instanceId}-${moment().format("jYYYY/jMM/jDD")}.csv`
+      );
+    } catch (error) {
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
+  };
+
+  saveAsExlx = async data => {
+    const { instanceId, filters } = this.props;
+    if (data !== instanceId) return;
+    try {
+      const res = await ReportContainer.saveAsXlsx(
+        instanceId,
+        filters || [],
+        []
+      );
+      // const blob = new Blob([res], {
+      //   type:
+      //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      // });
+      saveAs(
+        res,
+        `report-${instanceId}-${moment().format("jYYYY/jMM/jDD")}.xlsx`
+      );
+    } catch (error) {
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
+  };
+
   handleRetry = async () => {
     this.setState({ loading: true });
     await this.loadData();
@@ -118,4 +170,4 @@ class ScalarWrapper extends Component {
   };
 }
 
-export default ScalarWrapper;
+export default withSnackbar(ScalarWrapper);

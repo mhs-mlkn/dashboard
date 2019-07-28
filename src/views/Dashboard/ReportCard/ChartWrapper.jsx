@@ -103,16 +103,13 @@ class ChartWrapper extends Component {
   };
 
   saveAsCSV = async data => {
-    const { orderBy, order } = this.state;
     const { instanceId, filters } = this.props;
     if (data !== instanceId) return;
     try {
       const res = await ReportContainer.saveAsCSV(
         instanceId,
         filters || [],
-        [],
-        orderBy,
-        order
+        []
       );
       const blob = new Blob([res], { type: "text/csv" });
       saveAs(
@@ -127,16 +124,13 @@ class ChartWrapper extends Component {
   };
 
   saveAsExlx = async data => {
-    const { orderBy, order } = this.state;
     const { instanceId, filters } = this.props;
     if (data !== instanceId) return;
     try {
       const res = await ReportContainer.saveAsXlsx(
         instanceId,
         filters || [],
-        [],
-        orderBy,
-        order
+        []
       );
       // const blob = new Blob([res], {
       //   type:
