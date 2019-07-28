@@ -2,6 +2,9 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 import ChartLegendConfig from "./ChartLegendConfig";
 import { PIE_LABEL_RENDER_TYPE } from "../../../../constants";
 
@@ -10,13 +13,27 @@ const PieCharConfigt = props => {
 
   const {
     innerRadius = 0,
-    outerRadius = 0,
+    outerRadius = 80,
     labelRenderType = PIE_LABEL_RENDER_TYPE.SIMPLE,
-    legend
+    legend,
+    labelValue = {
+      label: true,
+      value: true,
+      percent: true
+    }
   } = config;
 
   const handleChange = override => {
     onConfigChange({ ...config, ...override });
+  };
+
+  const handleLabelCheckbox = ({ target }) => {
+    handleChange({
+      labelValue: {
+        ...labelValue,
+        [target.name]: target.checked
+      }
+    });
   };
 
   return (
@@ -65,6 +82,54 @@ const PieCharConfigt = props => {
           </MenuItem>
           ]
         </TextField>
+      </Grid>
+      <Grid item xs={12} sm={4} md={4} lg={4}>
+        <FormGroup
+          row
+          style={{
+            display:
+              labelRenderType === PIE_LABEL_RENDER_TYPE.SIMPLE
+                ? "none"
+                : "block"
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="label"
+                value="label"
+                checked={labelValue.label}
+                onChange={handleLabelCheckbox}
+                color="primary"
+              />
+            }
+            label="عنوان"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="value"
+                value="value"
+                checked={labelValue.value}
+                onChange={handleLabelCheckbox}
+                color="primary"
+              />
+            }
+            label="مقدار"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="percent"
+                value="percent"
+                checked={labelValue.percent}
+                onChange={handleLabelCheckbox}
+                color="primary"
+              />
+            }
+            label="درصد"
+          />
+        </FormGroup>
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12}>
         <ChartLegendConfig legendConfig={legend} onChange={handleChange} />

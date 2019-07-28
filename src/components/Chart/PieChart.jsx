@@ -60,7 +60,7 @@ const Chart = props => {
     const sy = cy + outerRadius * sin;
     const mx = cx + (outerRadius + 15) * cos;
     const my = cy + (outerRadius + 15) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 60;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 30;
     const ey = my;
     const textAnchor = cos < 0 ? "start" : "end";
 
@@ -78,7 +78,12 @@ const Chart = props => {
           textAnchor={textAnchor}
           fill="#eee"
           style={{ direction: "rtl" }}
-        >{`${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)`}</text>
+        >
+          {/* `${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)` */}
+          {config.labelValue.label ? `${payload.name}: ` : ""}
+          {config.labelValue.value ? `${value}` : ""}
+          {config.labelValue.percent ? ` (${(percent * 100).toFixed(2)}%)` : ""}
+        </text>
       </g>
     );
   };

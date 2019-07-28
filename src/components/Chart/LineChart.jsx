@@ -98,7 +98,7 @@ const Chart = props => {
       ) : (
         <XAxis
           dataKey="name"
-          height={+config.xAxis.height}
+          height={+config.xAxis.height || 30}
           angle={+config.xAxis.angle}
           tick={{
             ...config.xAxis.tick,

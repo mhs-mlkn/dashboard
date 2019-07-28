@@ -39,7 +39,7 @@ export const AXIS_CONFIG = {
     fill: "#e5e5e5",
     fontSize: "13",
     textAnchor: "start",
-    fontFamily: "arial"
+    fontFamily: "IRANSans"
   }
 };
 
@@ -74,7 +74,12 @@ export const PIE_CHART_CONFIG = {
   innerRadius: 0,
   outerRadius: 80,
   legend: LEGEND_CONFIG,
-  labelRenderType: PIE_LABEL_RENDER_TYPE.SIMPLE
+  labelRenderType: PIE_LABEL_RENDER_TYPE.SIMPLE,
+  labelValue: {
+    label: true,
+    value: true,
+    percent: true
+  }
 };
 
 export const RADAR_CHART_CONFIG = {

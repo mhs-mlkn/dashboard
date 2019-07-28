@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ResponsiveContainer } from "recharts";
 import LineChart from "./LineChart";
 import AreaChart from "./AreaChart";
@@ -7,7 +7,13 @@ import PieChart from "./PieChart";
 import RadarChart from "./RadarChart";
 
 const Chart = props => {
+  const [temp, setTemp] = useState(0);
   const { type, aspect = 0, height, ...rest } = props;
+
+  useEffect(() => {
+    setTimeout(() => setTemp(temp + 1), 10);
+  }, []);
+
   const getChart = type => {
     switch (type) {
       case "Line":
