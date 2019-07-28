@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { saveAs } from "file-saver";
+import moment from "moment-jalaali";
 import Table from "../../../components/Table/Table";
 import Error from "../../../components/Error/Error";
 import ReportContainer from "../../../containers/Report.container";
@@ -24,10 +26,14 @@ class TableWrapper extends Component {
 
   componentWillMount = () => {
     MyCustomEvent.on("REFRESH_REPORT", this.reload);
+    MyCustomEvent.on("SAVE_AS_CSV", this.saveAsCSV);
+    MyCustomEvent.on("SAVE_AS_Exlx", this.saveAsExlx);
   };
 
   componentWillUnmount = () => {
     MyCustomEvent.removeEventListener("REFRESH_REPORT", this.reload);
+    MyCustomEvent.removeEventListener("SAVE_AS_CSV", this.saveAsCSV);
+    MyCustomEvent.removeEventListener("SAVE_AS_Exlx", this.saveAsExlx);
   };
 
   componentDidMount = async () => {
@@ -103,6 +109,57 @@ class TableWrapper extends Component {
       this.setState({ loading: false, error: "" });
     } catch (error) {
       this.setState({ loading: false, error: "خطای بارگذاری اطلاعات" });
+    }
+  };
+
+  saveAsCSV = async data => {
+    const { orderBy, order } = this.state;
+    const { instanceId, filters } = this.props;
+    if (data !== instanceId) return;
+    try {
+      const res = await ReportContainer.saveAsCSV(
+        instanceId,
+        filters || [],
+        [],
+        orderBy,
+        order
+      );
+      const blob = new Blob([res], { type: "text/csv" });
+      saveAs(
+        blob,
+        `report-${instanceId}-${moment().format("jYYYY/jMM/jDD")}.csv`
+      );
+    } catch (error) {
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
+    }
+  };
+
+  saveAsExlx = async data => {
+    const { orderBy, order } = this.state;
+    const { instanceId, filters } = this.props;
+    if (data !== instanceId) return;
+    try {
+      const res = await ReportContainer.saveAsXlsx(
+        instanceId,
+        filters || [],
+        [],
+        orderBy,
+        order
+      );
+      // const blob = new Blob([res], {
+      //   type:
+      //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      // });
+      saveAs(
+        res,
+        `report-${instanceId}-${moment().format("jYYYY/jMM/jDD")}.xlsx`
+      );
+    } catch (error) {
+      this.props.enqueueSnackbar("درخواست با خطا مواجه شد", {
+        variant: "error"
+      });
     }
   };
 

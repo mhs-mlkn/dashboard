@@ -112,6 +112,10 @@ class ReportCard extends Component {
         return this.configReport();
       case "SHARE_REPORT":
         return this.configAccess();
+      case "SAVE_AS_CSV":
+        return MyCustomEvent.emit("SAVE_AS_CSV", +this.props.layout.i);
+      case "SAVE_AS_Exlx":
+        return MyCustomEvent.emit("SAVE_AS_Exlx", +this.props.layout.i);
       case "REPORT_DELETED":
         return this.onReportDeleted();
       default:
