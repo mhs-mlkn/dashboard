@@ -23,6 +23,13 @@ function sha256(buffer) {
     .digest();
 }
 
+function getValue(key) {
+  let val = localStorage.getItem(key);
+  val = val === "undefined" ? "" : val;
+  val = val === "NaN" ? 0 : val;
+  return val;
+}
+
 export class AuthContainer extends Container {
   constructor(props) {
     super(props);
@@ -31,17 +38,11 @@ export class AuthContainer extends Container {
   }
 
   initialize = () => {
-    this.token = localStorage.getItem(TOKEN) || "";
-    this.verifier = localStorage.getItem(VERIFIER) || "";
-    this.refresh = localStorage.getItem(REFRESH) || "";
-    this.expires = localStorage.getItem(EXPIRES) || undefined;
-    this.user = localStorage.getItem(USER) || "";
-
-    this.token = this.token === "undefined" ? "" : this.token;
-    this.verifier = this.verifier === "undefined" ? "" : this.verifier;
-    this.refresh = this.refresh === "undefined" ? "" : this.refresh;
-    this.expires = this.expires === "NaN" ? "" : this.expires;
-    this.user = this.user === "undefined" ? "" : this.user;
+    this.token = getValue(TOKEN);
+    this.verifier = getValue(VERIFIER);
+    this.refresh = getValue(REFRESH);
+    this.expires = getValue(EXPIRES);
+    this.user = getValue(USER);
 
     this.hasTokenIssued = false;
     this.token && (Axios.defaults.headers.common["token"] = this.token);
@@ -71,7 +72,7 @@ export class AuthContainer extends Container {
     Axios.defaults.headers.common["token"] = access_token;
     this.token = access_token;
     this.refresh = refresh_token;
-    this.expires = expires_in * 1000 + Date.now() - 2000;
+    this.expires = expires_in * 1000 + Date.now() - 9000;
     this.saveToLS();
   };
 
