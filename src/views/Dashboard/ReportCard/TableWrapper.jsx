@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { saveAs } from "file-saver";
+import { withSnackbar } from "notistack";
 import moment from "moment-jalaali";
 import Table from "../../../components/Table/Table";
 import Error from "../../../components/Error/Error";
@@ -247,4 +248,4 @@ class TableWrapper extends Component {
   };
 }
 
-export default TableWrapper;
+export default withSnackbar(TableWrapper);

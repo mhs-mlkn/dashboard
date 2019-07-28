@@ -106,6 +106,14 @@ export class ReportContainer extends Container {
   retrieveState = ({ reports, totalCount }) => {
     this.setState({ reports, totalCount });
   };
+
+  saveAsCSV = async (reportId, filters, params, orderBy, order) => {
+    return Api.saveAsCSV(reportId, filters, params, orderBy, order);
+  };
+
+  saveAsXlsx = async (reportId, filters, params, orderBy, order) => {
+    return Api.saveAsXlsx(reportId, filters, params, orderBy, order);
+  };
 }
 
 const container = new ReportContainer();

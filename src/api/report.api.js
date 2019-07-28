@@ -183,4 +183,79 @@ export default class ReportApi {
       )
       .then(res => res.data.result);
   };
+
+  static saveAsCSV = async (
+    id,
+    filterVOS = [],
+    parentParams = [],
+    orderBy,
+    order
+  ) => {
+    await Auth.refreshToken();
+    return axios
+      .post(`${baseUrl}/userreport/${id}/getCSV`, {
+        filterVOS,
+        parentParams,
+        orderByElementVOS: orderBy
+          ? [{ name: orderBy, isDesc: order === "desc" }]
+          : []
+      })
+      .then(res => {
+        // var disposition = request.getResponseHeader('content-disposition');
+        // var matches = /"([^"]*)"/.exec(disposition);
+        // var filename = (matches != null && matches[1] ? matches[1] : 'file.pdf');
+        return res.data;
+      });
+  };
+
+  static saveAsXlsx = async (
+    id,
+    filterVOS = [],
+    parentParams = [],
+    orderBy,
+    order
+  ) => {
+    const url = `${baseUrl}/userreport/${id}/getXLS`;
+    const data = {
+      filterVOS,
+      parentParams,
+      orderByElementVOS: orderBy
+        ? [{ name: orderBy, isDesc: order === "desc" }]
+        : []
+    };
+
+    await Auth.refreshToken();
+    // return axios
+    //   .post(
+    //     `${baseUrl}/userreport/${id}/getXLS`,
+    //     {
+    //       filterVOS,
+    //       parentParams,
+    //       orderByElementVOS: orderBy
+    //         ? [{ name: orderBy, isDesc: order === "desc" }]
+    //         : []
+    //     },
+    //     {
+    //       headers: {
+    //         responseType: "blob"
+    //       }
+    //     }
+    //   )
+    //   .then(res => {
+    //     const url = window.URL.createObjectURL(new Blob([res.data]));
+    //     const link = document.createElement("a");
+    //     link.href = url;
+    //     link.setAttribute("download", `report-${id}.xlsx`);
+    //     document.body.appendChild(link);
+    //     link.click();
+    //   });
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: new Headers({
+        token: localStorage.getItem("DASH_USER_TOKEN"),
+        "Content-Type": "application/json"
+      })
+    }).then(res => res.blob());
+  };
 }
