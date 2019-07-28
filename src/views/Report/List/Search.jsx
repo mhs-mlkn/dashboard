@@ -16,7 +16,8 @@ const styles = {
   },
   input: {
     marginLeft: 8,
-    flex: 1
+    flex: 1,
+    paddingRight: 2
   },
   iconButton: {
     padding: 10

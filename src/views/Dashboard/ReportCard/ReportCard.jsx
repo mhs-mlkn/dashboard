@@ -14,7 +14,7 @@ import ReportContainer from "../../../containers/Report.container";
 import Filters from "./Filters";
 import MyCustomEvent from "../../../util/customEvent";
 
-const styles = () => ({
+const styles = {
   card: {
     height: "100%",
     backgroundColor: "transparent"
@@ -27,13 +27,13 @@ const styles = () => ({
     }
   },
   headerRoot: {
-    paddingTop: "8px",
-    paddingBottom: "8px"
+    paddingTop: 8,
+    paddingBottom: 8
   },
   title: {
     fontSize: "0.9rem"
   }
-});
+};
 
 class ReportCard extends Component {
   state = {
@@ -215,10 +215,32 @@ class ReportCard extends Component {
       return <Loading />;
     }
 
-    if (error) {
+    if (error && !editEnabled) {
       return (
         <Card className={classes.card}>
-          <CardHeader />
+          <CardContent>
+            <Error message={error} />
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (error && editEnabled) {
+      return (
+        <Card className={classes.card}>
+          <CardHeader
+            action={
+              <ReportCardActions
+                userReport={undefined}
+                instanceId={+layout.i}
+                reportHeight={reportHeight}
+                editEnabled={editEnabled}
+                actionHandler={this.actionHandler}
+              />
+            }
+            title=""
+            classes={{ root: classes.headerRoot, title: classes.title }}
+          />
           <CardContent>
             <Error message={error} />
           </CardContent>

@@ -33,7 +33,8 @@ const styles = theme => ({
     // paddingTop: "56.25%" // 16:9
   },
   title: {
-    fontSize: "1.1rem"
+    fontSize: "1.1rem",
+    minHeight: "46px"
   },
   subheader: {
     fontSize: "0.7rem",
@@ -186,7 +187,10 @@ class ReportThumbCard extends Component {
                 }
                 title={name}
                 subheader={moment(date).format("LL")}
-                classes={{ title: classes.title, subheader: classes.subheader }}
+                classes={{
+                  title: classes.title,
+                  subheader: classes.subheader
+                }}
               />
               <CardContent className={classes.Content}>
                 {this.getReport(type, data)}

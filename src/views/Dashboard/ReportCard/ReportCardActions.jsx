@@ -102,13 +102,30 @@ const ReportCardActions = props => {
     actionHandler("CONFIG_REPORT");
   };
 
-  const exportActionHandler = () => {
+  // const exportActionHandler = () => {
+  //   handleMenuClose();
+  //   domtoimage
+  //     .toBlob(document.getElementById(`report-${instanceId}`))
+  //     .then(function(blob) {
+  //       saveAs(blob, `report-${instanceId}`);
+  //     });
+  // };
+
+  const exportActionHandler = type => () => {
     handleMenuClose();
-    domtoimage
-      .toBlob(document.getElementById(`report-${instanceId}`))
-      .then(function(blob) {
-        saveAs(blob, `report-${instanceId}`);
-      });
+    if (type === "PNG") {
+      return domtoimage
+        .toBlob(document.getElementById(`report-${instanceId}`))
+        .then(function(blob) {
+          saveAs(blob, `report-${instanceId}`);
+        });
+    }
+    if (type === "CSV") {
+      return actionHandler("SAVE_AS_CSV");
+    }
+    if (type === "xlsx") {
+      return actionHandler("SAVE_AS_Exlx");
+    }
   };
 
   const backActionHandler = () => {
@@ -197,7 +214,9 @@ const ReportCardActions = props => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={exportActionHandler}>PNG</MenuItem>
+            <MenuItem onClick={exportActionHandler("PNG")}>PNG</MenuItem>
+            <MenuItem onClick={exportActionHandler("CSV")}>CSV</MenuItem>
+            <MenuItem onClick={exportActionHandler("xlsx")}>Xlsx</MenuItem>
           </Menu>
         </>
       )}

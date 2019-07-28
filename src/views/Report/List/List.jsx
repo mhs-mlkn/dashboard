@@ -72,12 +72,12 @@ class ReportList extends Component {
       <Subscribe to={[ReportContainer]}>
         {Report => (
           <>
-            <Grid container spacing={16}>
+            <Grid container spacing={8}>
               <Grid item xs={12} sm={6} md={6} lg={3}>
                 <Search onSearch={this.handleSearchClicked} />
               </Grid>
             </Grid>
-            <Grid container spacing={16}>
+            <Grid container spacing={8}>
               {Report.state.reports.map(report => (
                 <Grid item key={report.id} xs={12} sm={6} lg={4} xl={3}>
                   <ReportThumb report={report} navigate={this.navigate} />
