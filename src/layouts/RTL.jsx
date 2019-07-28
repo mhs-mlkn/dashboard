@@ -109,7 +109,7 @@ class RTL extends Component {
   };
 
   configMoment = () => {
-    moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
+    moment.loadPersian({ dialect: "persian-modern", usePersianDigits: false });
   };
 
   handleDrawerToggle = () => {
