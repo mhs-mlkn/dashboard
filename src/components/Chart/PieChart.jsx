@@ -62,7 +62,7 @@ const Chart = props => {
     const my = cy + (outerRadius + 15) * sin;
     const ex = mx + (cos >= 0 ? 1 : -1) * 60;
     const ey = my;
-    const textAnchor = cos >= 0 ? "start" : "end";
+    const textAnchor = cos < 0 ? "start" : "end";
 
     return (
       <g>
@@ -77,7 +77,7 @@ const Chart = props => {
           y={ey + 5}
           textAnchor={textAnchor}
           fill="#eee"
-          style={{ direction: "ltr" }}
+          style={{ direction: "rtl" }}
         >{`${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)`}</text>
       </g>
     );
