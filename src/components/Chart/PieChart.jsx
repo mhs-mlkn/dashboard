@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import COLORS from "../../constants/colors";
+import { get } from "lodash";
 
 import {
   PIE_CHART_CONFIG as CONFIG,
@@ -80,9 +81,11 @@ const Chart = props => {
           style={{ direction: "rtl" }}
         >
           {/* `${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)` */}
-          {config.labelValue.label ? `${payload.name}: ` : ""}
-          {config.labelValue.value ? `${value}` : ""}
-          {config.labelValue.percent ? ` (${(percent * 100).toFixed(2)}%)` : ""}
+          {get(config, "labelValue.label", false) ? `${payload.name}: ` : ""}
+          {get(config, "labelValue.value", false) ? `${value}` : ""}
+          {get(config, "labelValue.percent", false)
+            ? ` (${(percent * 100).toFixed(2)}%)`
+            : ""}
         </text>
       </g>
     );
