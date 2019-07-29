@@ -29,6 +29,7 @@ function sha256(buffer) {
 function getValue(key) {
   let val = localStorage.getItem(key);
   val = val === "undefined" ? "" : val;
+  val = val === "null" ? null : val;
   val = val === "NaN" ? 0 : val;
   return val;
 }
@@ -99,7 +100,7 @@ export class AuthContainer extends Container {
     this.token = access_token;
     this.refresh = refresh_token;
     this.expires = expires_in * 1000 + Date.now() - 5000;
-    this.timeout = 10; //expires_in - 5;
+    this.timeout = expires_in - 5;
     this.saveToLS();
   };
 
