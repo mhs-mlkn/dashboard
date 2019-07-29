@@ -166,13 +166,13 @@ export const Table = {
 export const Scalar = ["تعداد کاربران", 1849];
 
 export const Charts = [
-  { name: "Page A", uv: 400, pv: 240, amt: 240 },
-  { name: "Page B", uv: 300, pv: 139, amt: 221 },
-  { name: "Page C", uv: 200, pv: 980, amt: 229 },
-  { name: "Page D", uv: 278, pv: 390, amt: 200 },
-  { name: "Page E", uv: 189, pv: 480, amt: 218 },
-  { name: "Page F", uv: 239, pv: 380, amt: 250 },
-  { name: "Page G", uv: 349, pv: 430, amt: 210 }
+  { name: "بازه 1", uv: 400, pv: 240, amt: 240 },
+  { name: "بازه 2", uv: 300, pv: 139, amt: 221 },
+  { name: "بازه 3", uv: 200, pv: 980, amt: 229 },
+  { name: "بازه 4", uv: 278, pv: 390, amt: 200 },
+  { name: "بازه 5", uv: 189, pv: 480, amt: 218 },
+  { name: "بازه 6", uv: 239, pv: 380, amt: 250 },
+  { name: "بازه 7", uv: 349, pv: 430, amt: 210 }
 ];
 
 export const Dashboards = [

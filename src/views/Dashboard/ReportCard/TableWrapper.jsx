@@ -216,7 +216,7 @@ class TableWrapper extends Component {
   reload = async data => {
     const { instanceId } = this.props;
     if (instanceId === data.instanceId) {
-      this.setState({ loading: true });
+      // this.setState({ loading: true });
       await this.loadData(data.useCache);
     }
   };
