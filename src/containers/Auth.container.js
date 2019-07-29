@@ -83,10 +83,11 @@ export class AuthContainer extends Container {
     return base64URLEncode(sha256(this.verifier));
   };
 
-  checkToken = async code => {
+  getToken = async code => {
     return AuthApi.getToken(code, this.verifier).then(result => {
       if (result.access_token) {
-        return this.login(result);
+        this.login(result);
+        return this.setRefreshTokenInterval(this.timeout);
       } else {
         return Promise.reject("NO ACCESS_TOKEN");
       }
@@ -99,7 +100,6 @@ export class AuthContainer extends Container {
     this.refresh = refresh_token;
     this.expires = expires_in * 1000 + Date.now() - 5000;
     this.timeout = 10; //expires_in - 5;
-    this.setRefreshTokenInterval(this.timeout);
     this.saveToLS();
   };
 

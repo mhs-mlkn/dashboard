@@ -30,7 +30,7 @@ class Login extends Component {
     const qs = parseQueryString(this.props.location.search.slice("1"));
     if (qs && qs.code) {
       try {
-        await Auth.checkToken(qs.code);
+        await Auth.getToken(qs.code);
         // await Auth.fetchUser();
       } catch (error) {
         this.setState({ error });
