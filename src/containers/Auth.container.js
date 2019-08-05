@@ -1,12 +1,12 @@
 import { Container } from "unstated";
 import { createHash, randomBytes } from "crypto";
 import Axios from "axios";
+import { get } from "lodash";
 import AuthApi from "../api/auth.api";
 
-const TOKEN = "DASH_USER_TOKEN";
-const VERIFIER = "DASH_USER_VERIFIER";
-const REFRESH = "DASH_USER_REFRESH";
-const EXPIRES = "DASH_USER_EXPIRES";
+const ACCESS_TOKEN = "DASH_USER_ACCESS_TOKEN";
+const TOKEN_VERIFIER = "DASH_USER_TOKEN_VERIFIER";
+const REFRESH_TOKEN = "DASH_USER_REFRESH_TOKEN";
 const USER = "DASH_USER_USER";
 
 function base64URLEncode(str) {
@@ -23,109 +23,128 @@ function sha256(buffer) {
     .digest();
 }
 
-function getValue(key) {
+function getLSValue(key) {
   let val = localStorage.getItem(key);
-  val = val === "undefined" ? "" : val;
-  val = val === "null" ? null : val;
-  val = val === "NaN" ? 0 : val;
-  return val;
+  return ["undefined", "null", "NaN"].indexOf(val) > -1 ? "" : val;
 }
 
-export class AuthContainer extends Container {
+class AuthContainer extends Container {
   constructor(props) {
     super(props);
 
-    this.initialize();
+    this.subscribers = [];
+    this.configAxios();
   }
 
-  initialize = () => {
-    this.token = getValue(TOKEN);
-    this.verifier = getValue(VERIFIER);
-    this.refresh = getValue(REFRESH);
-    this.expires = getValue(EXPIRES);
-    this.user = getValue(USER);
-
-    this.hasTokenIssued = false;
-    this.token && (Axios.defaults.headers.common["token"] = this.token);
-  };
-
   generateVerifier = () => {
-    this.verifier = base64URLEncode(randomBytes(32));
-    this.saveToLS();
-    return this.verifier;
+    const verifier = base64URLEncode(randomBytes(32));
+    localStorage.setItem(TOKEN_VERIFIER, verifier);
+    return verifier;
   };
 
-  getChallenegeCode = () => {
-    return base64URLEncode(sha256(this.verifier));
+  getChallenegeCode = token_verifier => {
+    return base64URLEncode(sha256(token_verifier));
   };
 
   getToken = async code => {
-    return AuthApi.getToken(code, this.verifier).then(result => {
-      if (result.access_token) {
-        return this.login(result);
+    let token_verifier = getLSValue(TOKEN_VERIFIER);
+    return AuthApi.getToken(code, token_verifier).then(res => {
+      if (!!res.access_token && !!res.refresh_token) {
+        this.saveToLS(res);
+        return res;
       } else {
-        return Promise.reject("NO ACCESS_TOKEN");
+        return Promise.reject("INVALID LOGIN");
       }
     });
   };
 
-  login = ({ access_token, refresh_token, expires_in }) => {
-    Axios.defaults.headers.common["token"] = access_token;
-    this.token = access_token;
-    this.refresh = refresh_token;
-    this.expires = expires_in * 1000 + Date.now() - 5000;
-    this.saveToLS();
-  };
-
   refreshToken = async () => {
-    if (Date.now() > this.expires && !this.hasTokenIssued) {
-      this.hasTokenIssued = true;
-      const refreshToken = await AuthApi.refreshToken(
-        this.refresh,
-        this.verifier
-      );
-      this.hasTokenIssued = false;
-      this.login(refreshToken);
-    }
-    return Promise.resolve(this.token);
+    const refresh_token = getLSValue(REFRESH_TOKEN);
+    const token_verifier = getLSValue(TOKEN_VERIFIER);
+    const result = await AuthApi.refreshToken(refresh_token, token_verifier);
+    this.saveToLS(result);
+    return result;
   };
 
   isLoggedIn = () => {
-    this.token = localStorage.getItem(TOKEN) || "";
-    return !!this.token;
+    const access_token = getLSValue(ACCESS_TOKEN);
+    return !!access_token;
   };
 
-  logout = async () => {
+  logout = () => {
     const URL = process.env.REACT_APP_POD_SSO_LOGOUT;
     const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
     const CONTINUE = process.env.REACT_APP_REDIRECT_URI;
-    this.token = this.verifier = this.refresh = this.expires = this.user = "";
     localStorage.clear();
-    Axios.defaults.headers.common["token"] = "";
     window.location.href = `${URL}?client_id=${CLIENT_ID}&continue=${CONTINUE}`;
-    return Promise.resolve();
   };
 
   fetchUser = async () => {
-    const user = await AuthApi.getUser(this.token);
-    this.user = user.preferred_username;
-    localStorage.setItem(USER, this.user);
-    return this.user;
+    const access_token = getLSValue(ACCESS_TOKEN);
+    const user = await AuthApi.getUser(access_token);
+    const username = user.preferred_username;
+    localStorage.setItem(USER, username);
+    return username;
   };
 
   getUsername = () => {
-    this.user = getValue(USER);
-    if (!this.user) {
+    const username = getLSValue(USER);
+    if (!username) {
       this.fetchUser();
     }
-    return this.user;
+    return this.user || "";
   };
 
-  saveToLS = () => {
-    localStorage.setItem(TOKEN, this.token);
-    localStorage.setItem(VERIFIER, this.verifier);
-    localStorage.setItem(REFRESH, this.refresh);
-    localStorage.setItem(EXPIRES, this.expires);
+  saveToLS = ({ access_token, refresh_token }) => {
+    localStorage.setItem(ACCESS_TOKEN, access_token);
+    localStorage.setItem(REFRESH_TOKEN, refresh_token);
+  };
+
+  configAxios = () => {
+    Axios.interceptors.request.use(config => {
+      config.headers.token = getLSValue(ACCESS_TOKEN);
+      return config;
+    });
+
+    Axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (get(error, "response.status", 400) === 401) {
+          return this.refreshTokenAndRetry(error);
+        }
+        return Promise.reject(error);
+      }
+    );
+  };
+
+  refreshTokenAndRetry = async error => {
+    const onAccessTokenFetched = () => {
+      this.subscribers.forEach(callback => callback());
+      this.subscribers = [];
+    };
+
+    const addSubscriber = callback => {
+      this.subscribers.push(callback);
+    };
+
+    try {
+      const { response: errorResponse } = error;
+
+      const retryOriginalRequest = new Promise(resolve => {
+        addSubscriber(() => resolve(Axios(errorResponse.config)));
+      });
+
+      if (!this.isRefreshTokenInIssued) {
+        this.isRefreshTokenInIssued = true;
+        await this.refreshToken();
+        this.isRefreshTokenInIssued = false;
+        onAccessTokenFetched();
+      }
+
+      return retryOriginalRequest;
+    } catch (error) {
+      Promise.reject(error);
+    }
   };
 }
 

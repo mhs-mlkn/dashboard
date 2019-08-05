@@ -30,7 +30,7 @@ const NavbarLinks = props => {
   const handleClose = async e => {
     setAnchorEl(null);
     if (e.target.id === "logout") {
-      await AuthContainer.logout();
+      AuthContainer.logout();
       props.history.push(loginRoute.path);
     }
   };

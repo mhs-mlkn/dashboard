@@ -23,7 +23,6 @@ class Main extends Component {
   loadInitilData = async () => {
     try {
       this.setState({ loading: true });
-      await AuthContainer.refreshToken();
       await Promise.all([
         AuthContainer.fetchUser(),
         LayoutContainer.fetchDashboards(),

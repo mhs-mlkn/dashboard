@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+// import Axios from "axios";
 import moment from "moment-jalaali";
 import { withTheme } from "@material-ui/core/styles";
 import PerfectScrollbar from "perfect-scrollbar";
@@ -97,15 +97,15 @@ class RTL extends Component {
   }
 
   configAxios = () => {
-    axios.interceptors.response.use(
-      response => response,
-      error => {
-        // if ([401, 403].indexOf(error.response.status) > -1) {
-        //   this.props.history.push(loginRoute.path);
-        // }
-        return Promise.reject(error);
-      }
-    );
+    // Axios.interceptors.response.use(
+    //   response => response,
+    //   error => {
+    //     // if ([401, 403].indexOf(error.response.status) > -1) {
+    //     //   this.props.history.push(loginRoute.path);
+    //     // }
+    //     return Promise.reject(error);
+    //   }
+    // );
   };
 
   configMoment = () => {
