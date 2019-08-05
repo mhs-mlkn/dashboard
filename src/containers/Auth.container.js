@@ -8,9 +8,6 @@ const VERIFIER = "DASH_USER_VERIFIER";
 const REFRESH = "DASH_USER_REFRESH";
 const EXPIRES = "DASH_USER_EXPIRES";
 const USER = "DASH_USER_USER";
-const TIMEOUT = "DASH_USER_TIMEOUT";
-
-let intervalId = 0;
 
 function base64URLEncode(str) {
   return str
@@ -39,10 +36,6 @@ export class AuthContainer extends Container {
     super(props);
 
     this.initialize();
-
-    if (!!this.timeout) {
-      this.setRefreshTokenInterval(this.timeout);
-    }
   }
 
   initialize = () => {
@@ -50,28 +43,10 @@ export class AuthContainer extends Container {
     this.verifier = getValue(VERIFIER);
     this.refresh = getValue(REFRESH);
     this.expires = getValue(EXPIRES);
-    this.timeout = getValue(TIMEOUT);
     this.user = getValue(USER);
 
     this.hasTokenIssued = false;
     this.token && (Axios.defaults.headers.common["token"] = this.token);
-  };
-
-  setRefreshTokenInterval = timeout => {
-    if (intervalId !== 0) {
-      intervalId = 0;
-      clearInterval(intervalId);
-    }
-
-    intervalId = setInterval(async () => {
-      this.hasTokenIssued = true;
-      const refreshToken = await AuthApi.refreshToken(
-        this.refresh,
-        this.verifier
-      );
-      this.hasTokenIssued = false;
-      this.login(refreshToken);
-    }, timeout * 1000);
   };
 
   generateVerifier = () => {
@@ -87,8 +62,7 @@ export class AuthContainer extends Container {
   getToken = async code => {
     return AuthApi.getToken(code, this.verifier).then(result => {
       if (result.access_token) {
-        this.login(result);
-        return this.setRefreshTokenInterval(this.timeout);
+        return this.login(result);
       } else {
         return Promise.reject("NO ACCESS_TOKEN");
       }
@@ -100,7 +74,6 @@ export class AuthContainer extends Container {
     this.token = access_token;
     this.refresh = refresh_token;
     this.expires = expires_in * 1000 + Date.now() - 5000;
-    this.timeout = expires_in - 5;
     this.saveToLS();
   };
 
@@ -123,13 +96,10 @@ export class AuthContainer extends Container {
   };
 
   logout = async () => {
-    clearInterval(intervalId);
-    intervalId = 0;
     const URL = process.env.REACT_APP_POD_SSO_LOGOUT;
     const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
     const CONTINUE = process.env.REACT_APP_REDIRECT_URI;
-    this.token = this.verifier = this.refresh = this.expires = this.timeout = this.user =
-      "";
+    this.token = this.verifier = this.refresh = this.expires = this.user = "";
     localStorage.clear();
     Axios.defaults.headers.common["token"] = "";
     window.location.href = `${URL}?client_id=${CLIENT_ID}&continue=${CONTINUE}`;
@@ -144,11 +114,11 @@ export class AuthContainer extends Container {
   };
 
   getUsername = () => {
-    this.user = localStorage.getItem(USER);
-    if (!this.user || this.user === "undefined") {
+    this.user = getValue(USER);
+    if (!this.user) {
       this.fetchUser();
     }
-    return this.user || "";
+    return this.user;
   };
 
   saveToLS = () => {
@@ -156,7 +126,6 @@ export class AuthContainer extends Container {
     localStorage.setItem(VERIFIER, this.verifier);
     localStorage.setItem(REFRESH, this.refresh);
     localStorage.setItem(EXPIRES, this.expires);
-    localStorage.setItem(TIMEOUT, this.timeout);
   };
 }
 
