@@ -53,7 +53,7 @@ const NavbarLinks = props => {
       {(Auth, Layout) =>
         Auth.isLoggedIn() ? (
           <div style={{ display: "flex", alignItems: "center" }}>
-            {Layout.state.dashboards.length > 1 && (
+            {isVisible() && Layout.state.dashboards.length > 1 && (
               <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
             )}
             {isVisible() && (
