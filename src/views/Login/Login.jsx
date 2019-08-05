@@ -31,7 +31,6 @@ class Login extends Component {
     if (qs && qs.code) {
       try {
         await Auth.getToken(qs.code);
-        // await Auth.fetchUser();
       } catch (error) {
         this.setState({ error });
       } finally {
@@ -43,8 +42,8 @@ class Login extends Component {
   };
 
   login = () => {
-    Auth.generateVerifier();
-    const CHALLENGE_CODE = Auth.getChallenegeCode();
+    const token_verifier = Auth.generateVerifier();
+    const CHALLENGE_CODE = Auth.getChallenegeCode(token_verifier);
     const LOGIN_URL = `${SSO}&scope=profile email&client_id=${CLIENT_ID}&code_challenge=${CHALLENGE_CODE}&redirect_uri=${REDIRECT_URI}`;
     window.location.href = LOGIN_URL;
   };
