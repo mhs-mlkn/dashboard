@@ -86,7 +86,7 @@ const NavbarLinks = props => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>{Auth.getUsername()}</MenuItem>
+              <MenuItem onClick={handleClose}>{Auth.state.username}</MenuItem>
               <MenuItem id="logout" onClick={handleClose}>
                 خروج
               </MenuItem>

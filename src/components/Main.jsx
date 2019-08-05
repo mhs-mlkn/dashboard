@@ -24,7 +24,7 @@ class Main extends Component {
     try {
       this.setState({ loading: true });
       await Promise.all([
-        AuthContainer.fetchUser(),
+        AuthContainer.getUsername(),
         LayoutContainer.fetchDashboards(),
         ReportContainer.getAll(0, 12),
         ReportContainer.getUserReports()

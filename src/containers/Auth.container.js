@@ -29,9 +29,14 @@ function getLSValue(key) {
 }
 
 class AuthContainer extends Container {
+  state = {
+    username: ""
+  };
+
   constructor(props) {
     super(props);
 
+    this.setState({ username: getLSValue(USER) });
     this.subscribers = [];
     this.configAxios();
   }
@@ -84,15 +89,16 @@ class AuthContainer extends Container {
     const user = await AuthApi.getUser(access_token);
     const username = user.preferred_username;
     localStorage.setItem(USER, username);
+    await this.setState({ username });
     return username;
   };
 
-  getUsername = () => {
-    const username = getLSValue(USER);
+  getUsername = async () => {
+    const username = this.state.username || getLSValue(USER);
     if (!username) {
-      this.fetchUser();
+      return this.fetchUser();
     }
-    return this.user || "";
+    return username;
   };
 
   saveToLS = ({ access_token, refresh_token }) => {
