@@ -15,7 +15,9 @@ class CircularDeterminate extends React.Component {
   };
 
   componentDidMount() {
-    this.timer = setInterval(this.progress, 1000);
+    if (!TimerContainer.state.paused) {
+      this.timer = setInterval(this.progress, 1000);
+    }
   }
 
   componentDidUpdate = prevProps => {
