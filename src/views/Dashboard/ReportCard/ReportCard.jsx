@@ -138,7 +138,9 @@ class ReportCard extends Component {
 
   configReport = () => {
     if (["Table"].indexOf(this.state.userReport.report.type) < 0) {
-      MyCustomEvent.emit("CONFIG_REPORT", this.state.userReport);
+      const { dashboardId } = this.props;
+      const { userReport } = this.state;
+      MyCustomEvent.emit("CONFIG_REPORT", { userReport, dashboardId });
     }
   };
 

@@ -36,13 +36,14 @@ const ConfigReportDialog = props => {
     };
   }, []);
 
-  const onOpenDialog = userReport => {
+  const onOpenDialog = ({ userReport, dashboardId }) => {
     setState({
       ...state,
       userReport,
       config: {
         ...CHART_CONFIG[userReport.report.type],
-        ...LayoutContainer.getSettings(props.dashboardId, userReport.id)
+        ...state.config,
+        ...LayoutContainer.getSettings(dashboardId, userReport.id)
       },
       open: true
     });
@@ -61,7 +62,13 @@ const ConfigReportDialog = props => {
     if (isEqual(state.config, settings) === false) {
       props.onSettingsChange(state.userReport.id, state.config);
     }
-    setState({ ...state, userReport: "", loading: false, open: false });
+    setState({
+      ...state,
+      ...state.config,
+      userReport: "",
+      loading: false,
+      open: false
+    });
   };
 
   if (!state.open) {

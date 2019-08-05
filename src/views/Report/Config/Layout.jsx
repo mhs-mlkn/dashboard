@@ -184,7 +184,7 @@ class DashboardLayout extends Component {
           {loading ? <CircularProgress color="secondary" /> : <SaveIcon />}
         </Fab>
         <ConfigReportDialog
-          dashboardId={dashboardId}
+          dashboardId={this.props.match.params.dashboardId}
           onSettingsChange={this.onSettingsChange}
         />
         <ShareReportDialog />

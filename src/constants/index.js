@@ -1,19 +1,4 @@
-export const AXIS_SCALES = [
-  "auto",
-  "linear",
-  "pow",
-  "sqrt",
-  "log",
-  "identity",
-  "time",
-  "band",
-  "point",
-  "ordinal",
-  "quantile",
-  "quantize",
-  "utc",
-  "threshold"
-];
+export const AXIS_SCALES = ["auto", "linear", "pow", "sqrt", "log"];
 
 export const PIE_LABEL_RENDER_TYPE = {
   SIMPLE: 0,
