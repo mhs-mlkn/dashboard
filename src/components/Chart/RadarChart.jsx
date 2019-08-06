@@ -59,7 +59,7 @@ const Chart = props => {
         />
       ))}
       <PolarGrid />
-      <PolarAngleAxis dataKey="name" />
+      <PolarAngleAxis dataKey="name" tick={{ fill: "#e5e5e5" }} />
       {/* <PolarRadiusAxis /> */}
       <Tooltip wrapperStyle={{ left: "0" }} />
       <Legend
