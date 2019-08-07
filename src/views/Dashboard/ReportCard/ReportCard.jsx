@@ -45,6 +45,11 @@ class ReportCard extends Component {
     error: ""
   };
 
+  componentDidCatch(error, info) {
+    console.dir(info);
+    this.setState({ error: true });
+  }
+
   componentDidMount = async () => {
     const { i: instanceId } = this.props.layout;
     await this.initial(instanceId);

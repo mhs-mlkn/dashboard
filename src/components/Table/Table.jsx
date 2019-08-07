@@ -107,7 +107,7 @@ class CustomTable extends Component {
               (rows.length > rowsPerPage
                 ? rows.slice(0, rowsPerPage)
                 : rows
-              ).map(({ cols: cells }, key) => (
+              ).map(({ cols: cells = [] }, key) => (
                 <TableRow hover key={key}>
                   {cells.map((cell, i) => (
                     <TableCell key={i}>{this.getData(cell, i)}</TableCell>

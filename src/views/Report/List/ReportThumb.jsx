@@ -65,7 +65,12 @@ const styles = theme => ({
 const ASPECT_RATIO = 16 / 9;
 
 class ReportThumbCard extends Component {
-  state = { anchorEl: null, expanded: false, loading: false, open: false };
+  state = {
+    anchorEl: null,
+    expanded: false,
+    loading: false,
+    open: false
+  };
 
   handleExpandClick = () => {
     this.setState(({ expanded }) => ({ expanded: !expanded }));

@@ -42,10 +42,10 @@ class Main extends Component {
   //   return { error };
   // }
 
-  componentDidCatch(error, info) {
-    console.log(JSON.stringify(error));
-    this.setState({ error });
-  }
+  // componentDidCatch(error, info) {
+  //   console.log(JSON.stringify(error));
+  //   this.setState({ error });
+  // }
 
   reset = () => {
     window.location.reload();

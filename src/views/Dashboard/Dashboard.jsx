@@ -25,6 +25,11 @@ class Dashboard extends Component {
     error: ""
   };
 
+  componentDidCatch(error, info) {
+    console.dir(info);
+    this.setState({ error: true });
+  }
+
   componentDidMount = () => {
     const { dashboardId } = this.props.match.params;
     this.initialize(dashboardId);
