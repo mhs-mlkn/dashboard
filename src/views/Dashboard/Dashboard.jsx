@@ -27,7 +27,7 @@ class Dashboard extends Component {
 
   componentDidCatch(error, info) {
     console.dir(info);
-    this.setState({ error: true });
+    this.setState({ error: "خطای ارتباط با پایگاه داده" });
   }
 
   componentDidMount = () => {
