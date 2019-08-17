@@ -119,9 +119,10 @@ export default class ReportApi {
       .then(res => res.data.result.userVOList);
   };
 
-  static saveDashboard = async ({ id, config }) => {
+  static saveDashboard = async ({ id, config, shared = false }) => {
+    const url = `${baseUrl}/dashboard/${shared ? "shared/" : ""}${id}`;
     return axios
-      .put(`${baseUrl}/dashboard/${id}`, { config: JSON.stringify(config) })
+      .put(url, { config: JSON.stringify(config) })
       .then(res => res.data.result.data);
   };
 

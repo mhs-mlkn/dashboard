@@ -3,6 +3,7 @@ import EventEmitter from "events";
 class CustomEvent {
   constructor() {
     this.eventEmitter = new EventEmitter();
+    this.eventEmitter.setMaxListeners(0);
   }
 
   on(eventName, listener) {
