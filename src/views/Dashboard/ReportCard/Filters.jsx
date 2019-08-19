@@ -7,8 +7,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Grid from "@material-ui/core/Grid";
 import TextInput from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
 import { DatePicker } from "../../../components/FormikInputs";
 import moment from "moment-jalaali";
+// import ReportContainer from "../../../containers/Report.container";
 
 const styles = theme => ({
   textField: {
@@ -85,8 +87,40 @@ class Filters extends Component {
     return initials;
   };
 
-  getInputElement = ({ id, key, title, type }, props) => {
+  getInputElement = (
+    { id, key, title, type, validValueType, validValue },
+    props
+  ) => {
     const name = id + "";
+
+    if (validValueType === "CONST_LIST") {
+      const options = validValue.split("↵").map(opt => opt.trim());
+      return (
+        <TextInput
+          select
+          id={`${id}-${key}`}
+          name={name}
+          label={title}
+          value={props.values[name]}
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          onChange={props.handleChange}
+          className={this.props.classes.textField}
+        >
+          {options.map((opt, i) => (
+            <MenuItem value={opt} key={i}>
+              {opt}
+            </MenuItem>
+          ))}
+        </TextInput>
+      );
+    }
+
+    // if (validValueType === "QUERY_LIST") {
+    //   const options = ReportContainer.reportData(instanceId);
+    // }
+
     switch (type) {
       case "DATE":
       case "DATE_STRING":
