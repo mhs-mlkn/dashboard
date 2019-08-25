@@ -2,7 +2,7 @@ import { Container } from "unstated";
 
 export class TimerContainer extends Container {
   state = {
-    paused: false,
+    paused: true,
     hasSwitched: false
   };
 
