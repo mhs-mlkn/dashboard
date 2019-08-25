@@ -1,10 +1,13 @@
 import React from "react";
 import { Subscribe } from "unstated";
 import { withRouter } from "react-router";
+import domtoimage from "dom-to-image";
+import { saveAs } from "file-saver";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Share from "@material-ui/icons/Share";
+import Save from "@material-ui/icons/Save";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AuthContainer from "../../containers/Auth.container";
@@ -21,6 +24,16 @@ const NavbarLinks = props => {
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleSave = () => {
+    const urlParts = props.location.pathname.split("/");
+    const dashboardId = urlParts[urlParts.length - 1];
+    const el = document.getElementsByClassName(`react-grid-layout`);
+    console.dir(el);
+    return domtoimage.toBlob(el[0]).then(function(blob) {
+      saveAs(blob, `dashboard ${dashboardId || ""}`);
+    });
   };
 
   const handleShareDashboard = () => {
@@ -68,6 +81,11 @@ const NavbarLinks = props => {
                   اشتراک گذاری
                 </Button>
               </>
+            )}
+            {isDashboardRoute() && Layout.state.dashboards.length > 0 && (
+              <IconButton onClick={handleSave} color="primary" title="ذخیره">
+                <Save />
+              </IconButton>
             )}
             <IconButton onClick={handleMenu} color="primary">
               <AccountCircle />
