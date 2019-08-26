@@ -231,7 +231,7 @@ export default class ReportApi {
       method: "POST",
       body: JSON.stringify(data),
       headers: new Headers({
-        token: localStorage.getItem("DASH_USER_TOKEN"),
+        token: localStorage.getItem("DASH_USER_ACCESS_TOKEN"),
         "Content-Type": "application/json"
       })
     }).then(res => res.blob());

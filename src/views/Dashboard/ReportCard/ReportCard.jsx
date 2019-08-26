@@ -46,6 +46,7 @@ class ReportCard extends Component {
   };
 
   componentDidCatch(error, info) {
+    console.log("ReportCard>>>");
     console.dir(info);
     this.setState({ error: "خطای ارتباط با پایگاه داده" });
   }

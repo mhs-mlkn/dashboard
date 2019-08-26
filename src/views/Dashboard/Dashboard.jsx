@@ -10,7 +10,6 @@ import LayoutContainer from "../../containers/Layout.container";
 import TimerContainer from "../../containers/Timer.container";
 import DeleteDashboardContainer from "../../containers/DeleteDashboard.container";
 import MyCustomEvent from "../../util/customEvent";
-import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 import { get } from "lodash";
 
 import "react-grid-layout/css/styles.css";
@@ -26,6 +25,7 @@ class Dashboard extends Component {
   };
 
   componentDidCatch(error, info) {
+    console.log("dashboard>>>");
     console.dir(info);
     this.setState({ error: "خطای ارتباط با پایگاه داده" });
   }
@@ -90,11 +90,13 @@ class Dashboard extends Component {
   };
 
   startInterval = () => {
-    if (LayoutContainer.state.dashboards.length > 1) {
-      this.interval = setInterval(
-        this.goToNext,
-        CHANGE_DASHBOARD_INTERVAL * 1000
-      );
+    const { dashboardId } = this.props.match.params;
+    const config = LayoutContainer.getSlideConfig(dashboardId);
+    if (
+      LayoutContainer.state.dashboards.filter(d => d.config.slide.isVisible)
+        .length > 1
+    ) {
+      this.interval = setInterval(this.goToNext, config.duration * 1000);
     }
   };
 
@@ -107,7 +109,12 @@ class Dashboard extends Component {
       return this.props.history.replace(`/user/dashboard`);
     }
     const dashboardIndex = LayoutContainer.getDashboardIndex(dashboardId);
-    const nextIndex = (dashboardIndex + 1) % dashboardsCount;
+    let nextIndex = (dashboardIndex + 1) % dashboardsCount;
+    let nextDashboard = LayoutContainer.state.dashboards[nextIndex];
+    while (!nextDashboard.config.slide.isVisible) {
+      nextIndex = (nextIndex + 1) % dashboardsCount;
+      nextDashboard = LayoutContainer.state.dashboards[nextIndex];
+    }
     const nextId = LayoutContainer.state.dashboards[nextIndex].id;
     return this.props.history.replace(`/user/dashboard/${nextId}`);
   };

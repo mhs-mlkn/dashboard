@@ -21,11 +21,16 @@ const DashboardLinks = props => {
 
   const selectedDashboardId = getSelectedDashboardId();
 
+  const isVisible = () => {
+    const path = props.location.pathname;
+    return path.startsWith("/user/dashboard");
+  };
+
   return (
     <Subscribe to={[LayoutContainer]}>
       {Layout => (
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
-          {props.location.pathname.startsWith("/user/dashboard") ? (
+          {isVisible() ? (
             <>
               {Layout.state.dashboards.map(d => (
                 <Tooltip

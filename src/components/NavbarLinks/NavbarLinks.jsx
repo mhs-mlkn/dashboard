@@ -16,7 +16,6 @@ import { loginRoute } from "../../routes";
 import Timer from "../Timer";
 import MyCustomEvent from "../../util/customEvent";
 import DeleteDashboard from "./DeleteDashboard";
-import { CHANGE_DASHBOARD_INTERVAL } from "../../constants";
 
 const NavbarLinks = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -30,7 +29,6 @@ const NavbarLinks = props => {
     const urlParts = props.location.pathname.split("/");
     const dashboardId = urlParts[urlParts.length - 1];
     const el = document.getElementsByClassName(`react-grid-layout`);
-    console.dir(el);
     return domtoimage.toBlob(el[0]).then(function(blob) {
       saveAs(blob, `dashboard ${dashboardId || ""}`);
     });
@@ -61,13 +59,28 @@ const NavbarLinks = props => {
     return false;
   };
 
+  const isTimerVisible = () => {
+    return (
+      isDashboardRoute() &&
+      LayoutContainer.state.dashboards.filter(d => d.config.slide.isVisible)
+        .length > 1
+    );
+  };
+
+  const getDashboardInterval = () => {
+    const urlParts = props.location.pathname.split("/");
+    const dashboardId = urlParts[urlParts.length - 1];
+    const config = LayoutContainer.getSlideConfig(dashboardId);
+    return config.duration;
+  };
+
   return (
     <Subscribe to={[AuthContainer, LayoutContainer]}>
       {(Auth, Layout) =>
         Auth.isLoggedIn() ? (
           <div style={{ display: "flex", alignItems: "center" }}>
-            {isDashboardRoute() && Layout.state.dashboards.length > 1 && (
-              <Timer changeInterval={CHANGE_DASHBOARD_INTERVAL} />
+            {isTimerVisible() && (
+              <Timer changeInterval={getDashboardInterval()} />
             )}
             {isVisible() && (
               <>

@@ -117,9 +117,9 @@ class ReportParams extends Component {
     const { params } = values;
     for (const p of params) {
       if (!p.value) {
-        errors.params.push({ value: "مقدار وراد کنید" });
+        errors.params.push({ value: "مقدار وارد کنید" });
       } else if (p.type === "number" && !Number(p.value)) {
-        errors.params.push({ value: "عدد وراد کنید" });
+        errors.params.push({ value: "عدد وارد کنید" });
       } else if (
         p.type === "boolean" &&
         ["true", "false"].indexOf(p.value.toLowerCase()) < 0

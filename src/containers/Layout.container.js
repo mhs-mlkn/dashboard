@@ -1,8 +1,9 @@
 import { Container } from "unstated";
 import Api from "../api/report.api";
+import { CHANGE_DASHBOARD_INTERVAL } from "../constants";
 
 const DEFAULT_CONFIG_STRING =
-  '{"layouts": {"lg": [], "md": [], "sm": [], "xs": [], "xxs": []}, "settings": {}}';
+  '{"layouts": {"lg": [], "md": [], "sm": [], "xs": [], "xxs": []}, "settings": {}, "slide": {}}';
 
 const MIN_W = { lg: 6, md: 6, sm: 6, xs: 12, xxs: 12 };
 const MIN_H = { lg: 14, md: 14, sm: 15, xs: 20, xxs: 20 };
@@ -19,6 +20,11 @@ export class LayoutContainer extends Container {
     dashboards = dashboards.map(dashboard => {
       dashboard.config = JSON.parse(dashboard.config || DEFAULT_CONFIG_STRING);
       dashboard.config.layouts = setMinSize(dashboard.config.layouts);
+      dashboard.config.slide = {
+        isVisible: true,
+        duration: CHANGE_DASHBOARD_INTERVAL,
+        ...dashboard.config.slide
+      };
       return dashboard;
     });
     this.setDashboardName(dashboards);
@@ -69,6 +75,13 @@ export class LayoutContainer extends Container {
     return settings[instanceId] || {};
   };
 
+  getSlideConfig = dashboardId => {
+    const dashboard = this.getDashboard(dashboardId);
+    const { config = {} } = dashboard;
+    const { slide = {} } = config;
+    return slide || { isVisible: true, duration: CHANGE_DASHBOARD_INTERVAL };
+  };
+
   addToLayout = async (dashboardId, instanceId) => {
     const dashboard = this.getDashboard(dashboardId);
     dashboard.config.layouts = pushItem(
@@ -112,6 +125,10 @@ export class LayoutContainer extends Container {
     const dashboards = this.state.dashboards.map(d =>
       +d.id === +dashboardId ? updatedDashboard : d
     );
+    return this.setState({ dashboards });
+  };
+
+  saveDashboardsConfig = async dashboards => {
     return this.setState({ dashboards });
   };
 

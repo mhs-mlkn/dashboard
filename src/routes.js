@@ -3,10 +3,12 @@ import Dashboard from "./views/Dashboard/Dashboard";
 import ReportList from "./views/Report/List/List";
 import ReportParams from "./views/Report/Config/Params";
 import DashboardLayout from "./views/Report/Config/Layout";
+import SlideConfig from "./views/Dashboard/SlideConfig/SlideConfig";
 
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import ListIcon from "@material-ui/icons/List";
 import SettingsIcon from "@material-ui/icons/Settings";
+import SettingsApplicationsIcon from "@material-ui/icons/SettingsApplicationsOutlined";
 import AspectRatioIcon from "@material-ui/icons/AspectRatio";
 
 export const loginRoute = {
@@ -63,5 +65,13 @@ export default [
     component: DashboardLayout,
     icon: AspectRatioIcon,
     invisible: true
+  },
+  {
+    title: "تنظیمات اسلایدشو",
+    path: "/user/slides",
+    matchTest: path => "/user/slides" === path,
+    component: SlideConfig,
+    icon: SettingsApplicationsIcon,
+    invisible: false
   }
 ];
