@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  Label,
   Legend
 } from "recharts";
 import COLORS from "../../constants/colors";
@@ -88,13 +89,16 @@ const Chart = props => {
           scale={config.xAxis.scale}
           domain={getDomain(config.xAxis.scale)}
           allowDataOverflow
-          label={{
-            value: config.xAxis.label,
-            angle: 0,
-            position: "insideBottomRight"
-          }}
           tickFormatter={d => d / Math.pow(10, +config.xAxis.divideBy)}
-        />
+        >
+          <Label
+            angle={0}
+            position="insideBottomRight"
+            style={{ textAnchor: "start" }}
+          >
+            {config.xAxis.label}
+          </Label>
+        </XAxis>
       ) : (
         <XAxis
           dataKey="name"
@@ -105,12 +109,15 @@ const Chart = props => {
             fontSize: `${config.xAxis.tick.fontSize}px`
           }}
           allowDataOverflow
-          label={{
-            value: config.xAxis.label,
-            angle: 0,
-            position: "insideBottomRight"
-          }}
-        />
+        >
+          <Label
+            angle={0}
+            position="insideBottomRight"
+            style={{ textAnchor: "start" }}
+          >
+            {config.xAxis.label}
+          </Label>
+        </XAxis>
       )}
       {config.layout === "vertical" ? (
         <YAxis

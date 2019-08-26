@@ -104,7 +104,7 @@ const Chart = props => {
           }
           labelLine={false}
           paddingAngle={0}
-          innerRadius={config.innerRadius}
+          innerRadius={`${config.innerRadius}%`}
           outerRadius={`${config.outerRadius}%`}
         >
           {data.map((entry, index) => (

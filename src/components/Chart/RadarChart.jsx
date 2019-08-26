@@ -45,7 +45,8 @@ const Chart = props => {
       width={width}
       height={height}
       margin={{ top: 5, right: 10 }}
-      innerRadius={config.innerRadius}
+      innerRadius={`${config.innerRadius}%`}
+      outerRadius={`${config.outerRadius}%`}
     >
       {keys.map((key, i) => (
         <Radar

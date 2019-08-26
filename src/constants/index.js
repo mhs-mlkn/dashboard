@@ -69,6 +69,7 @@ export const PIE_CHART_CONFIG = {
 
 export const RADAR_CHART_CONFIG = {
   innerRadius: 0,
+  outerRadius: 80,
   legend: LEGEND_CONFIG
 };
 

@@ -30,7 +30,11 @@ const ConfigReport = props => {
       case "Pie":
       case "Radar":
         return (
-          <PieChartConfig config={config} onConfigChange={onConfigChange} />
+          <PieChartConfig
+            type={type}
+            config={config}
+            onConfigChange={onConfigChange}
+          />
         );
 
       case "Scalar":
