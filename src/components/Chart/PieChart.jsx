@@ -12,7 +12,7 @@ import {
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
 const Chart = props => {
-  const { data, width, height } = props;
+  let { data, width, height } = props;
   let { config = CONFIG } = props;
   const keys = getDataKeys(data[0] || {});
 
@@ -94,11 +94,22 @@ const Chart = props => {
     );
   };
 
+  data = data.sort((a, b) => {
+    const key = keys[0];
+    return a[key] - b[key];
+  });
+  let data2 = [];
+  for (let i = 0, j = data.length - 1; i <= j; i++, j--) {
+    const a = data[i];
+    const b = data[j];
+    i === j ? data2.push(a) : data2.push(a, b);
+  }
+
   return (
     <PieChart width={width} height={height}>
       {keys.length > 0 && (
         <Pie
-          data={data}
+          data={data2}
           dataKey={keys[0]}
           label={
             config.labelRenderType === PIE_LABEL_RENDER_TYPE.SIMPLE
