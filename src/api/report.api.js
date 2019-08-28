@@ -77,6 +77,11 @@ export default class ReportApi {
       .then(res => res.data.result);
   };
 
+  static renameDashboard = async (id, name, shared) => {
+    const url = `${baseUrl}/dashboard/${shared ? "shared/" : ""}${id}`;
+    return axios.put(url, { name }).then(res => res.data.result.data);
+  };
+
   static getDashboardUsers = async dashboardId => {
     return axios
       .get(`${baseUrl}/dashboard/${dashboardId}/users`)

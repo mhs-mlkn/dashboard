@@ -36,11 +36,23 @@ export class LayoutContainer extends Container {
     const id = await Api.addDashboard(order, name);
     const config = JSON.parse(DEFAULT_CONFIG_STRING);
     config.layouts = setMinSize(config.layouts);
+    config.slide = {
+      isVisible: true,
+      duration: CHANGE_DASHBOARD_INTERVAL
+    };
     let dashboards = [...this.state.dashboards, { id, config, name }];
     dashboards = [
       ...dashboards.filter(d => !d.shared),
       ...dashboards.filter(d => d.shared)
     ];
+    return this.setState({ dashboards });
+  };
+
+  renameDashboard = async (id, name, shared) => {
+    await Api.renameDashboard(id, name, shared);
+    const dashboards = this.state.dashboards.map(d =>
+      d.id === id ? { ...d, name } : d
+    );
     return this.setState({ dashboards });
   };
 

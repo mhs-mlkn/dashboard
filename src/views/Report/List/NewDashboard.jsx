@@ -11,7 +11,7 @@ const NewDashboard = props => {
       <Form autoComplete="off">
         <Input
           name="name"
-          label="نام داشبورد جدید"
+          label="نام داشبورد"
           {...formikProps}
           handleChange={e => {
             LayoutContainer.setNewDashboardName(e.target.value);
