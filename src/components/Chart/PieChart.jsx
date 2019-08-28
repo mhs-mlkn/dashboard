@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import COLORS from "../../constants/colors";
 import { get } from "lodash";
+import { formatNumber } from "../../util";
 
 import {
   PIE_CHART_CONFIG as CONFIG,
@@ -82,7 +83,9 @@ const Chart = props => {
         >
           {/* `${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)` */}
           {get(config, "labelValue.label", false) ? `${payload.name}: ` : ""}
-          {get(config, "labelValue.value", false) ? `${value}` : ""}
+          {get(config, "labelValue.value", false)
+            ? `${formatNumber(value)}`
+            : ""}
           {get(config, "labelValue.percent", false)
             ? ` (${(percent * 100).toFixed(2)}%)`
             : ""}
@@ -118,6 +121,7 @@ const Chart = props => {
       )}
       <Tooltip
         wrapperStyle={{ left: "0", textAlign: "start", direction: "ltr" }}
+        formatter={(value, name) => [formatNumber(value), name]}
       />
       <Legend {...config.legend} />
     </PieChart>

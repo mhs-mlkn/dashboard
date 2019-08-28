@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { getDataMin } from "../../util";
 import COLORS from "../../constants/colors";
+import { formatNumber } from "../../util";
 
 import { BAR_CHART_CONFIG as CONFIG } from "../../constants";
 
@@ -95,7 +96,9 @@ const Chart = props => {
           scale={config.xAxis.scale}
           domain={getDomain(config.xAxis.scale)}
           allowDataOverflow
-          tickFormatter={d => d / Math.pow(10, +config.xAxis.divideBy)}
+          tickFormatter={d =>
+            formatNumber(d / Math.pow(10, +config.xAxis.divideBy))
+          }
         >
           <Label
             angle={0}
@@ -150,10 +153,16 @@ const Chart = props => {
             angle: -90,
             position: "insideLeft"
           }}
-          tickFormatter={d => d / Math.pow(10, +config.yAxis.divideBy)}
+          tickFormatter={d =>
+            formatNumber(d / Math.pow(10, +config.yAxis.divideBy))
+          }
         />
       )}
-      <Tooltip wrapperStyle={{ left: "0" }} cursor={{ fill: "#FFF1" }} />
+      <Tooltip
+        wrapperStyle={{ left: "0" }}
+        cursor={{ fill: "#FFF1" }}
+        formatter={(value, name) => [formatNumber(value), name]}
+      />
       <Legend
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

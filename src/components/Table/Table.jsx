@@ -12,6 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CustomTableHead from "./CustomTableHead";
 import TableActions from "./TableActions";
+import { formatNumber } from "../../util";
 
 const styles = theme => {
   return {
@@ -52,6 +53,8 @@ class CustomTable extends Component {
   getData = (cell, i) => {
     if (this.props.cols[i].type === "DATE") {
       return moment(cell.slice(0, -5)).format("jYYYY/jMM/jDD");
+    } else if (this.props.cols[i].type === "NUMBER") {
+      return formatNumber(cell);
     }
     return cell;
   };
