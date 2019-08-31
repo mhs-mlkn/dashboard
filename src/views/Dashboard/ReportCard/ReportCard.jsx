@@ -95,7 +95,11 @@ class ReportCard extends Component {
       const { id: instanceId } = this.state.userReport;
       this.refreshInterval = setInterval(
         () =>
-          MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: false }),
+          MyCustomEvent.emit("REFRESH_REPORT", {
+            instanceId,
+            useCache: false,
+            loading: false
+          }),
         refreshInterval * 1000
       );
     }
@@ -139,7 +143,11 @@ class ReportCard extends Component {
 
   refreshReport = () => {
     const { id: instanceId } = this.state.userReport;
-    MyCustomEvent.emit("REFRESH_REPORT", { instanceId, useCache: false });
+    MyCustomEvent.emit("REFRESH_REPORT", {
+      instanceId,
+      useCache: false,
+      loading: true
+    });
   };
 
   configReport = () => {
