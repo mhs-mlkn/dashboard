@@ -113,7 +113,9 @@ class CustomTable extends Component {
               ).map(({ cols: cells = [] }, key) => (
                 <TableRow hover key={key}>
                   {cells.map((cell, i) => (
-                    <TableCell key={i}>{this.getData(cell, i)}</TableCell>
+                    <TableCell key={i} style={{ fontSize: "0.9rem" }}>
+                      {this.getData(cell, i)}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
