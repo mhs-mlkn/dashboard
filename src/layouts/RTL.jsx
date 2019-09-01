@@ -40,7 +40,7 @@ const theme = createMuiTheme({
   direction: "rtl",
   typography: {
     useNextVariants: true,
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "IRANSans"
   },
   overrides: {
