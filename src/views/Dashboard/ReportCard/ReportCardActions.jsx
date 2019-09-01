@@ -229,14 +229,12 @@ const ReportCardActions = props => {
           <Code fontSize="small" />
         </IconButton>
       )}
-      {userReport &&
-        !editEnabled &&
-        hasFilters &&
-        userReport.report.type === "Table" && (
-          <IconButton onClick={filterActionHandler}>
-            <FilterList color="primary" fontSize="small" />
-          </IconButton>
-        )}
+      {userReport && !editEnabled && hasFilters && (
+        // && userReport.report.type === "Table"
+        <IconButton onClick={filterActionHandler}>
+          <FilterList color="primary" fontSize="small" />
+        </IconButton>
+      )}
       {userReport && !editEnabled && ReportContainer.isDrillDown(instanceId) && (
         <IconButton onClick={backActionHandler} title="بازگشت">
           <ArrowUpward color="primary" fontSize="small" />

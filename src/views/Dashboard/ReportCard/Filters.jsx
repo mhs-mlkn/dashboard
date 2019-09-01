@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { pickBy, identity } from "lodash";
+import { pickBy, identity, mapValues, keyBy } from "lodash";
 import { Formik, Form, Field } from "formik";
 import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -28,12 +28,19 @@ class Filters extends Component {
   };
 
   hasFiltersChanged = values => {
-    const { values: oldValues } = this.props;
+    const initials = mapValues(keyBy(this.props.values, "id"), "value");
+    const { queryFilters } = this.props.report.query;
     for (const key in values) {
+      const filter = queryFilters.find(f => f.id === +key);
       if (values.hasOwnProperty(key)) {
-        const oldValue = oldValues[key];
-        const curValue = values[key];
-        if (oldValue !== curValue) {
+        const initial = initials[key];
+        const curValue =
+          filter.type === "DATE"
+            ? values[key].format("YYYY-MM-DD")
+            : filter.type === "DATE_STRING"
+            ? values[key].format("jYYYY-jMM-jDD")
+            : values[key];
+        if (initial !== curValue) {
           return true;
         }
       }
@@ -132,6 +139,7 @@ class Filters extends Component {
             control={
               <Switch
                 id={`${id}-${key}`}
+                name={name}
                 checked={props.values[name]}
                 onChange={props.handleChange}
                 value={props.values[name]}

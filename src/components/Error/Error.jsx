@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 
 const Error = props => {
-  const { message, onRetry } = props;
+  const { message, onRetry = false } = props;
   return (
     <Grid
       container
@@ -24,7 +24,7 @@ const Error = props => {
       <Grid item>
         <Typography color="error" variant="h5" gutterBottom>
           {message}
-          {onRetry && (
+          {!!onRetry && (
             <IconButton color="primary" title="تلاش مجدد" onClick={onRetry}>
               <Refresh fontSize="small" />
             </IconButton>
