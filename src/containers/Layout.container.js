@@ -5,8 +5,8 @@ import { CHANGE_DASHBOARD_INTERVAL } from "../constants";
 const DEFAULT_CONFIG_STRING =
   '{"layouts": {"lg": [], "md": [], "sm": [], "xs": [], "xxs": []}, "settings": {}, "slide": {}}';
 
-const MIN_W = { lg: 6, md: 6, sm: 6, xs: 12, xxs: 12 };
-const MIN_H = { lg: 14, md: 14, sm: 15, xs: 20, xxs: 20 };
+const MIN_W = { lg: 6, md: 6, sm: 12, xs: 12, xxs: 12 };
+const MIN_H = { lg: 16, md: 16, sm: 20, xs: 20, xxs: 20 };
 
 export class LayoutContainer extends Container {
   newDashboardName = "";

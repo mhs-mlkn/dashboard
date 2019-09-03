@@ -41,7 +41,7 @@ const ChartYAxisConfig = props => {
     fill = "#e5e5e5",
     fontSize = "13",
     textAnchor = "start",
-    fontFamily = "yekan"
+    fontFamily = "IRANSans"
   } = tickConfig;
 
   const handleChange = ({ target }) => {
