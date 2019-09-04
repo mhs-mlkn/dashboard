@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Subscribe } from "unstated";
+import TextInput from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
 import Radio from "@material-ui/core/Radio";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
@@ -31,8 +33,25 @@ const DashboardLinks = props => {
       {Layout => (
         <div style={{ flexGrow: 1, textAlign: "center", direction: "ltr" }}>
           {isVisible() ? (
-            <>
-              {Layout.state.dashboards.map(d => (
+            Layout.state.dashboards.length > 4 ? (
+              <TextInput
+                select
+                name="dashboard-links"
+                value={+selectedDashboardId}
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                onChange={handleChange}
+                style={{ width: "30%" }}
+              >
+                {Layout.state.dashboards.map((d, i) => (
+                  <MenuItem value={d.id} key={i}>
+                    {d.name}
+                  </MenuItem>
+                ))}
+              </TextInput>
+            ) : (
+              Layout.state.dashboards.map(d => (
                 <Tooltip
                   title={`داشبورد ${d.name || d.id}`}
                   placement="top"
@@ -48,8 +67,8 @@ const DashboardLinks = props => {
                     checkedIcon={<RadioButtonCheckedIcon fontSize="small" />}
                   />
                 </Tooltip>
-              ))}
-            </>
+              ))
+            )
           ) : null}
         </div>
       )}
