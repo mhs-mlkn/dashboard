@@ -17,7 +17,7 @@ const styles = theme => ({
 });
 
 const ChartYAxisConfig = props => {
-  const { classes, axisConfig, layout, onChange } = props;
+  const { classes, isScatter = false, axisConfig, layout, onChange } = props;
 
   const {
     height = 30,
@@ -62,7 +62,7 @@ const ChartYAxisConfig = props => {
         onChange={handleChange}
         margin="dense"
         variant="outlined"
-        disabled={layout === "horizontal"}
+        disabled={!isScatter ? layout === "horizontal" : false}
         className={classes.textField}
       />
       <TextField
@@ -74,23 +74,25 @@ const ChartYAxisConfig = props => {
         variant="outlined"
         className={classes.textField}
       />
-      <TextField
-        select
-        name="scale"
-        label="مقیاس"
-        value={scale}
-        onChange={handleChange}
-        margin="dense"
-        variant="outlined"
-        disabled={layout === "horizontal"}
-        className={classes.textField}
-      >
-        {AXIS_SCALES.map(sc => (
-          <MenuItem key={sc} value={sc}>
-            {sc}
-          </MenuItem>
-        ))}
-      </TextField>
+      {!isScatter && (
+        <TextField
+          select
+          name="scale"
+          label="مقیاس"
+          value={scale}
+          onChange={handleChange}
+          margin="dense"
+          variant="outlined"
+          disabled={layout === "horizontal"}
+          className={classes.textField}
+        >
+          {AXIS_SCALES.map(sc => (
+            <MenuItem key={sc} value={sc}>
+              {sc}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
       <TextField
         select
         name="divideBy"
@@ -100,7 +102,7 @@ const ChartYAxisConfig = props => {
         helperText="انتخاب مقیاس اعداد محور"
         margin="dense"
         variant="outlined"
-        disabled={layout === "horizontal"}
+        disabled={!isScatter ? layout === "horizontal" : false}
         className={classes.textField}
       >
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(digit => (

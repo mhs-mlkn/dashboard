@@ -3,7 +3,6 @@ import {
   ScatterChart,
   Scatter,
   Cell,
-  Brush,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -13,7 +12,7 @@ import {
 } from "recharts";
 import COLORS from "../../constants/colors";
 import { getDataRange } from "../../util";
-import { Scatter_CHART_CONFIG as CONFIG } from "../../constants";
+import { SCATTER_CHART_CONFIG as CONFIG } from "../../constants";
 import { formatNumber } from "../../util";
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
@@ -34,9 +33,9 @@ const Chart = props => {
       height={height}
       margin={{ top: 5, right: 10 }}
     >
-      {config.brush && <Brush dataKey="name" height={20} />}
       <XAxis
         dataKey="name"
+        unit={config.yAxis.unit}
         height={+config.xAxis.height || 30}
         angle={+config.xAxis.angle}
         tick={{
@@ -86,11 +85,6 @@ const Chart = props => {
         formatter={(value, name) => [formatNumber(value), name]}
       />
       <Scatter data={data} name={props.name}>
-        {/* {data.map((entry, index) => {
-          return (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-          );
-        })} */}
         {data.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % 19]["500"]} />
         ))}

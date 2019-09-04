@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Chart from "../../../../components/Chart/Chart";
 import Scalar from "../../../../components/Scalar/Scalar";
 import BarChartConfigt from "./BarChartConfigt";
+import ScatterChartConfigt from "./ScatterChartConfigt";
 import PieChartConfig from "./PieChartConfig";
 import ScalarConfig from "./ScalarConfig";
 
@@ -25,6 +26,14 @@ const ConfigReport = props => {
       case "Line":
         return (
           <BarChartConfigt config={config} onConfigChange={onConfigChange} />
+        );
+
+      case "Scatter":
+        return (
+          <ScatterChartConfigt
+            config={config}
+            onConfigChange={onConfigChange}
+          />
         );
 
       case "Pie":

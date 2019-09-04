@@ -55,8 +55,7 @@ export const Line_CHART_CONFIG = {
   xAxis: AXIS_CONFIG
 };
 
-export const Scatter_CHART_CONFIG = {
-  brush: false,
+export const SCATTER_CHART_CONFIG = {
   yAxis: AXIS_CONFIG,
   xAxis: AXIS_CONFIG
 };
@@ -89,6 +88,7 @@ export const CHART_CONFIG = {
   Bar: BAR_CHART_CONFIG,
   Area: AREA_CHART_CONFIG,
   Line: Line_CHART_CONFIG,
+  Scatter: SCATTER_CHART_CONFIG,
   Pie: PIE_CHART_CONFIG,
   Radar: RADAR_CHART_CONFIG,
   Scalar: SCALAR_CONFIG
