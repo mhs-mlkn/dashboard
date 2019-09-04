@@ -55,6 +55,12 @@ export const Line_CHART_CONFIG = {
   xAxis: AXIS_CONFIG
 };
 
+export const Scatter_CHART_CONFIG = {
+  brush: false,
+  yAxis: AXIS_CONFIG,
+  xAxis: AXIS_CONFIG
+};
+
 export const PIE_CHART_CONFIG = {
   innerRadius: 0,
   outerRadius: 80,
