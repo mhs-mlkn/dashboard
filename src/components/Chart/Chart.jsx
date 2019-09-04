@@ -21,7 +21,7 @@ const Chart = props => {
         return <ScatterChart {...rest} />;
 
       case "Line":
-        return <ScatterChart {...rest} />;
+        return <LineChart {...rest} />;
 
       case "Area":
         return <AreaChart {...rest} />;
