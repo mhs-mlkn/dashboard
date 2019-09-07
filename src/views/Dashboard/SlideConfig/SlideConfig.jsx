@@ -52,7 +52,7 @@ const DashboardSlideConfig = () => {
     const { values } = formikProps;
     return (
       <Form>
-        <Grid container direction="row-reverse" spacing={8}>
+        <Grid container spacing={8}>
           <FieldArray
             name="dashboards"
             render={() =>
