@@ -2,7 +2,6 @@ import React, { Component } from "react";
 // import Axios from "axios";
 import moment from "moment-jalaali";
 import { withTheme } from "@material-ui/core/styles";
-import PerfectScrollbar from "perfect-scrollbar";
 import {
   MuiThemeProvider,
   createMuiTheme,
@@ -79,7 +78,6 @@ class RTL extends Component {
     this.resizeListener();
     this.configAxios();
     this.configMoment();
-    this.ps = new PerfectScrollbar(this.refs.mainPanel);
     window.addEventListener("resize", this.resizeListener);
   };
 
@@ -87,9 +85,8 @@ class RTL extends Component {
     const path = prevProps.history.location.pathname;
     const oldPath = prevProps.location.pathname;
     if (oldPath !== path) {
-      this.ps.update();
+      window.scrollTo(0, 0);
     }
-    this.refs.mainPanel.scrollTop = 0;
   };
 
   componentWillUnmount() {

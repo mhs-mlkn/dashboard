@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import moment from "moment-jalaali";
-import PerfectScrollbar from "perfect-scrollbar";
 import { withStyles } from "@material-ui/core/styles";
 import { withSize } from "react-sizeme";
 import Table from "@material-ui/core/Table";
@@ -33,10 +32,6 @@ const styles = theme => {
 };
 
 class CustomTable extends Component {
-  componentDidMount = () => {
-    this.ps = new PerfectScrollbar(this.refs.tableWrapper);
-  };
-
   handleChangePage = (_, page) => {
     this.props.onChangePage && this.props.onChangePage(page);
   };
