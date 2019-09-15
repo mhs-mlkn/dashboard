@@ -75,7 +75,10 @@ const NavbarLinks = props => {
     return config.duration;
   };
 
-  const handleThemeChanged = () => ThemeContainer.toggle();
+  const handleThemeChanged = () => {
+    setAnchorEl(null);
+    ThemeContainer.toggle();
+  };
 
   return (
     <Subscribe to={[AuthContainer, LayoutContainer, ThemeContainer]}>

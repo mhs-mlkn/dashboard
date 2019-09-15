@@ -55,6 +55,11 @@ const getTheme = (type = "dark") => {
         root: {
           marginRight: "8px"
         }
+      },
+      MuiTableCell: {
+        body: {
+          fontSize: 12
+        }
       }
     }
   });
@@ -156,7 +161,7 @@ class RTL extends Component {
                 <main
                   className={clx("content", {
                     contentShift: open && !isSmallScreen,
-                    [Theme.state.type || "light"]: true
+                    [Theme.state.type || "dark"]: true
                   })}
                   ref="mainPanel"
                 >

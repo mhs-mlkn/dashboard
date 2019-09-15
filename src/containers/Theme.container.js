@@ -4,7 +4,7 @@ const THEME_TYPE = "DASH_THEME_TYPE";
 
 export class ThemeContainer extends Container {
   state = {
-    type: localStorage.getItem(THEME_TYPE) || "light"
+    type: localStorage.getItem(THEME_TYPE) || "dark"
   };
 
   toggle = async () => {

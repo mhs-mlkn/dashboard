@@ -39,7 +39,7 @@ const MyAppBar = props => {
           // className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
           className={clx("appBar", {
             appBarShift: open && !isSmallScreen,
-            [Theme.state.type || "light"]: true
+            [Theme.state.type || "dark"]: true
           })}
         >
           <Toolbar disableGutters={true}>

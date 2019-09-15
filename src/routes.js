@@ -1,6 +1,6 @@
 import Login from "./views/Login/Login";
 import Dashboard from "./views/Dashboard/Dashboard";
-import ReportList from "./views/Report/List/List";
+import Reports from "./views/Report/List/Reports";
 import ReportParams from "./views/Report/Config/Params";
 import DashboardLayout from "./views/Report/Config/Layout";
 import SlideConfig from "./views/Dashboard/SlideConfig/SlideConfig";
@@ -39,7 +39,7 @@ export default [
     title: "لیست گزارشات",
     path: "/user/reports",
     matchTest: path => path.startsWith("/user/reports"),
-    component: ReportList,
+    component: Reports,
     icon: ListIcon
   },
   {
