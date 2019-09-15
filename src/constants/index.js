@@ -20,12 +20,12 @@ export const AXIS_CONFIG = {
   divideBy: 0,
   angle: 0,
   scale: "auto",
-  tick: {
-    fill: "#e5e5e5",
+  tick: (theme = "light") => ({
+    fill: theme === "dark" ? "#e5e5e5" : "#1e1e1e",
     fontSize: "13",
     textAnchor: "start",
     fontFamily: "IRANSans"
-  }
+  })
 };
 
 export const BAR_CHART_CONFIG = {

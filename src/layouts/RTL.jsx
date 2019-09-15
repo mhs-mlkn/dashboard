@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import Axios from "axios";
+import { Subscribe } from "unstated";
 import moment from "moment-jalaali";
 import { withTheme } from "@material-ui/core/styles";
 import {
@@ -24,32 +24,39 @@ import red from "@material-ui/core/colors/red";
 import AppBar from "../components/AppBar/AppBar";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Main from "../components/Main";
-import "./RTLStyles.css";
 
-const theme = createMuiTheme({
-  palette: {
-    type: "dark",
-    primary: { main: cyan["700"] },
-    secondary: { main: green["600"] },
-    error: { main: red["400"] },
-    text: {
-      primary: "#fff"
-    }
-  },
-  direction: "rtl",
-  typography: {
-    useNextVariants: true,
-    fontSize: 10,
-    fontFamily: "IRANSans"
-  },
-  overrides: {
-    MuiButton: {
-      root: {
-        marginRight: "8px"
+import ThemeContainer from "../containers/Theme.container";
+
+const getTheme = (type = "dark") => {
+  console.log(type);
+  return createMuiTheme({
+    palette:
+      type === "light"
+        ? { type }
+        : {
+            type,
+            primary: { main: cyan["700"] },
+            secondary: { main: green["600"] },
+            error: { main: red["400"] },
+            text: {
+              primary: "#fff"
+            }
+          },
+    direction: "rtl",
+    typography: {
+      useNextVariants: true,
+      fontSize: 10,
+      fontFamily: "IRANSans"
+    },
+    overrides: {
+      MuiButton: {
+        root: {
+          marginRight: "8px"
+        }
       }
     }
-  }
-});
+  });
+};
 
 // Configure JSS
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
@@ -75,6 +82,9 @@ class RTL extends Component {
   };
 
   componentDidMount = () => {
+    ThemeContainer.state.type === "dark"
+      ? require("./RTLStyles.css")
+      : require("./RTLStyles.light.css");
     this.resizeListener();
     this.configAxios();
     this.configMoment();
@@ -127,38 +137,42 @@ class RTL extends Component {
     const { open, isSmallScreen } = this.state;
 
     return (
-      <MuiThemeProvider theme={theme}>
-        <JssProvider jss={jss} generateClassName={generateClassName}>
-          <div className={"root"}>
-            <CssBaseline />
-            <AppBar
-              open={open}
-              isSmallScreen={isSmallScreen}
-              path={this.props.history.location.pathname}
-              handleDrawerToggle={this.handleDrawerToggle}
-            />
-            <Sidebar
-              open={open}
-              location={location}
-              handleDrawerToggle={this.handleDrawerToggle}
-            />
-            <main
-              className={
-                open && !isSmallScreen ? "content contentShift" : "content"
-              }
-              ref="mainPanel"
-            >
-              <Switch>
-                <Route
-                  path={loginRoute.path}
-                  component={loginRoute.component}
+      <Subscribe to={[ThemeContainer]}>
+        {Theme => (
+          <MuiThemeProvider theme={getTheme(Theme.state.type)}>
+            <JssProvider jss={jss} generateClassName={generateClassName}>
+              <div className={"root"}>
+                <CssBaseline />
+                <AppBar
+                  open={open}
+                  isSmallScreen={isSmallScreen}
+                  path={this.props.history.location.pathname}
+                  handleDrawerToggle={this.handleDrawerToggle}
                 />
-                <Main>{getRoutes()}</Main>
-              </Switch>
-            </main>
-          </div>
-        </JssProvider>
-      </MuiThemeProvider>
+                <Sidebar
+                  open={open}
+                  location={location}
+                  handleDrawerToggle={this.handleDrawerToggle}
+                />
+                <main
+                  className={
+                    open && !isSmallScreen ? "content contentShift" : "content"
+                  }
+                  ref="mainPanel"
+                >
+                  <Switch>
+                    <Route
+                      path={loginRoute.path}
+                      component={loginRoute.component}
+                    />
+                    <Main>{getRoutes()}</Main>
+                  </Switch>
+                </main>
+              </div>
+            </JssProvider>
+          </MuiThemeProvider>
+        )}
+      </Subscribe>
     );
   };
 }

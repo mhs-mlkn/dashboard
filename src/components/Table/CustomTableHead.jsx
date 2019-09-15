@@ -8,6 +8,7 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.grey["800"],
+    color: "#fff",
     fontSize: "11px"
   }
 }))(TableCell);

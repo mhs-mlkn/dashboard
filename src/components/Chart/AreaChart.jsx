@@ -10,8 +10,15 @@ import {
   Label,
   Legend
 } from "recharts";
-import { getDataMin, formatNumber } from "../../util";
+import {
+  getDataMin,
+  formatNumber,
+  getValue,
+  renderColorfulLegendText
+} from "../../util";
 import COLORS from "../../constants/colors";
+import { Subscribe } from "unstated";
+import ThemeContainer from "../../containers/Theme.container";
 
 import { AREA_CHART_CONFIG as CONFIG } from "../../constants";
 
@@ -53,109 +60,117 @@ const Chart = props => {
     return ["log"].indexOf(scale) > -1 ? [minValue, "dataMax"] : undefined;
   };
 
+  const xTick = theme => getValue(config.xAxis.tick, theme);
+  const yTick = theme => getValue(config.yAxis.tick, theme);
+
   return (
-    <AreaChart
-      data={data}
-      width={width}
-      height={height}
-      margin={{ top: 5, right: 10 }}
-      layout={config.layout}
-    >
-      {keys.map((key, i) => (
-        <Area
-          type="monotone"
-          dataKey={key}
-          key={key}
-          stroke={COLORS[i % 19]["500"]}
-          fill={COLORS[i % 19]["500"]}
-          opacity={opacity[key]}
-          stackId={config.stacked ? "" : i}
-        />
-      ))}
-      {config.brush && <Brush dataKey="name" height={20} />}
-      <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
-      {config.layout === "vertical" ? (
-        <XAxis
-          type="number"
-          unit={config.xAxis.unit}
-          height={+config.xAxis.height}
-          angle={+config.xAxis.angle}
-          tick={config.xAxis.tick}
-          scale={config.xAxis.scale}
-          domain={getDomain(config.xAxis.scale)}
-          allowDataOverflow
-          tickFormatter={d =>
-            formatNumber(d / Math.pow(10, +config.xAxis.divideBy))
-          }
+    <Subscribe to={[ThemeContainer]}>
+      {Theme => (
+        <AreaChart
+          data={data}
+          width={width}
+          height={height}
+          margin={{ top: 5, right: 10 }}
+          layout={config.layout}
         >
-          <Label
-            angle={0}
-            position="insideBottomRight"
-            style={{ textAnchor: "start" }}
-          >
-            {config.xAxis.label}
-          </Label>
-        </XAxis>
-      ) : (
-        <XAxis
-          dataKey="name"
-          height={+config.xAxis.height}
-          angle={+config.xAxis.angle}
-          tick={config.xAxis.tick}
-          allowDataOverflow
-        >
-          <Label
-            angle={0}
-            position="insideBottomRight"
-            style={{ textAnchor: "start" }}
-          >
-            {config.xAxis.label}
-          </Label>
-        </XAxis>
+          {keys.map((key, i) => (
+            <Area
+              type="monotone"
+              dataKey={key}
+              key={key}
+              stroke={COLORS[i % 19]["500"]}
+              fill={COLORS[i % 19]["500"]}
+              opacity={opacity[key]}
+              stackId={config.stacked ? "" : i}
+            />
+          ))}
+          {config.brush && <Brush dataKey="name" height={20} />}
+          <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+          {config.layout === "vertical" ? (
+            <XAxis
+              type="number"
+              unit={config.xAxis.unit}
+              height={+config.xAxis.height}
+              angle={+config.xAxis.angle}
+              tick={xTick(Theme.state.type)}
+              scale={config.xAxis.scale}
+              domain={getDomain(config.xAxis.scale)}
+              allowDataOverflow
+              tickFormatter={d =>
+                formatNumber(d / Math.pow(10, +config.xAxis.divideBy))
+              }
+            >
+              <Label
+                angle={0}
+                position="insideBottomRight"
+                style={{ textAnchor: "start" }}
+              >
+                {config.xAxis.label}
+              </Label>
+            </XAxis>
+          ) : (
+            <XAxis
+              dataKey="name"
+              height={+config.xAxis.height}
+              angle={+config.xAxis.angle}
+              tick={xTick(Theme.state.type)}
+              allowDataOverflow
+            >
+              <Label
+                angle={0}
+                position="insideBottomRight"
+                style={{ textAnchor: "start" }}
+              >
+                {config.xAxis.label}
+              </Label>
+            </XAxis>
+          )}
+          {config.layout === "vertical" ? (
+            <YAxis
+              dataKey="name"
+              type="category"
+              width={+config.yAxis.width}
+              angle={+config.yAxis.angle}
+              tick={yTick(Theme.state.type)}
+              allowDataOverflow
+              label={{
+                value: config.yAxis.label,
+                angle: -90,
+                position: "insideLeft"
+              }}
+            />
+          ) : (
+            <YAxis
+              unit={config.yAxis.unit}
+              width={+config.yAxis.width}
+              angle={+config.yAxis.angle}
+              tick={yTick(Theme.state.type)}
+              scale={config.yAxis.scale}
+              domain={getDomain(config.yAxis.scale)}
+              allowDataOverflow
+              label={{
+                value: config.yAxis.label,
+                angle: -90,
+                position: "insideLeft"
+              }}
+              tickFormatter={d =>
+                formatNumber(d / Math.pow(10, +config.yAxis.divideBy))
+              }
+            />
+          )}
+          <Tooltip
+            wrapperStyle={{ left: "0" }}
+            formatter={(value, name) => [formatNumber(value), name]}
+          />
+          <Legend
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            {...config.legend}
+            formatter={renderColorfulLegendText}
+          />
+        </AreaChart>
       )}
-      {config.layout === "vertical" ? (
-        <YAxis
-          dataKey="name"
-          type="category"
-          width={+config.yAxis.width}
-          angle={+config.yAxis.angle}
-          tick={config.yAxis.tick}
-          allowDataOverflow
-          label={{
-            value: config.yAxis.label,
-            angle: -90,
-            position: "insideLeft"
-          }}
-        />
-      ) : (
-        <YAxis
-          unit={config.yAxis.unit}
-          width={+config.yAxis.width}
-          angle={+config.yAxis.angle}
-          tick={config.yAxis.tick}
-          scale={config.yAxis.scale}
-          domain={getDomain(config.yAxis.scale)}
-          allowDataOverflow
-          label={{
-            value: config.yAxis.label,
-            angle: -90,
-            position: "insideLeft"
-          }}
-          tickFormatter={d =>
-            formatNumber(d / Math.pow(10, +config.yAxis.divideBy))
-          }
-        />
-      )}
-      <Tooltip
-        wrapperStyle={{ left: "0" }}
-        formatter={(value, name) => [formatNumber(value), name]}
-      />
-      <Legend
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        {...config.legend}
-      />
-    </AreaChart>
+    </Subscribe>
   );
 };
 

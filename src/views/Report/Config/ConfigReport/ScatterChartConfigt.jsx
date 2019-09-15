@@ -3,6 +3,8 @@ import Grid from "@material-ui/core/Grid";
 import ChartYAxisConfig from "./ChartYAxisConfig";
 import ChartXAxisConfig from "./ChartXAxisConfig";
 import ChartTickConfig from "./ChartTickConfig";
+import { getValue } from "../../../../util";
+import Theme from "../../../../containers/Theme.container";
 
 const BarCharConfigt = props => {
   const { config, onConfigChange } = props;
@@ -16,7 +18,10 @@ const BarCharConfigt = props => {
   const handleTickChange = axis => override => {
     onConfigChange({
       ...config,
-      [axis]: { ...config[axis], tick: { ...config[axis].tick, ...override } }
+      [axis]: {
+        ...config[axis],
+        tick: { ...getValue(config[axis].tick, Theme.state.type), ...override }
+      }
     });
   };
 
@@ -64,7 +69,7 @@ const BarCharConfigt = props => {
         >
           <ChartTickConfig
             title="تنظیمات فونت محور افقی"
-            tickConfig={xAxis.tick || {}}
+            tickConfig={getValue(xAxis.tick, Theme.state.type) || {}}
             onChange={handleTickChange("xAxis")}
           />
         </Grid>
@@ -78,7 +83,7 @@ const BarCharConfigt = props => {
         >
           <ChartTickConfig
             title="تنظیمات فونت محور عمودی"
-            tickConfig={yAxis.tick || {}}
+            tickConfig={getValue(yAxis.tick, Theme.state.type) || {}}
             onChange={handleTickChange("yAxis")}
           />
         </Grid>

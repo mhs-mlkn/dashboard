@@ -22,9 +22,6 @@ const styles = theme => {
       // minWidth: 400,
     },
     table: {},
-    header: {
-      backgroundColor: "#4c4b4b"
-    },
     nowrap: {
       whiteSpace: "nowrap"
     }

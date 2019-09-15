@@ -13,7 +13,9 @@ import {
 import COLORS from "../../constants/colors";
 import { getDataRange } from "../../util";
 import { SCATTER_CHART_CONFIG as CONFIG } from "../../constants";
-import { formatNumber } from "../../util";
+import { formatNumber, getValue } from "../../util";
+import { Subscribe } from "unstated";
+import ThemeContainer from "../../containers/Theme.container";
 
 const getDataKeys = data => Object.keys(data).filter(key => key !== "name");
 
@@ -26,70 +28,77 @@ const Chart = props => {
     config = { ...CONFIG, ...props.config };
   }, [props.config]);
 
+  const xTick = theme => getValue(config.xAxis.tick, theme);
+  const yTick = theme => getValue(config.yAxis.tick, theme);
+
   return (
-    <ScatterChart
-      data={data}
-      width={width}
-      height={height}
-      margin={{ top: 5, right: 10 }}
-    >
-      <XAxis
-        dataKey="name"
-        unit={config.yAxis.unit}
-        height={+config.xAxis.height || 30}
-        angle={+config.xAxis.angle}
-        tick={{
-          ...config.xAxis.tick,
-          fontSize: `${config.xAxis.tick.fontSize}px`
-        }}
-        allowDataOverflow
-      >
-        <Label
-          angle={0}
-          position="insideBottomRight"
-          style={{ textAnchor: "start" }}
+    <Subscribe to={[ThemeContainer]}>
+      {Theme => (
+        <ScatterChart
+          data={data}
+          width={width}
+          height={height}
+          margin={{ top: 5, right: 10 }}
         >
-          {config.xAxis.label}
-        </Label>
-      </XAxis>
+          <XAxis
+            dataKey="name"
+            unit={config.yAxis.unit}
+            height={+config.xAxis.height || 30}
+            angle={+config.xAxis.angle}
+            tick={{
+              ...xTick(Theme.state.type),
+              fontSize: `${xTick(Theme.state.type).fontSize}px`
+            }}
+            allowDataOverflow
+          >
+            <Label
+              angle={0}
+              position="insideBottomRight"
+              style={{ textAnchor: "start" }}
+            >
+              {config.xAxis.label}
+            </Label>
+          </XAxis>
 
-      <YAxis
-        dataKey={keys[0]}
-        unit={config.yAxis.unit}
-        width={+config.yAxis.width}
-        angle={+config.yAxis.angle}
-        tick={{ ...config.yAxis.tick }}
-        allowDataOverflow
-        label={{
-          value: config.yAxis.label,
-          angle: -90,
-          position: "insideLeft"
-        }}
-        tickFormatter={d =>
-          formatNumber(d / Math.pow(10, +config.yAxis.divideBy))
-        }
-      />
+          <YAxis
+            dataKey={keys[0]}
+            unit={config.yAxis.unit}
+            width={+config.yAxis.width}
+            angle={+config.yAxis.angle}
+            tick={yTick(Theme.state.type)}
+            allowDataOverflow
+            label={{
+              value: config.yAxis.label,
+              angle: -90,
+              position: "insideLeft"
+            }}
+            tickFormatter={d =>
+              formatNumber(d / Math.pow(10, +config.yAxis.divideBy))
+            }
+          />
 
-      {keys.length > 1 && (
-        <ZAxis dataKey={keys[1]} range={getDataRange(data, keys[1])} />
+          {keys.length > 1 && (
+            <ZAxis dataKey={keys[1]} range={getDataRange(data, keys[1])} />
+          )}
+          <CartesianGrid
+            stroke="transparent"
+            strokeDasharray="3 3"
+            vertical={false}
+            horizontalFill={["#555555", "#444444"]}
+            fillOpacity={0.2}
+          />
+          <Tooltip
+            wrapperStyle={{ left: "0" }}
+            formatter={(value, name) => [formatNumber(value), name]}
+          />
+          <Scatter data={data} name={props.name}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % 19]["500"]} />
+            ))}
+          </Scatter>
+        </ScatterChart>
       )}
-      <CartesianGrid
-        stroke="transparent"
-        strokeDasharray="3 3"
-        vertical={false}
-        horizontalFill={["#555555", "#444444"]}
-        fillOpacity={0.2}
-      />
-      <Tooltip
-        wrapperStyle={{ left: "0" }}
-        formatter={(value, name) => [formatNumber(value), name]}
-      />
-      <Scatter data={data} name={props.name}>
-        {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % 19]["500"]} />
-        ))}
-      </Scatter>
-    </ScatterChart>
+    </Subscribe>
   );
 };
 

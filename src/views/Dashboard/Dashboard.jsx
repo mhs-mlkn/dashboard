@@ -8,6 +8,7 @@ import ReportCard from "./ReportCard/ReportCard";
 import ShareDashboard from "./ShareDashboard/ShareDashboard";
 import LayoutContainer from "../../containers/Layout.container";
 import TimerContainer from "../../containers/Timer.container";
+import ThemeContainer from "../../containers/Theme.container";
 import DeleteDashboardContainer from "../../containers/DeleteDashboard.container";
 import MyCustomEvent from "../../util/customEvent";
 import { get } from "lodash";
@@ -170,8 +171,8 @@ class Dashboard extends Component {
     }
 
     return (
-      <Subscribe to={[TimerContainer]}>
-        {Timer => {
+      <Subscribe to={[TimerContainer, ThemeContainer]}>
+        {(Timer, Theme) => {
           if (Timer.state.hasSwitched) {
             this.toggleInterval();
           }
@@ -183,7 +184,9 @@ class Dashboard extends Component {
                 cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
                 rowHeight={10}
                 width={width}
-                className="layout"
+                className={
+                  Theme.state.type === "light" ? "layout-light" : "layout"
+                }
                 onBreakpointChange={this.onBreakpointChange}
                 isDraggable={false}
                 isResizable={false}

@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { PieChart, Pie, Tooltip, Legend, Cell } from "recharts";
 import COLORS from "../../constants/colors";
 import { get } from "lodash";
-import { formatNumber } from "../../util";
+import { formatNumber, renderColorfulLegendText } from "../../util";
+import Theme from "../../containers/Theme.container";
 
 import {
   PIE_CHART_CONFIG as CONFIG,
@@ -79,7 +80,10 @@ const Chart = props => {
           y={ey + 5}
           textAnchor={textAnchor}
           fill="#eee"
-          style={{ direction: "rtl" }}
+          style={{
+            direction: "rtl",
+            fill: Theme.state.type === "light" ? "#000" : "#eeeeee"
+          }}
         >
           {/* `${payload.name}: ${value} (${(percent * 100).toFixed(2)}%)` */}
           {get(config, "labelValue.label", false) ? `${payload.name}: ` : ""}
@@ -134,7 +138,7 @@ const Chart = props => {
         wrapperStyle={{ left: "0", textAlign: "start", direction: "ltr" }}
         formatter={(value, name) => [formatNumber(value), name]}
       />
-      <Legend {...config.legend} />
+      <Legend {...config.legend} formatter={renderColorfulLegendText} />
     </PieChart>
   );
 };

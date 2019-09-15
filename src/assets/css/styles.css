@@ -59,7 +59,7 @@ select:-webkit-autofill:focus {
   text-align: start;
 }
 
-.react-grid-item > .react-resizable-handle::after {
+.layout .react-grid-item > .react-resizable-handle::after {
   border-right: 2px solid #e4e4e4;
   border-bottom: 2px solid #e4e4e4;
 }

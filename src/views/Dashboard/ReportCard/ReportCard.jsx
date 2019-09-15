@@ -13,11 +13,12 @@ import ReportCardActions from "./ReportCardActions";
 import ReportContainer from "../../../containers/Report.container";
 import Filters from "./Filters";
 import MyCustomEvent from "../../../util/customEvent";
+import Theme from "../../../containers/Theme.container";
 
 const styles = {
   card: {
     height: "100%",
-    backgroundColor: "transparent"
+    backgroundColor: Theme.state.type === "light" ? "#fff" : "transparent"
     // overflow: "auto"
   },
   content: {

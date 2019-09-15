@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Subscribe } from "unstated";
 import { Prompt } from "react-router";
 import { withSnackbar } from "notistack";
 import { withSize } from "react-sizeme";
@@ -8,6 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import SaveIcon from "@material-ui/icons/Save";
 import Error from "../../../components/Error/Error";
 import LayoutContainer from "../../../containers/Layout.container";
+import ThemeContainer from "../../../containers/Theme.container";
 import ReportCard from "../../Dashboard/ReportCard/ReportCard";
 import ConfigReportDialog from "./ConfigReport/ConfigReportDialog";
 import ShareReportDialog from "./ShareReport/ShareReport";
@@ -145,50 +147,56 @@ class DashboardLayout extends Component {
     }
 
     return (
-      <>
-        <Prompt
-          when={isDirty}
-          message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
-        />
-        <ResponsiveGridLayout
-          layouts={layouts}
-          breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-          cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
-          rowHeight={10}
-          width={width}
-          className="layout"
-          onBreakpointChange={this.onBreakpointChange}
-          onLayoutChange={this.onLayoutChange}
-          draggableCancel=".draggableCancel"
-          style={{ direction: "ltr" }}
-        >
-          {layouts[breakpoint].map(l => {
-            return (
-              <div key={l.i} style={{ direction: "rtl" }}>
-                <ReportCard
-                  dashboardId={dashboardId}
-                  layout={l}
-                  editEnabled={true}
-                />
-              </div>
-            );
-          })}
-        </ResponsiveGridLayout>
-        <Fab
-          title="ذخیره"
-          color="primary"
-          size="medium"
-          className="fab"
-          onClick={this.save}
-        >
-          {loading ? <CircularProgress color="secondary" /> : <SaveIcon />}
-        </Fab>
-        <ConfigReportDialog
-          dashboardId={this.props.match.params.dashboardId}
-          onSettingsChange={this.onSettingsChange}
-        />
-        <ShareReportDialog />
-      </>
+      <Subscribe to={[ThemeContainer]}>
+        {Theme => (
+          <>
+            <Prompt
+              when={isDirty}
+              message={`تغییرات را دخیره نکرده اید. در صورت بارگذاری مجدد تغییرات شما از بین خواهد رفت، آیا ادامه میدهید؟`}
+            />
+            <ResponsiveGridLayout
+              layouts={layouts}
+              breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+              cols={{ lg: 24, md: 18, sm: 12, xs: 8, xxs: 2 }}
+              rowHeight={10}
+              width={width}
+              className={
+                Theme.state.type === "light" ? "layout-light" : "layout"
+              }
+              onBreakpointChange={this.onBreakpointChange}
+              onLayoutChange={this.onLayoutChange}
+              draggableCancel=".draggableCancel"
+              style={{ direction: "ltr" }}
+            >
+              {layouts[breakpoint].map(l => {
+                return (
+                  <div key={l.i} style={{ direction: "rtl" }}>
+                    <ReportCard
+                      dashboardId={dashboardId}
+                      layout={l}
+                      editEnabled={true}
+                    />
+                  </div>
+                );
+              })}
+            </ResponsiveGridLayout>
+            <Fab
+              title="ذخیره"
+              color="primary"
+              size="medium"
+              className="fab"
+              onClick={this.save}
+            >
+              {loading ? <CircularProgress color="secondary" /> : <SaveIcon />}
+            </Fab>
+            <ConfigReportDialog
+              dashboardId={this.props.match.params.dashboardId}
+              onSettingsChange={this.onSettingsChange}
+            />
+            <ShareReportDialog />
+          </>
+        )}
+      </Subscribe>
     );
   };
 }

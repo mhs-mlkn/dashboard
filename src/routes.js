@@ -51,7 +51,7 @@ export default [
     invisible: true
   },
   {
-    title: "تنظیمات داشبورد",
+    title: "تنظیمات گزارش",
     path: "/user/dashboard/layout",
     url: "/user/dashboard/layout",
     matchTest: path => path.startsWith("/user/dashboard/layout"),
@@ -59,7 +59,7 @@ export default [
     icon: AspectRatioIcon
   },
   {
-    title: "تنظیمات داشبورد",
+    title: "تنظیمات گزارش",
     path: "/user/dashboard/layout/:dashboardId(\\d+)",
     matchTest: path => RegExp("/user/dashboard/layout/\\d+", "g").test(path),
     component: DashboardLayout,
@@ -67,7 +67,7 @@ export default [
     invisible: true
   },
   {
-    title: "تنظیمات اسلایدشو",
+    title: "تنظیمات داشبورد",
     path: "/user/slides",
     matchTest: path => "/user/slides" === path,
     component: SlideConfig,

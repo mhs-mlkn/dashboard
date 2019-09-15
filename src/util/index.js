@@ -1,3 +1,5 @@
+import React from "react";
+
 export const getDataMin = (data = [], keys = []) => {
   let min = Number.MAX_SAFE_INTEGER;
   for (const item of data) {
@@ -22,4 +24,16 @@ export const getDataRange = (data = [], key) => {
 
 export function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}
+
+export function getValue(val, param) {
+  if (typeof val === "function") {
+    return val(param);
+  }
+  return val;
+}
+
+export function renderColorfulLegendText(value, entry) {
+  const { color } = entry;
+  return <span style={{ color }}>{value}</span>;
 }
