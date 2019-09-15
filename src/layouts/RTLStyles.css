@@ -3,8 +3,15 @@
 }
 
 .appBar {
-  background-color: #424951 !important;
   transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+.appBar.dark {
+  background-color: #424951 !important;
+}
+
+.appBar.light {
+  background-color: #fff !important;
 }
 
 .appBarShift {
@@ -17,6 +24,14 @@
   color: #fff !important;
   margin-right: 12;
   margin-left: 20;
+}
+
+.menuButton.dark {
+  color: #fff !important;
+}
+
+.menuButton.light {
+  color: #2f3439 !important;
 }
 
 .menuButtonOpen {
@@ -39,6 +54,13 @@
   overflow: auto;
 }
 
+.content.dark {
+  background-color: #3a4047;
+}
+.content.light {
+  background-color: #f5f5f5;
+}
+
 .contentShift {
   transition: margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
   margin-right: 240px;
@@ -46,6 +68,6 @@
 
 @media only screen and (max-width: 500px) {
   .content {
-    margin-top: 88px;
+    margin-top: 58px;
   }
 }

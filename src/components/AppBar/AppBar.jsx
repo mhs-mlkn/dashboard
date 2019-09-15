@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import clx from "classnames";
 import { find } from "lodash";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,6 +9,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NavbarLinks from "../NavbarLinks/NavbarLinks";
 import DashboardLinks from "../DashboardLinks/DashboardLinks";
 import LayoutContainer from "../../containers/Layout.container";
+import ThemeContainer from "../../containers/Theme.container";
 import routes from "../../routes";
 import { Subscribe } from "unstated";
 
@@ -30,20 +32,22 @@ const MyAppBar = props => {
   useEffect(handleChangeTitle);
 
   return (
-    <Subscribe to={[LayoutContainer]}>
-      {Layout => (
+    <Subscribe to={[LayoutContainer, ThemeContainer]}>
+      {(Layout, Theme) => (
         <AppBar
           position="fixed"
-          className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
+          // className={open && !isSmallScreen ? "appBar appBarShift" : "appBar"}
+          className={clx("appBar", {
+            appBarShift: open && !isSmallScreen,
+            [Theme.state.type || "light"]: true
+          })}
         >
           <Toolbar disableGutters={true}>
             <IconButton
               onClick={handleDrawerToggle}
-              className={
-                open && !isSmallScreen
-                  ? "menuButton menuButtonOpen"
-                  : "menuButton"
-              }
+              className={clx("menuButton", {
+                menuButtonOpen: open && !isSmallScreen
+              })}
             >
               <MenuIcon />
             </IconButton>

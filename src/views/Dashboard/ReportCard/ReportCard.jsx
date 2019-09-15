@@ -13,12 +13,11 @@ import ReportCardActions from "./ReportCardActions";
 import ReportContainer from "../../../containers/Report.container";
 import Filters from "./Filters";
 import MyCustomEvent from "../../../util/customEvent";
-import Theme from "../../../containers/Theme.container";
 
-const styles = {
+const styles = theme => ({
   card: {
     height: "100%",
-    backgroundColor: Theme.state.type === "light" ? "#fff" : "transparent"
+    backgroundColor: theme.palette.type === "light" ? "#fff" : "transparent"
     // overflow: "auto"
   },
   content: {
@@ -34,7 +33,7 @@ const styles = {
   title: {
     fontSize: "0.9rem"
   }
-};
+});
 
 class ReportCard extends Component {
   state = {

@@ -12,6 +12,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AuthContainer from "../../containers/Auth.container";
 import LayoutContainer from "../../containers/Layout.container";
+import ThemeContainer from "../../containers/Theme.container";
 import { loginRoute } from "../../routes";
 import Timer from "../Timer";
 import MyCustomEvent from "../../util/customEvent";
@@ -74,9 +75,11 @@ const NavbarLinks = props => {
     return config.duration;
   };
 
+  const handleThemeChanged = () => ThemeContainer.toggle();
+
   return (
-    <Subscribe to={[AuthContainer, LayoutContainer]}>
-      {(Auth, Layout) =>
+    <Subscribe to={[AuthContainer, LayoutContainer, ThemeContainer]}>
+      {(Auth, Layout, Theme) =>
         Auth.isLoggedIn() ? (
           <div style={{ display: "flex", alignItems: "center" }}>
             {isTimerVisible() && (
@@ -118,6 +121,9 @@ const NavbarLinks = props => {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>{Auth.state.username}</MenuItem>
+              <MenuItem onClick={handleThemeChanged}>
+                {Theme.state.type === "dark" ? "تم روشن" : "تم تیره"}
+              </MenuItem>
               <MenuItem id="logout" onClick={handleClose}>
                 خروج
               </MenuItem>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import clx from "classnames";
 import { Subscribe } from "unstated";
 import moment from "moment-jalaali";
 import { withTheme } from "@material-ui/core/styles";
@@ -27,8 +28,9 @@ import Main from "../components/Main";
 
 import ThemeContainer from "../containers/Theme.container";
 
+import "./RTLStyles.css";
+
 const getTheme = (type = "dark") => {
-  console.log(type);
   return createMuiTheme({
     palette:
       type === "light"
@@ -82,9 +84,6 @@ class RTL extends Component {
   };
 
   componentDidMount = () => {
-    ThemeContainer.state.type === "dark"
-      ? require("./RTLStyles.css")
-      : require("./RTLStyles.light.css");
     this.resizeListener();
     this.configAxios();
     this.configMoment();
@@ -155,9 +154,10 @@ class RTL extends Component {
                   handleDrawerToggle={this.handleDrawerToggle}
                 />
                 <main
-                  className={
-                    open && !isSmallScreen ? "content contentShift" : "content"
-                  }
+                  className={clx("content", {
+                    contentShift: open && !isSmallScreen,
+                    [Theme.state.type || "light"]: true
+                  })}
                   ref="mainPanel"
                 >
                   <Switch>
