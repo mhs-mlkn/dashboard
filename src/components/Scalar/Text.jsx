@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { withSize } from "react-sizeme";
 import { withStyles } from "@material-ui/core/styles";
 import Info from "@material-ui/icons/Info";
+import ThemeContainer from "../../containers/Theme.container";
+import { Subscribe } from "unstated";
 
 import { SCALAR_CONFIG as CONFIG } from "../../constants";
 
@@ -66,25 +68,32 @@ const ScalarText = props => {
   };
 
   return (
-    <div className={classes.box} style={boxStyles}>
-      <div className={classes.boxTop}>
-        <span>{value}</span>
-      </div>
-      <div className={classes.boxInfo}>
-        <span
-          className={classes.boxInfoSpan}
-          style={{
-            backgroundColor: config.infoBackground,
-            color: config.textColor
-          }}
-        >
-          {title}
-        </span>
-      </div>
-      <div className={classes.boxBottom}>
-        <Info style={{ fontSize: "75px" }} color="primary" />
-      </div>
-    </div>
+    <Subscribe to={[ThemeContainer]}>
+      {Theme => (
+        <div className={classes.box} style={boxStyles}>
+          <div className={classes.boxTop}>
+            <span>{value}</span>
+          </div>
+          <div className={classes.boxInfo}>
+            <span
+              className={classes.boxInfoSpan}
+              style={{
+                backgroundColor: config.infoBackground,
+                color: config.textColor
+              }}
+            >
+              {title}
+            </span>
+          </div>
+          <div className={classes.boxBottom}>
+            <Info
+              style={{ fontSize: "75px" }}
+              color={Theme.state.type === "dark" ? "primary" : "secondary"}
+            />
+          </div>
+        </div>
+      )}
+    </Subscribe>
   );
 };
 
